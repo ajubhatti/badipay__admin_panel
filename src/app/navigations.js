@@ -44,6 +44,21 @@ export const navigations = [
         badge: { value: '30+', color: 'secondary' },
         children: [
             {
+                name: 'user list',
+                path: '/material/userList',
+                iconText: 'UL',
+            },
+            {
+                name: 'bank list',
+                path: '/material/bankList',
+                iconText: 'BL',
+            },
+            {
+                name: 'bank account list',
+                path:'/material/bankAccountList',
+                iconText: 'BAL',
+            },
+            {
                 name: 'Auto Complete',
                 path: '/material/autocomplete',
                 iconText: 'A',
@@ -113,6 +128,7 @@ export const navigations = [
                 path: '/material/table',
                 iconText: 'T',
             },
+           
         ],
     },
     {

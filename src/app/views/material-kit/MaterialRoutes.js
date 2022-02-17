@@ -1,5 +1,9 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable';
+import BankListTable from './tables/BankListTable';
+import BankAccountTable from './tables/BankAccountTable';
+import UserListTable from './tables/UserListTable';
+import UserListingTable from './tables/UserListingTable'
 
 const AppTable = Loadable(lazy(() => import("./tables/AppTable")));
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
@@ -73,6 +77,20 @@ const materialRoutes = [
         path: '/material/snackbar',
         element: <AppSnackbar />,
     },
+
+    {
+        path: '/material/bankList',
+        element: <BankListTable />,
+    },
+    {
+        path: '/material/bankAccountList',
+        element: <BankAccountTable />,
+    },
+    {
+        path: '/material/userList',
+        // element: <UserListTable />,
+        element: <UserListingTable />,
+    }
 ]
 
 export default materialRoutes
