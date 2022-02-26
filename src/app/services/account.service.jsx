@@ -5,7 +5,7 @@ import { history } from '../helpers/history'
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/accounts`;
 
-const baseUrl = `http://localhost:4000/accounts`
+const baseUrl = `http://192.168.123.240:4000/accounts`
 
 console.log('base url ---', baseUrl)
 

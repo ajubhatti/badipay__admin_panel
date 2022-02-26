@@ -1,6 +1,6 @@
 import { fetchWrapper } from 'app/helpers/fetch-wrapper'
-const bankAccountUrl = `http://localhost:4000/bankAccount`
-const bankUrl = `http://localhost:4000/bank`
+const bankAccountUrl = `http://192.168.123.240:4000/bankAccount`
+const bankUrl = `http://192.168.123.240:4000/bank`
 
 export const bankAccountService = {
     getAllBankAccount,

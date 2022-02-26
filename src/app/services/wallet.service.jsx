@@ -5,7 +5,7 @@ import { history } from '../helpers/history'
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/wallet`;
 
-const baseUrl = `http://localhost:4000/wallet`
+const baseUrl = `http://192.168.123.240:4000/wallet`
 
 console.log('base url ---', baseUrl)
 
@@ -23,7 +23,7 @@ export const walletServices = {
 
 function getAll(payload) {
     console.log('payload --', `${baseUrl}/getAll`, payload)
-    return fetchWrapper.get(`${baseUrl}/getAll`, payload)
+    return fetchWrapper.post(`${baseUrl}/getAll`, payload)
 }
 
 function getById(id) {

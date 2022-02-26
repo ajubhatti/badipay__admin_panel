@@ -115,9 +115,12 @@ const WalletRequestListingTable = () => {
             payload.endDate = endDate
         }
 
-        await walletServices.getAll().then((res) => {
+        await walletServices.getAll(payload).then((res) => {
             console.log('res ---', res)
-            setUsersList(res)
+            if (res.data) {
+                setUsersList(res.data.wallets)
+            }
+
         })
     }
 
@@ -285,151 +288,253 @@ const WalletRequestListingTable = () => {
                                 user Name
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                phone no.
+                                payment type
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                email
+                                reference no
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                location
+                                deposit bank
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                balance
+                                branch
                             </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                request amount
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                debit/credti
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                wallet amount
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                remarks
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                approve by
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                approve date
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                password
+                            </TableCell>
+
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 status
                             </TableCell>
+
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                view profile
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Action
+                                actions
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {usersList.length > 0
                             ? usersList
-                                  .slice(
-                                      page * rowsPerPage,
-                                      page * rowsPerPage + rowsPerPage
-                                  )
-                                  .map((userData, index) => (
-                                      <TableRow key={index} hover>
-                                          <TableCell>{index + 1}</TableCell>
-                                          <TableCell
-                                              colSpan={4}
-                                              align="left"
-                                              sx={{
-                                                  px: 0,
-                                                  textTransform: 'capitalize',
-                                              }}
-                                          >
-                                              <Box
-                                                  display="flex"
-                                                  alignItems="center"
-                                              >
-                                                  <Avatar
-                                                      src={userData.imgUrl}
-                                                  />
-                                                  <Paragraph
-                                                      sx={{ m: 0, ml: 4 }}
-                                                  >
-                                                      {userData.userName}
-                                                  </Paragraph>
-                                              </Box>
-                                          </TableCell>
-                                          <TableCell
-                                              align="left"
-                                              colSpan={2}
-                                              sx={{
-                                                  px: 0,
-                                                  textTransform: 'capitalize',
-                                              }}
-                                          >
-                                              {userData.phoneNumber}
-                                          </TableCell>
-                                          <TableCell
-                                              align="left"
-                                              colSpan={2}
-                                              sx={{
-                                                  px: 0,
-                                                  textTransform: 'capitalize',
-                                              }}
-                                          >
-                                              {userData.email}
-                                          </TableCell>
+                                .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage
+                                )
+                                .map((userData, index) => (
+                                    <TableRow key={index} hover>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell
+                                            colSpan={4}
+                                            align="left"
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                            >
+                                                <Avatar
+                                                    src={userData?.imgUrl}
+                                                />
+                                                <Paragraph
+                                                    sx={{ m: 0, ml: 4 }}
+                                                >
+                                                    {userData?.userName}
+                                                </Paragraph>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.paymentType}
+                                        </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.referenceNo}
+                                        </TableCell>
 
-                                          <TableCell
-                                              align="left"
-                                              colSpan={2}
-                                              sx={{
-                                                  px: 0,
-                                                  textTransform: 'capitalize',
-                                              }}
-                                          >
-                                              {userData.location}
-                                          </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.depositBank}
+                                        </TableCell>
 
-                                          <TableCell
-                                              align="left"
-                                              colSpan={2}
-                                              sx={{
-                                                  px: 0,
-                                                  textTransform: 'capitalize',
-                                              }}
-                                          >
-                                              {userData.balance}
-                                          </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.depositBranch}
+                                        </TableCell>
 
-                                          <TableCell
-                                              sx={{ px: 0 }}
-                                              align="left"
-                                              colSpan={2}
-                                          >
-                                              {userData.isActive ? (
-                                                  <Small bgcolor={bgPrimary}>
-                                                      Active
-                                                  </Small>
-                                              ) : (
-                                                  <Small bgcolor={bgError}>
-                                                      Inactive
-                                                  </Small>
-                                              )}
-                                          </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.requestAmount}
+                                        </TableCell>
 
-                                          <TableCell sx={{ px: 0 }} colSpan={2}>
-                                              <IconButton
-                                                  onClick={() =>
-                                                      editUser(userData)
-                                                  }
-                                              >
-                                                  <Icon>edit_icon</Icon>
-                                              </IconButton>
-                                          </TableCell>
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.amountType}
+                                        </TableCell>
 
-                                          <TableCell sx={{ px: 0 }} colSpan={2}>
-                                              <IconButton
-                                                  onClick={() =>
-                                                      changeStatus(userData)
-                                                  }
-                                              >
-                                                  <Icon color="error">
-                                                      {userData.isActive
-                                                          ? 'close'
-                                                          : 'check'}
-                                                  </Icon>
-                                              </IconButton>
-                                              <IconButton
-                                                  onClick={() =>
-                                                      editUser(userData)
-                                                  }
-                                              >
-                                                  <Icon>edit_icon</Icon>
-                                              </IconButton>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.finalWalletAmount}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.remark}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.approveBy}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.approveDate}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            colSpan={2}
+                                            sx={{
+                                                px: 0,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >
+                                            {userData?.password}
+                                        </TableCell>
+
+                                        <TableCell
+                                            sx={{ px: 0 }}
+                                            align="left"
+                                            colSpan={2}
+                                        >
+
+                                            <Small bgcolor={bgPrimary}>
+                                                {userData?.statusOfWalletRequest ? userData?.statusOfWalletRequest : 'pending'}
+                                            </Small>
+
+                                            {/* {userData?.statusOfWalletRequest == 'pending' ? (
+                                                <Small bgcolor={bgPrimary}>
+                                                    Active
+                                                </Small>
+                                            ) : (
+                                                <Small bgcolor={bgError}>
+                                                    Inactive
+                                                </Small>
+                                            )} */}
+                                        </TableCell>
+
+                                        {/* <TableCell sx={{ px: 0 }} colSpan={2}>
+                                            <IconButton
+                                                onClick={() =>
+                                                    editUser(userData)
+                                                }
+                                            >
+                                                <Icon>edit_icon</Icon>
+                                            </IconButton>
+                                        </TableCell> */}
+
+                                        <TableCell sx={{ px: 0 }} colSpan={2}>
+                                            <IconButton
+                                                onClick={() =>
+                                                    changeStatus(userData)
+                                                }
+                                            >
+                                                <Icon color="error">
+                                                    {userData.isActive
+                                                        ? 'close'
+                                                        : 'check'}
+                                                </Icon>
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() =>
+                                                    editUser(userData)
+                                                }
+                                            >
+                                                <Icon>edit_icon</Icon>
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
                             : null}
                     </TableBody>
                 </UserTable>
