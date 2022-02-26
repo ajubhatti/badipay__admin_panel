@@ -1,24 +1,29 @@
 import React, { lazy } from 'react'
-import Loadable from 'app/components/Loadable/Loadable';
-import BankListTable from './tables/BankListTable';
-import BankAccountTable from './tables/BankAccountTable';
-import UserListTable from './tables/UserListTable';
+import Loadable from 'app/components/Loadable/Loadable'
+import BankListTable from './tables/BankListTable'
+import BankAccountTable from './tables/BankAccountTable'
+import UserListTable from './tables/UserListTable'
 import UserListingTable from './tables/UserListingTable'
+import WalletRequestListingTable from './tables/WalletRequestListingTable'
 
-const AppTable = Loadable(lazy(() => import("./tables/AppTable")));
-const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
-const AppButton = Loadable(lazy(() => import("./buttons/AppButton")));
-const AppIcon = Loadable(lazy(() => import("./icons/AppIcon")));
-const AppProgress = Loadable(lazy(() => import("./AppProgress")));
-const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
-const AppCheckbox = Loadable(lazy(() => import("./checkbox/AppCheckbox")));
-const AppSwitch = Loadable(lazy(() => import("./switch/AppSwitch")));
-const AppRadio = Loadable(lazy(() => import("./radio/AppRadio")));
-const AppSlider = Loadable(lazy(() => import("./slider/AppSlider")));
-const AppDialog = Loadable(lazy(() => import("./dialog/AppDialog")));
-const AppSnackbar = Loadable(lazy(() => import("./snackbar/AppSnackbar")));
-const AppAutoComplete = Loadable(lazy(() => import("./auto-complete/AppAutoComplete")));
-const AppExpansionPanel = Loadable(lazy(() => import("./expansion-panel/AppExpansionPanel")));
+const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
+const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
+const AppButton = Loadable(lazy(() => import('./buttons/AppButton')))
+const AppIcon = Loadable(lazy(() => import('./icons/AppIcon')))
+const AppProgress = Loadable(lazy(() => import('./AppProgress')))
+const AppMenu = Loadable(lazy(() => import('./menu/AppMenu')))
+const AppCheckbox = Loadable(lazy(() => import('./checkbox/AppCheckbox')))
+const AppSwitch = Loadable(lazy(() => import('./switch/AppSwitch')))
+const AppRadio = Loadable(lazy(() => import('./radio/AppRadio')))
+const AppSlider = Loadable(lazy(() => import('./slider/AppSlider')))
+const AppDialog = Loadable(lazy(() => import('./dialog/AppDialog')))
+const AppSnackbar = Loadable(lazy(() => import('./snackbar/AppSnackbar')))
+const AppAutoComplete = Loadable(
+    lazy(() => import('./auto-complete/AppAutoComplete'))
+)
+const AppExpansionPanel = Loadable(
+    lazy(() => import('./expansion-panel/AppExpansionPanel'))
+)
 
 const materialRoutes = [
     {
@@ -86,11 +91,16 @@ const materialRoutes = [
         path: '/material/bankAccountList',
         element: <BankAccountTable />,
     },
+
+    {
+        path: '/material/WalletRequestList',
+        element: <WalletRequestListingTable />,
+    },
     {
         path: '/material/userList',
         // element: <UserListTable />,
         element: <UserListingTable />,
-    }
+    },
 ]
 
 export default materialRoutes

@@ -55,8 +55,13 @@ export const navigations = [
             },
             {
                 name: 'bank account list',
-                path:'/material/bankAccountList',
+                path: '/material/bankAccountList',
                 iconText: 'BAL',
+            },
+            {
+                name: 'Wallet list',
+                path: '/material/WalletRequestList',
+                iconText: 'WL',
             },
             {
                 name: 'Auto Complete',
@@ -128,7 +133,6 @@ export const navigations = [
                 path: '/material/table',
                 iconText: 'T',
             },
-           
         ],
     },
     {

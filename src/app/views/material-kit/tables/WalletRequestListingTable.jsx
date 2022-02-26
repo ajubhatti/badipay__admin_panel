@@ -17,7 +17,6 @@ import {
     Fab,
     TablePagination,
 } from '@mui/material'
-
 import { accountService } from '../../../services/account.service'
 import AddUpdateUserDialog from '../dialog/AddUpdateUserDialog'
 import { CSVLink, CSVDownload } from 'react-csv'
@@ -25,7 +24,8 @@ import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import DateRangePick from '../dates/DateRangePick'
 import moment from 'moment'
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
+import TextField from '@mui/material/TextField'
+import { walletServices } from '../../../services/wallet.service'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -60,11 +60,6 @@ const UserTable = styled(Table)(() => ({
     },
 }))
 
-const TextField = styled(TextValidator)(() => ({
-    width: '100%',
-    marginBottom: '16px',
-}))
-
 const Small = styled('small')(({ bgcolor }) => ({
     height: 15,
     width: 50,
@@ -76,7 +71,7 @@ const Small = styled('small')(({ bgcolor }) => ({
     boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
 }))
 
-const UserListingTable = () => {
+const WalletRequestListingTable = () => {
     const { palette } = useTheme()
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
@@ -93,7 +88,7 @@ const UserListingTable = () => {
     const [searchText, setSearchText] = useState('')
 
     useEffect(() => {
-        getAllusers()
+        getAllWalletRequest()
     }, [userType, selectedDates, searchText])
 
     const handleChangePage = (event, newPage) => {
@@ -105,7 +100,7 @@ const UserListingTable = () => {
         setPage(0)
     }
 
-    const getAllusers = async () => {
+    const getAllWalletRequest = async () => {
         let startDate = moment(selectedDates[0]).format('YYYY-MM-DD')
         let endDate = moment(selectedDates[1]).format('YYYY-MM-DD')
 
@@ -120,7 +115,7 @@ const UserListingTable = () => {
             payload.endDate = endDate
         }
 
-        await accountService.getAll(payload).then((res) => {
+        await walletServices.getAll().then((res) => {
             console.log('res ---', res)
             setUsersList(res)
         })
@@ -155,7 +150,7 @@ const UserListingTable = () => {
     const handleUpdate = (id, data) => {
         accountService.update(id, data).then((res) => {
             console.log('update res --', res)
-            getAllusers()
+            getAllWalletRequest()
         })
     }
 
@@ -267,12 +262,6 @@ const UserListingTable = () => {
                     <MenuItem value="user">user</MenuItem>
                     <MenuItem value="admin">admin</MenuItem>
                 </Select>
-
-                {/* <Select size="small" defaultValue="all">
-                    <MenuItem value="all">All</MenuItem>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Last Month</MenuItem>
-                </Select> */}
 
                 <Fab
                     size="small"
@@ -471,4 +460,4 @@ const UserListingTable = () => {
     )
 }
 
-export default UserListingTable
+export default WalletRequestListingTable
