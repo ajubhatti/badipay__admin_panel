@@ -25,8 +25,7 @@ import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import DateRangePick from '../dates/DateRangePick'
 import moment from 'moment'
-import TextField from '@mui/material/TextField'
-import AddRemoveBalance from '../dialog/AddRemoveBalance'
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -61,6 +60,11 @@ const UserTable = styled(Table)(() => ({
     },
 }))
 
+const TextField = styled(TextValidator)(() => ({
+    width: '100%',
+    marginBottom: '16px',
+}))
+
 const Small = styled('small')(({ bgcolor }) => ({
     height: 15,
     width: 50,
@@ -87,7 +91,6 @@ const UserListingTable = () => {
     const [userType, setUserType] = useState('user')
     const [selectedDates, setSelectedDates] = useState([])
     const [searchText, setSearchText] = useState('')
-    const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false)
 
     useEffect(() => {
         getAllusers()
@@ -107,10 +110,10 @@ const UserListingTable = () => {
         let endDate = moment(selectedDates[1]).format('YYYY-MM-DD')
 
         let payload = {
-            role: userType,
+            // role: userType,
         }
         if (searchText != '') {
-            payload.searchParams = searchText
+            payload.searchText = searchText
         }
         if (selectedDates.length > 0) {
             payload.startDate = startDate
@@ -130,10 +133,6 @@ const UserListingTable = () => {
     const editUser = (data) => {
         setUserData(data)
         setOpen(true)
-    }
-
-    const addBalance = (data) => {
-        setIsBalanceModalOpen(true)
     }
 
     const handleClickOpen = () => {
@@ -206,6 +205,7 @@ const UserListingTable = () => {
     }
 
     const handleChange = (event) => {
+        event.persist()
         setSearchText(event.target.value)
     }
 
@@ -251,7 +251,7 @@ const UserListingTable = () => {
                     type="text"
                     name="serchtext"
                     id="standard-basic"
-                    onChange={(e) => handleChange(e)}
+                    onChange={handleChange}
                     value={searchText || ''}
                     label="search text"
                 />
@@ -268,11 +268,11 @@ const UserListingTable = () => {
                     <MenuItem value="admin">admin</MenuItem>
                 </Select>
 
-                <Select size="small" defaultValue="all">
+                {/* <Select size="small" defaultValue="all">
                     <MenuItem value="all">All</MenuItem>
                     <MenuItem value="user">User</MenuItem>
                     <MenuItem value="admin">Last Month</MenuItem>
-                </Select>
+                </Select> */}
 
                 <Fab
                     size="small"
@@ -307,19 +307,9 @@ const UserListingTable = () => {
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 balance
                             </TableCell>
-
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 status
                             </TableCell>
-
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                add balance
-                            </TableCell>
-
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                revert balance
-                            </TableCell>
-
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 view profile
                             </TableCell>
@@ -422,26 +412,6 @@ const UserListingTable = () => {
                                           <TableCell sx={{ px: 0 }} colSpan={2}>
                                               <IconButton
                                                   onClick={() =>
-                                                      addBalance(userData)
-                                                  }
-                                              >
-                                                  <Icon>add_circle</Icon>
-                                              </IconButton>
-                                          </TableCell>
-
-                                          <TableCell sx={{ px: 0 }} colSpan={2}>
-                                              <IconButton
-                                                  onClick={() =>
-                                                      addBalance(userData)
-                                                  }
-                                              >
-                                                  <Icon>remove_circle</Icon>
-                                              </IconButton>
-                                          </TableCell>
-
-                                          <TableCell sx={{ px: 0 }} colSpan={2}>
-                                              <IconButton
-                                                  onClick={() =>
                                                       editUser(userData)
                                                   }
                                               >
@@ -495,12 +465,6 @@ const UserListingTable = () => {
             <AddUpdateUserDialog
                 setOpen={setOpen}
                 open={open}
-                userData={userData}
-            />
-
-            <AddRemoveBalance
-                setOpen={setIsBalanceModalOpen}
-                open={isBalanceModalOpen}
                 userData={userData}
             />
         </Card>

@@ -7,11 +7,19 @@ import {
     TableCell,
     Icon,
     TablePagination,
-} from '@mui/material';
-import React,{useEffect,useState} from 'react';
-import { Box, styled } from '@mui/system';
-import { bankAccountService } from '../../../services/bank.service';
-
+    Card,
+    Avatar,
+    MenuItem,
+    Select,
+    Button,
+    Fab,
+} from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, styled } from '@mui/system'
+import { bankAccountService } from '../../../services/bank.service'
+import { jsPDF } from 'jspdf'
+import 'jspdf-autotable'
+import { CSVLink } from 'react-csv'
 
 const StyledTable = styled(Table)(({ theme }) => ({
     whiteSpace: 'pre',
@@ -33,11 +41,12 @@ const StyledTable = styled(Table)(({ theme }) => ({
     },
 }))
 
-
 const BankAccountTable = () => {
-    const [rowsPerPage, setRowsPerPage] = React.useState(5)
-    const [page, setPage] = React.useState(0)
-    const [banksAccounts,setBanksAccounts] = useState([])
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [page, setPage] = useState(0)
+    const [banksAccounts, setBanksAccounts] = useState([])
+
+    const [downloadType, setDownloadType] = useState('csv')
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -48,20 +57,100 @@ const BankAccountTable = () => {
         setPage(0)
     }
 
-    useEffect(() => { 
-         getAllbankAccounts([]);
-    },[])
+    useEffect(() => {
+        getAllbankAccounts([])
+    }, [])
 
     const getAllbankAccounts = async () => {
-        await bankAccountService.getAllBankAccount().then(res => { 
-            console.log("res ---", res)
-             setBanksAccounts(res);
+        await bankAccountService.getAllBankAccount().then((res) => {
+            console.log('res ---', res)
+            setBanksAccounts(res)
         })
-       
+    }
+
+    const exportPDF = () => {
+        const unit = 'pt'
+        const size = 'A4' // Use A1, A2, A3 or A4
+        const orientation = 'portrait' // portrait or landscape
+
+        const marginLeft = 40
+        const doc = new jsPDF(orientation, unit, size)
+
+        doc.setFontSize(15)
+
+        const title = 'User Report'
+        const headers = [
+            [
+                'user Name',
+                'phone',
+                'email',
+                'location',
+                'balance',
+                'status',
+                'created at',
+            ],
+        ]
+
+        const data = banksAccounts.map((elt) => [
+            elt.accountName,
+            elt.accountNo,
+            elt['bankdetail'][0]['bankName'],
+            elt.bankBranch,
+            elt.balance,
+            elt.ifscCode,
+            elt.createdAt,
+        ])
+
+        let content = {
+            startY: 50,
+            head: headers,
+            body: data,
+            theme: 'grid',
+        }
+
+        doc.text(title, marginLeft, 40)
+        doc.autoTable(content)
+        doc.save('report.pdf')
     }
 
     return (
         <Box width="100%" overflow="auto">
+            <Select
+                size="small"
+                defaultValue={downloadType}
+                onChange={(e) => {
+                    console.log('change --', e.target.value)
+                    setDownloadType(e.target.value)
+                }}
+            >
+                <MenuItem value="csv">csv</MenuItem>
+                <MenuItem value="pdf">pdf</MenuItem>
+            </Select>
+
+            {downloadType == 'csv' ? (
+                <CSVLink filename={'accounts list.csv'} data={banksAccounts}>
+                    <Fab
+                        size="small"
+                        color="secondary"
+                        aria-label="Add"
+                        className="button"
+                    >
+                        <Icon>get_app</Icon>
+                    </Fab>
+                </CSVLink>
+            ) : (
+                <Fab
+                    size="small"
+                    color="primary"
+                    aria-label="Add"
+                    className="button"
+                    onClick={() => {
+                        exportPDF()
+                    }}
+                >
+                    <Icon>get_app</Icon>
+                </Fab>
+            )}
             <StyledTable>
                 <TableHead>
                     <TableRow>
@@ -95,7 +184,9 @@ const BankAccountTable = () => {
                                     {subscriber.bankBranch}
                                 </TableCell>
                                 <TableCell>{subscriber.ifscCode}</TableCell>
-                                <TableCell>{subscriber.isActive ? 'open' : 'close'}</TableCell>
+                                <TableCell>
+                                    {subscriber.isActive ? 'open' : 'close'}
+                                </TableCell>
                                 <TableCell>
                                     <IconButton>
                                         <Icon color="error">close</Icon>
