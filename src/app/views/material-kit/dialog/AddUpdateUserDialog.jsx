@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import { accountService } from 'app/services/account.service'
+import moment from 'moment'
 
 const AddUpdateUserDialog = (props) => {
     const [open, setOpen] = useState(false)
@@ -14,6 +15,15 @@ const AddUpdateUserDialog = (props) => {
     const [userName, setUserName] = useState()
     const [email, setEmail] = useState()
     const [phone, setPhone] = useState()
+
+    const [userState, setUserState] = useState()
+    const [uerDistrict, setUserDistrict] = useState()
+    const [userCity, setUserCity] = useState()
+    const [userPincode, setUserPincode] = useState()
+    const [userDate, setUserDate] = useState()
+    const [userBalance, setUserBalance] = useState()
+    const [userPanCard, setUserPanCard] = useState()
+    const [userPassword, setUserPassword] = useState()
 
     useEffect(() => {
         console.log('props--', props)
@@ -64,6 +74,7 @@ const AddUpdateUserDialog = (props) => {
                         defaultValue={props.userData.userName}
                         onChange={(e) => setUserName(e.target.value)}
                     />
+
                     <TextField
                         autoFocus
                         margin="dense"
@@ -74,6 +85,7 @@ const AddUpdateUserDialog = (props) => {
                         defaultValue={props.userData.phoneNumber}
                         onChange={(e) => setPhone(e.target.value)}
                     />
+
                     <TextField
                         autoFocus
                         margin="dense"
@@ -84,6 +96,96 @@ const AddUpdateUserDialog = (props) => {
                         defaultValue={props.userData.email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="state"
+                        label="state"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.state}
+                        onChange={(e) => setUserState(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="district"
+                        label="District"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.district}
+                        onChange={(e) => setUserDistrict(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="city"
+                        label="city"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.city}
+                        onChange={(e) => setUserCity(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="pin_code"
+                        label="pin code"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.pinCode}
+                        onChange={(e) => setUserPincode(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="date"
+                        label="date"
+                        type="text"
+                        fullWidth
+                        defaultValue={moment(props.userData.created).format('YYYY-MM-DD')}
+                        onChange={(e) => setUserDate(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="balance"
+                        label="balance"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.balace}
+                        onChange={(e) => setUserBalance(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="pan_card"
+                        label="pan card no"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.pancard}
+                        onChange={(e) => setUserPanCard(e.target.value)}
+                    />
+
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="password"
+                        label="password"
+                        type="text"
+                        fullWidth
+                        defaultValue={props.userData.password}
+                        onChange={(e) => setUserPassword(e.target.value)}
+                    />
+
+
                 </DialogContent>
                 <DialogActions>
                     <Button
