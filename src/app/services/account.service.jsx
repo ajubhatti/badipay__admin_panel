@@ -5,9 +5,7 @@ import { history } from '../helpers/history'
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/accounts`;
 
-const baseUrl = `http://192.168.123.240:4000/accounts`
-
-console.log('base url ---', baseUrl)
+const baseUrl = `http://192.168.129.240:4000/accounts`
 
 export const accountService = {
     login,
@@ -82,9 +80,9 @@ function resetPassword({ token, password, confirmPassword }) {
     })
 }
 
-function getAll(payload) {
+async function getAll(payload) {
     console.log('payload --', `${baseUrl}/getAll`, payload)
-    return fetchWrapper.post(`${baseUrl}/getAll`, payload)
+    return await fetchWrapper.post(`${baseUrl}/getAll`, payload)
 }
 
 function getById(id) {
@@ -95,14 +93,14 @@ function create(params) {
     return fetchWrapper.post(baseUrl, params)
 }
 
-function update(id, params) {
-    return fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {
+async function update(id, params) {
+    return await fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {
         // update stored user if the logged in user updated their own record
-        if (user.id === userSubject.value.id) {
-            // publish updated user to subscribers
-            user = { ...userSubject.value, ...user }
-            userSubject.next(user)
-        }
+        // if (user.id === userSubject.value.id) {
+        //     // publish updated user to subscribers
+        //     user = { ...userSubject.value, ...user }
+        //     userSubject.next(user)
+        // }
         return user
     })
 }

@@ -5,7 +5,7 @@ import { history } from '../helpers/history'
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/wallet`;
 
-const baseUrl = `http://192.168.123.240:4000/wallet`
+const baseUrl = `http://192.168.129.240:4000/walletTransaction`
 
 console.log('base url ---', baseUrl)
 
@@ -19,6 +19,7 @@ export const walletServices = {
     get userValue() {
         return userSubject.value
     },
+    updateBalance
 }
 
 function getAll(payload) {
@@ -51,4 +52,8 @@ function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`).then((x) => {
         return x
     })
+}
+
+function updateBalance(params) {
+    return fetchWrapper.post(`${baseUrl}/updateBalance`, params)
 }

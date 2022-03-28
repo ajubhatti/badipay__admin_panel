@@ -49,6 +49,11 @@ export const navigations = [
                 iconText: 'UL',
             },
             {
+                name: 'banner list',
+                path: '/material/bannerList',
+                iconText: 'BL',
+            },
+            {
                 name: 'bank list',
                 path: '/material/bankList',
                 iconText: 'BL',

@@ -7,13 +7,19 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import { accountService } from 'app/services/account.service'
+import { walletServices } from '../../../services/wallet.service'
 
 const AddRemoveBalance = (props) => {
     const [open, setOpen] = useState(false)
 
-    const [userName, setUserName] = useState()
-    const [email, setEmail] = useState()
-    const [phone, setPhone] = useState()
+    const [userName, setUserName] = useState('')
+    const [email, setEmail] = useState('')
+    const [phone, setPhone] = useState('')
+    const [balance, setBalance] = useState(0)
+    const [amount, setAmount] = useState(0)
+    const [confirmAmount, setConfirmAmount] = useState(0)
+    const [remarks, setRemarks] = useState('')
+    const [password, setPassword] = useState('')
 
     useEffect(() => {
         console.log('props--', props)
@@ -33,17 +39,20 @@ const AddRemoveBalance = (props) => {
     }
 
     const handleSubmit = async () => {
-        console.log(userName, email, phone)
-        let obj = props.userData
-        obj.userName = userName
-        obj.phoneNumber = phone
-        obj.email = email
-        let id = props.userData.id
-        await accountService.update(id, obj).then((res) => {
-            console.log('update res --', res)
+        let payload = {
+            userId: props.userData.id,
+            type: props.type,
+            amount: amount,
+            remarks: remarks,
+            password: password
+        }
+        console.log("payload ---", payload)
+        await walletServices.updateBalance(payload).then((res) => {
+            console.log('res ---', res)
             handleClose()
         })
     }
+
 
     return (
         <div>
@@ -52,7 +61,7 @@ const AddRemoveBalance = (props) => {
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Add New User</DialogTitle>
+                <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -81,8 +90,8 @@ const AddRemoveBalance = (props) => {
                         label="current amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        defaultValue={props.userData.balance}
+                        onChange={(e) => setBalance(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -91,8 +100,7 @@ const AddRemoveBalance = (props) => {
                         label="add amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        onChange={(e) => setAmount(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -101,8 +109,7 @@ const AddRemoveBalance = (props) => {
                         label="confirm amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        onChange={(e) => setConfirmAmount(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -111,8 +118,7 @@ const AddRemoveBalance = (props) => {
                         label="remarks"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        onChange={(e) => setRemarks(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -121,8 +127,7 @@ const AddRemoveBalance = (props) => {
                         label="password"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>

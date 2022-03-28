@@ -81,13 +81,16 @@ const UserListingTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
     const [page, setPage] = React.useState(0)
     const [usersList, setUsersList] = useState([])
-    const [open, setOpen] = useState(false)
+    const [userModelOpen, setUserModelOpen] = useState(false)
     const [userData, setUserData] = useState({})
     const [downloadType, setDownloadType] = useState('csv')
     const [userType, setUserType] = useState('user')
     const [selectedDates, setSelectedDates] = useState([])
     const [searchText, setSearchText] = useState('')
-    const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false)
+    const [addRemoveModelOpen, setAddRemoveModelOpen] = useState(false)
+    const [modelTitle, setModelTitle] = useState('Add balance')
+    const [userModelTitle, setUserModelTitle] = useState('New User')
+    const [addRemoveModelType, setAddRemoveModelType] = useState('add');
 
     useEffect(() => {
         getAllusers()
@@ -129,19 +132,36 @@ const UserListingTable = () => {
 
     const editUser = (data) => {
         setUserData(data)
-        setOpen(true)
+        setUserModelOpen(true)
+        setUserModelTitle('Update user')
+    }
+
+    const viewUser = (data) => {
+        setUserData(data)
+        setUserModelOpen(true)
+        setUserModelTitle('User information')
     }
 
     const addBalance = (data) => {
-        setIsBalanceModalOpen(true)
+        setUserData(data)
+        setModelTitle('Add balance')
+        setAddRemoveModelOpen(true)
+        setAddRemoveModelType('add')
+    }
+
+    const removeBalance = (data) => {
+        setUserData(data)
+        setModelTitle('Remove balance')
+        setAddRemoveModelOpen(true)
+        setAddRemoveModelType('remove')
     }
 
     const handleClickOpen = () => {
-        setOpen(true)
+        setUserModelOpen(true)
     }
 
     const handleClose = () => {
-        setOpen(false)
+        setUserModelOpen(false)
     }
 
     const changeStatus = (data) => {
@@ -149,12 +169,12 @@ const UserListingTable = () => {
         data.isActive = !data.isActive
         delete data.email
         delete data.role
-        console.log('payload ==', data)
         handleUpdate(data.id, data)
     }
 
-    const handleUpdate = (id, data) => {
-        accountService.update(id, data).then((res) => {
+    const handleUpdate = async (id, data) => {
+        console.log('payload ==', data)
+        await accountService.update(id, data).then((res) => {
             console.log('update res --', res)
             getAllusers()
         })
@@ -280,7 +300,7 @@ const UserListingTable = () => {
                     aria-label="Add"
                     className="button"
                     onClick={() => {
-                        setOpen(true)
+                        setUserModelOpen(true)
                         setUserData({})
                     }}
                 >
@@ -446,7 +466,7 @@ const UserListingTable = () => {
                                         <TableCell sx={{ px: 0 }} colSpan={2}>
                                             <IconButton
                                                 onClick={() =>
-                                                    addBalance(userData)
+                                                    removeBalance(userData)
                                                 }
                                             >
                                                 <Icon>remove_circle</Icon>
@@ -456,10 +476,10 @@ const UserListingTable = () => {
                                         <TableCell sx={{ px: 0 }} colSpan={2}>
                                             <IconButton
                                                 onClick={() =>
-                                                    editUser(userData)
+                                                    viewUser(userData)
                                                 }
                                             >
-                                                <Icon>edit_icon</Icon>
+                                                <Icon>person</Icon>
                                             </IconButton>
                                         </TableCell>
 
@@ -507,15 +527,18 @@ const UserListingTable = () => {
                 />
             </Box>
             <AddUpdateUserDialog
-                setOpen={setOpen}
-                open={open}
+                setOpen={setUserModelOpen}
+                open={userModelOpen}
                 userData={userData}
+                title={userModelTitle}
             />
 
             <AddRemoveBalance
-                setOpen={setIsBalanceModalOpen}
-                open={isBalanceModalOpen}
+                setOpen={setAddRemoveModelOpen}
+                open={addRemoveModelOpen}
                 userData={userData}
+                title={modelTitle}
+                type={addRemoveModelType}
             />
         </Card>
     )

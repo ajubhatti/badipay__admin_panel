@@ -5,6 +5,7 @@ import BankAccountTable from './tables/BankAccountTable'
 import UserListTable from './tables/UserListTable'
 import UserListingTable from './tables/UserListingTable'
 import WalletRequestListingTable from './tables/WalletRequestListingTable'
+import BannerListTable from './tables/BannerListTable'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -90,6 +91,10 @@ const materialRoutes = [
     {
         path: '/material/bankAccountList',
         element: <BankAccountTable />,
+    },
+    {
+        path: '/material/bannerList',
+        element: <BannerListTable />,
     },
 
     {

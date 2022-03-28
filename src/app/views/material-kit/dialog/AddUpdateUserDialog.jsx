@@ -62,7 +62,7 @@ const AddUpdateUserDialog = (props) => {
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Add New User</DialogTitle>
+                <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -159,7 +159,7 @@ const AddUpdateUserDialog = (props) => {
                         label="balance"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.balace}
+                        defaultValue={props.userData.balance}
                         onChange={(e) => setUserBalance(e.target.value)}
                     />
 
