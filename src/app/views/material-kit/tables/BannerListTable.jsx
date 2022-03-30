@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Box, styled } from '@mui/system';
-import { bannerService } from 'app/services/banner.service';
+import { bannerService } from '../../../services/banner.service';
 import { Title } from '@mui/icons-material';
 
 
@@ -47,9 +47,18 @@ const StyledTable = styled(Table)(({ theme }) => ({
 const BannerListTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
-    const [banksAccounts, setBanksAccounts] = useState([])
+    const [bannerList, setBannerList] = useState([])
     const [userModelOpen, setUserModelOpen] = useState(false)
     const [userModelTitle, setUserModelTitle] = useState('New Banner')
+    const [bannerImageUrl, setBannerImageUrl] = useState(null);
+    const [bannerImage, setBannerImage] = useState(null);
+    const [bannerName, setBannerName] = useState('')
+    const [bannerDesc, setBannerDesc] = useState('')
+
+    const onChangePicture = e => {
+        setBannerImage(e.target.files[0])
+        setBannerImageUrl(URL.createObjectURL(e.target.files[0]));
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -61,15 +70,13 @@ const BannerListTable = () => {
     }
 
     useEffect(() => {
-        getAllbanks([]);
+        getAllbanners([]);
     }, [])
 
-    const getAllbanks = async () => {
+    const getAllbanners = async () => {
         await bannerService.getAllBanner().then(res => {
-            console.log("res ---", res)
-            setBanksAccounts(res);
+            setBannerList(res);
         })
-
     }
 
     const ShowImage = (data) => {
@@ -81,8 +88,29 @@ const BannerListTable = () => {
         setUserModelOpen(false)
     }
 
-    const handleSubmit = async () => {
-        console.log("submit ---")
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Update the formData object 
+
+        var formData = new FormData();
+        formData.append("images", bannerImage);
+        formData.append("description", bannerDesc);
+        formData.append("fileName", bannerName);
+
+        for (let [key, value] of formData) {
+            console.log(`${key}: ${value}`)
+        }
+
+        // also using it's default for...of specified by Symbol.iterator    
+        console.log(...formData)
+
+        // Don't work in IE (use last pair if same key is used more)
+        console.log(Object.fromEntries(formData))
+
+        await bannerService.uploadBanner(formData).then(res => {
+            console.log("res of add ---", res)
+            // getAllbanners();
+        })
         // let obj = props.userData
         // obj.userName = userName
         // obj.phoneNumber = phone
@@ -120,7 +148,7 @@ const BannerListTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {banksAccounts
+                        {bannerList
                             .slice(
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
@@ -155,7 +183,7 @@ const BannerListTable = () => {
                     sx={{ px: 2 }}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={banksAccounts.length}
+                    count={bannerList.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
@@ -181,13 +209,29 @@ const BannerListTable = () => {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="user_name"
-                            label="User name"
+                            id="banner_name"
+                            label="Banner Name"
                             type="text"
                             fullWidth
-                        // defaultValue={props.userData.userName}
-                        // onChange={(e) => setUserName(e.target.value)}
+                            // defaultValue={props.userData.userName}
+                            onChange={(e) => setBannerName(e.target.value)}
                         />
+                        <TextField
+                            margin="dense"
+                            id="banner_desc"
+                            label="Banner Description"
+                            type="text"
+                            fullWidth
+                            // defaultValue={props.userData.userName}
+                            onChange={(e) => setBannerDesc(e.target.value)}
+                        />
+
+                        <div className="register_profile_image">
+                            <input type="file" onChange={onChangePicture} />
+                        </div>
+                        <div className="previewProfilePic align-center" >
+                            <img height={'50%'} width={'100%'} className="playerProfilePic_home_tile" src={bannerImageUrl && bannerImageUrl}></img>
+                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -197,7 +241,7 @@ const BannerListTable = () => {
                         >
                             Cancel
                         </Button>
-                        <Button onClick={() => handleSubmit()} color="primary">
+                        <Button onClick={(e) => handleSubmit(e)} color="primary">
                             Save
                         </Button>
                     </DialogActions>
