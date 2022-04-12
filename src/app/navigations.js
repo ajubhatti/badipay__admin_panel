@@ -54,6 +54,11 @@ export const navigations = [
                 iconText: 'BL',
             },
             {
+                name: 'ticker list',
+                path: '/material/tickerList',
+                iconText: 'BL',
+            },
+            {
                 name: 'bank list',
                 path: '/material/bankList',
                 iconText: 'BL',

@@ -18,29 +18,24 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { bannerService } from '../../../services/banner.service'
-import Moment from 'react-moment'
+import { bankAccountService } from '../../../services/bank.service'
+import { tickerService } from 'app/services/ticker.service'
 import moment from 'moment'
 
-// const  = styled(Table)(({ theme }) => ({
-//     whiteSpace: 'pre',
-//     '& thead': {
-//         '& tr': {
-//             '& th': {
-//                 paddingLeft: 0,
-//                 paddingRight: 0,
-//             },
-//         },
-//     },
-//     '& tbody': {
-//         '& tr': {
-//             '& td': {
-//                 paddingLeft: 0,
-//                 textTransform: 'capitalize',
-//             },
-//         },
-//     },
-// }))
+const CardHeader = styled('div')(() => ({
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    marginBottom: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+}))
+
+const Title = styled('span')(() => ({
+    fontSize: '1rem',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+}))
 
 const StyledTable = styled(Table)(() => ({
     minWidth: 400,
@@ -60,21 +55,6 @@ const StyledTable = styled(Table)(() => ({
     },
 }))
 
-const CardHeader = styled('div')(() => ({
-    paddingLeft: '24px',
-    paddingRight: '24px',
-    marginBottom: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-}))
-
-const Title = styled('span')(() => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    textTransform: 'capitalize',
-}))
-
 const Small = styled('small')(({ bgcolor }) => ({
     height: 15,
     width: 50,
@@ -86,23 +66,15 @@ const Small = styled('small')(({ bgcolor }) => ({
     boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
 }))
 
-const BannerListTable = () => {
+const TickerListTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
-    const [bannerList, setBannerList] = useState([])
-    const [bannerModelOpen, setBannerModelOpen] = useState(false)
+    const [tickerList, setTickerList] = useState([])
     const [userModelTitle, setUserModelTitle] = useState('New Banner')
-    const [bannerImageUrl, setBannerImageUrl] = useState(null)
-    const [bannerImage, setBannerImage] = useState(null)
-    const [bannerName, setBannerName] = useState('')
-    const [bannerDesc, setBannerDesc] = useState('')
-
+    const [bannerModelOpen, setBannerModelOpen] = useState(false)
     const [bannerData, setBannerData] = useState({})
 
-    const onChangePicture = (e) => {
-        setBannerImage(e.target.files[0])
-        setBannerImageUrl(URL.createObjectURL(e.target.files[0]))
-    }
+    const [bannerDesc, setBannerDesc] = useState('')
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -114,94 +86,50 @@ const BannerListTable = () => {
     }
 
     useEffect(() => {
-        getAllbanners([])
+        getAllTicker([])
     }, [])
 
-    const getAllbanners = async () => {
-        await bannerService.getAllBanner().then((res) => {
-            setBannerList(res)
+    const getAllTicker = async () => {
+        tickerService.getAllTicker().then((res) => {
+            console.log('res--', res)
+            setTickerList(res)
         })
-    }
-
-    const ShowImage = (data) => {
-        let imgData = new Buffer.from(data.data).toString('base64')
-        return (
-            <img
-                src={`data:image/*;base64,${imgData}`}
-                width={150}
-                height={100}
-                alt=""
-            />
-        )
+        // await bankAccountService.getAllBank().then((res) => {
+        //     console.log('res ---', res)
+        //
+        // })
     }
 
     const handleClose = () => {
         setBannerModelOpen(false)
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        // Update the formData object
-
-        var formData = new FormData()
-        if (bannerImage) {
-            formData.append('images', bannerImage)
+    const handleSubmit = async () => {
+        console.log(bannerDesc)
+        let payload = {
+            description: bannerDesc,
         }
-        formData.append('description', bannerDesc)
-        formData.append('fileName', bannerName)
-
-        for (let [key, value] of formData) {
-            console.log(`${key}: ${value}`)
-        }
-
-        // also using it's default for...of specified by Symbol.iterator
-        console.log(...formData)
-
-        // Don't work in IE (use last pair if same key is used more)
-        console.log(Object.fromEntries(formData))
-
+        //  let obj = props.userData
+        //  obj.userName = userName
+        //  obj.phoneNumber = phone
+        //  obj.email = email
+        //  let id = props.userData.id
         if (bannerData && bannerData?._id) {
-            if (bannerImage) {
-                await bannerService
-                    .updateBannerWithImage(bannerData?._id, formData)
-                    .then((res) => {
-                        console.log('res of update ---', res)
-                        getAllbanners()
-                        handleClose()
-                    })
-            } else {
-                let payload = {}
-                if (bannerName) {
-                    payload.fileName = bannerName
-                }
-                if (bannerDesc) {
-                    payload.description = bannerDesc
-                }
-                await bannerService
-                    .updateBanner(bannerData?._id, payload)
-                    .then((res) => {
-                        console.log('res of update ---', res)
-                        getAllbanners()
-                        handleClose()
-                    })
-            }
+            console.log('banner data ---', bannerData)
+            await tickerService
+                .updateTicker(bannerData?._id, payload)
+                .then((res) => {
+                    console.log('update res --', res)
+                    handleClose()
+                    getAllTicker()
+                })
         } else {
-            await bannerService.uploadBanner(formData).then((res) => {
-                console.log('res of add ---', res)
-                getAllbanners()
+            await tickerService.addTicker(payload).then((res) => {
+                console.log('update res --', res)
                 handleClose()
+                getAllTicker()
             })
         }
-
-        // let obj = props.userData
-        // obj.userName = userName
-        // obj.phoneNumber = phone
-        // obj.email = email
-        // let id = props.userData.id
-        // await accountService.update(id, obj).then((res) => {
-        //     console.log('update res --', res)
-        //     handleClose()
-        // })
     }
 
     const changeStatus = (data) => {
@@ -216,31 +144,27 @@ const BannerListTable = () => {
 
     const handleUpdate = async (id, data) => {
         console.log('payload ==', data)
-        await bannerService.updateBanner(id, data).then((res) => {
+        await tickerService.updateTicker(id, data).then((res) => {
             console.log(res)
-            getAllbanners()
-        })
-    }
-
-    const deleteBanner = async (data) => {
-        await bannerService.deleteBanner(data._id).then((res) => {
-            console.log(res)
-            getAllbanners()
+            getAllTicker()
         })
     }
 
     const editBanner = (data) => {
         console.log('data---', data)
         setBannerData(data)
-        setBannerImageUrl(data.img)
+
         setBannerModelOpen(true)
-        setBannerName(data.fileName)
+
         setBannerDesc(data.description)
     }
 
-    const StyledButton = styled(Button)(({ theme }) => ({
-        margin: theme.spacing(1),
-    }))
+    const deleteBanner = async (data) => {
+        await tickerService.deleteTicker(data._id).then((res) => {
+            console.log(res)
+            getAllTicker()
+        })
+    }
 
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
@@ -263,66 +187,58 @@ const BannerListTable = () => {
                 <StyledTable>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Banner</TableCell>
-                            <TableCell>Banner Name</TableCell>
-                            <TableCell>Banner Detail</TableCell>
-                            <TableCell>Created at</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>created time</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {bannerList
+                        {tickerList
                             .slice(
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
-                            .map((banner, index) => (
+                            .map((ticker, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="left">
-                                        {ShowImage(banner.img)}
+                                        {ticker.description}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {banner.fileName}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {banner.description}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {moment(banner.created).format(
+                                        {moment(ticker.created).format(
                                             'MMMM Do YYYY, h:mm:ss'
                                         )}
                                     </TableCell>
 
                                     <TableCell>
-                                        {banner.isActive
+                                        {ticker.isActive
                                             ? 'Active'
                                             : 'Inactive'}
                                     </TableCell>
                                     <TableCell>
                                         <IconButton
-                                            onClick={() => changeStatus(banner)}
+                                            onClick={() => changeStatus(ticker)}
                                         >
                                             <Icon
                                                 color={`${
-                                                    !banner.isActive
+                                                    !ticker.isActive
                                                         ? 'primary'
                                                         : 'error'
                                                 }`}
                                             >
-                                                {banner.isActive
+                                                {ticker.isActive
                                                     ? 'close'
                                                     : 'check'}
                                             </Icon>
                                         </IconButton>
                                         <IconButton
-                                            onClick={() => editBanner(banner)}
+                                            onClick={() => editBanner(ticker)}
                                         >
                                             <Icon>edit</Icon>
                                         </IconButton>
 
                                         <IconButton
-                                            onClick={() => deleteBanner(banner)}
+                                            onClick={() => deleteBanner(ticker)}
                                         >
                                             <Icon color="">delete</Icon>
                                         </IconButton>
@@ -336,7 +252,7 @@ const BannerListTable = () => {
                     sx={{ px: 2 }}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={bannerList.length}
+                    count={tickerList.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
@@ -361,48 +277,14 @@ const BannerListTable = () => {
                     </DialogTitle>
                     <DialogContent>
                         <TextField
-                            autoFocus
-                            margin="dense"
-                            id="banner_name"
-                            label="Banner Name"
-                            type="text"
-                            fullWidth
-                            defaultValue={bannerData?.fileName}
-                            onChange={(e) => setBannerName(e.target.value)}
-                        />
-                        <TextField
                             margin="dense"
                             id="banner_desc"
                             label="Banner Description"
                             type="text"
                             fullWidth
-                            defaultValue={bannerData?.fileName}
+                            defaultValue={bannerData?.description}
                             onChange={(e) => setBannerDesc(e.target.value)}
                         />
-
-                        <div className="register_profile_image">
-                            <input type="file" onChange={onChangePicture} />
-                        </div>
-                        <div className="previewProfilePic align-center">
-                            {bannerData && bannerData?.img ? (
-                                <img
-                                    src={`data:image/*;base64,${new Buffer.from(
-                                        bannerData?.img?.data
-                                    ).toString('base64')}`}
-                                    height={'50%'}
-                                    width={'100%'}
-                                    alt=""
-                                />
-                            ) : (
-                                <img
-                                    height={'50%'}
-                                    width={'100%'}
-                                    className="playerProfilePic_home_tile"
-                                    src={bannerImageUrl && bannerImageUrl}
-                                    alt=""
-                                ></img>
-                            )}
-                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -425,4 +307,4 @@ const BannerListTable = () => {
     )
 }
 
-export default BannerListTable
+export default TickerListTable

@@ -5,7 +5,7 @@ import { history } from '../helpers/history'
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/accounts`;
 
-const baseUrl = `http://192.168.129.240:4000/accounts`
+const baseUrl = `${process.env.REACT_APP_BASE_URL}/accounts`
 
 export const accountService = {
     login,

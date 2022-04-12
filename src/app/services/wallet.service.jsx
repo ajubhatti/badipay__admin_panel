@@ -3,11 +3,8 @@ import { fetchWrapper } from '../helpers/fetch-wrapper'
 import { history } from '../helpers/history'
 
 const userSubject = new BehaviorSubject(null)
-// const baseUrl = `${config.apiUrl}/wallet`;
 
-const baseUrl = `http://192.168.129.240:4000/walletTransaction`
-
-console.log('base url ---', baseUrl)
+const baseUrl = `${process.env.REACT_APP_BASE_URL}/walletTransaction`
 
 export const walletServices = {
     getAll,

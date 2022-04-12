@@ -6,6 +6,7 @@ import UserListTable from './tables/UserListTable'
 import UserListingTable from './tables/UserListingTable'
 import WalletRequestListingTable from './tables/WalletRequestListingTable'
 import BannerListTable from './tables/BannerListTable'
+import TickerListTable from './tables/TickerListTable'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -96,7 +97,10 @@ const materialRoutes = [
         path: '/material/bannerList',
         element: <BannerListTable />,
     },
-
+    {
+        path: '/material/tickerList',
+        element: <TickerListTable />,
+    },
     {
         path: '/material/WalletRequestList',
         element: <WalletRequestListingTable />,

@@ -90,7 +90,7 @@ const UserListingTable = () => {
     const [addRemoveModelOpen, setAddRemoveModelOpen] = useState(false)
     const [modelTitle, setModelTitle] = useState('Add balance')
     const [userModelTitle, setUserModelTitle] = useState('New User')
-    const [addRemoveModelType, setAddRemoveModelType] = useState('add');
+    const [addRemoveModelType, setAddRemoveModelType] = useState('add')
 
     useEffect(() => {
         getAllusers()
@@ -354,157 +354,165 @@ const UserListingTable = () => {
                     <TableBody>
                         {usersList.length > 0
                             ? usersList
-                                .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage
-                                )
-                                .map((userData, index) => (
-                                    <TableRow key={index} hover>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell
-                                            colSpan={4}
-                                            align="left"
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                            >
-                                                <Avatar
-                                                    src={userData.imgUrl}
-                                                />
-                                                <Paragraph
-                                                    sx={{ m: 0, ml: 4 }}
-                                                >
-                                                    {userData.userName}
-                                                </Paragraph>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                // textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData.phoneNumber}
-                                        </TableCell>
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                // textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData.email}
-                                        </TableCell>
+                                  .slice(
+                                      page * rowsPerPage,
+                                      page * rowsPerPage + rowsPerPage
+                                  )
+                                  .map((userData, index) => (
+                                      <TableRow key={index} hover>
+                                          <TableCell>{index + 1}</TableCell>
+                                          <TableCell
+                                              colSpan={4}
+                                              align="left"
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              <Box
+                                                  display="flex"
+                                                  alignItems="center"
+                                              >
+                                                  <Avatar
+                                                      src={userData.imgUrl}
+                                                  />
+                                                  <Paragraph
+                                                      sx={{ m: 0, ml: 4 }}
+                                                  >
+                                                      {userData.userName}
+                                                  </Paragraph>
+                                              </Box>
+                                          </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  // textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {userData.phoneNumber}
+                                          </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  // textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {userData.email}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                // textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData.location}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  // textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {userData.location}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                // textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData.balance}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  // textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {userData.balance}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                // textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {moment(userData.created).format('YYYY-MM-DD')}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  // textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {moment(userData.created).format(
+                                                  'YYYY-MM-DD'
+                                              )}
+                                          </TableCell>
 
-                                        <TableCell
-                                            sx={{ px: 0 }}
-                                            align="left"
-                                            colSpan={2}
-                                        >
-                                            {userData.isActive ? (
-                                                <Small bgcolor={bgPrimary}>
-                                                    Active
-                                                </Small>
-                                            ) : (
-                                                <Small bgcolor={bgError}>
-                                                    Inactive
-                                                </Small>
-                                            )}
-                                        </TableCell>
+                                          <TableCell
+                                              sx={{ px: 0 }}
+                                              align="left"
+                                              colSpan={2}
+                                          >
+                                              {userData.isActive ? (
+                                                  <Small bgcolor={bgPrimary}>
+                                                      Active
+                                                  </Small>
+                                              ) : (
+                                                  <Small bgcolor={bgError}>
+                                                      Inactive
+                                                  </Small>
+                                              )}
+                                          </TableCell>
 
-                                        <TableCell sx={{ px: 0 }} colSpan={2}>
-                                            <IconButton
-                                                onClick={() =>
-                                                    addBalance(userData)
-                                                }
-                                            >
-                                                <Icon>add_circle</Icon>
-                                            </IconButton>
-                                        </TableCell>
+                                          <TableCell sx={{ px: 0 }} colSpan={2}>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      addBalance(userData)
+                                                  }
+                                              >
+                                                  <Icon>add_circle</Icon>
+                                              </IconButton>
+                                          </TableCell>
 
-                                        <TableCell sx={{ px: 0 }} colSpan={2}>
-                                            <IconButton
-                                                onClick={() =>
-                                                    removeBalance(userData)
-                                                }
-                                            >
-                                                <Icon>remove_circle</Icon>
-                                            </IconButton>
-                                        </TableCell>
+                                          <TableCell sx={{ px: 0 }} colSpan={2}>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      removeBalance(userData)
+                                                  }
+                                              >
+                                                  <Icon>remove_circle</Icon>
+                                              </IconButton>
+                                          </TableCell>
 
-                                        <TableCell sx={{ px: 0 }} colSpan={2}>
-                                            <IconButton
-                                                onClick={() =>
-                                                    viewUser(userData)
-                                                }
-                                            >
-                                                <Icon>person</Icon>
-                                            </IconButton>
-                                        </TableCell>
+                                          <TableCell sx={{ px: 0 }} colSpan={2}>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      viewUser(userData)
+                                                  }
+                                              >
+                                                  <Icon>person</Icon>
+                                              </IconButton>
+                                          </TableCell>
 
-                                        <TableCell sx={{ px: 0 }} colSpan={2}>
-                                            <IconButton
-                                                onClick={() =>
-                                                    changeStatus(userData)
-                                                }
-                                            >
-                                                <Icon color="error">
-                                                    {userData.isActive
-                                                        ? 'close'
-                                                        : 'check'}
-                                                </Icon>
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() =>
-                                                    editUser(userData)
-                                                }
-                                            >
-                                                <Icon>edit_icon</Icon>
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
+                                          <TableCell sx={{ px: 0 }} colSpan={2}>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      changeStatus(userData)
+                                                  }
+                                              >
+                                                  <Icon
+                                                      color={`${
+                                                          userData.isActive
+                                                              ? 'error'
+                                                              : 'primary'
+                                                      }`}
+                                                  >
+                                                      {userData.isActive
+                                                          ? 'close'
+                                                          : 'check'}
+                                                  </Icon>
+                                              </IconButton>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      editUser(userData)
+                                                  }
+                                              >
+                                                  <Icon>edit_icon</Icon>
+                                              </IconButton>
+                                          </TableCell>
+                                      </TableRow>
+                                  ))
                             : null}
                     </TableBody>
                 </UserTable>
@@ -531,6 +539,9 @@ const UserListingTable = () => {
                 open={userModelOpen}
                 userData={userData}
                 title={userModelTitle}
+                getAllusers={() => {
+                    getAllusers()
+                }}
             />
 
             <AddRemoveBalance
@@ -539,6 +550,9 @@ const UserListingTable = () => {
                 userData={userData}
                 title={modelTitle}
                 type={addRemoveModelType}
+                getAllusers={() => {
+                    getAllusers()
+                }}
             />
         </Card>
     )

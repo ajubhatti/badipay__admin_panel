@@ -1,13 +1,15 @@
 import { fetchWrapper } from 'app/helpers/fetch-wrapper'
 
-const bannerUrl = `http://192.168.129.240:4000/banner`
+const bannerUrl = `${process.env.REACT_APP_BASE_URL}/banner`
 
 export const bannerService = {
     getAllBanner,
     getBannerById,
     addBanner,
     updateBanner,
-    uploadBanner
+    uploadBanner,
+    deleteBanner,
+    updateBannerWithImage,
 }
 
 function getAllBanner() {
@@ -25,6 +27,14 @@ function updateBanner(id, data) {
     return fetchWrapper.put(`${bannerUrl}/${id}`, data)
 }
 
+function updateBannerWithImage(id, data) {
+    return fetchWrapper.putImage(`${bannerUrl}/${id}`, data)
+}
+
 function uploadBanner(data) {
     return fetchWrapper.postImage(`${bannerUrl}/uploadBanner`, data)
+}
+
+function deleteBanner(id) {
+    return fetchWrapper.delete(`${bannerUrl}/${id}`)
 }

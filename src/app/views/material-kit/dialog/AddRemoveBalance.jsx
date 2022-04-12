@@ -44,15 +44,15 @@ const AddRemoveBalance = (props) => {
             type: props.type,
             amount: amount,
             remarks: remarks,
-            password: password
+            password: password,
         }
-        console.log("payload ---", payload)
+        console.log('payload ---', payload)
         await walletServices.updateBalance(payload).then((res) => {
             console.log('res ---', res)
             handleClose()
+            props.getAllusers()
         })
     }
-
 
     return (
         <div>

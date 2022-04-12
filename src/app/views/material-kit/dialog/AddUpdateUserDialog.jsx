@@ -52,6 +52,7 @@ const AddUpdateUserDialog = (props) => {
         await accountService.update(id, obj).then((res) => {
             console.log('update res --', res)
             handleClose()
+            props.getAllusers()
         })
     }
 
@@ -148,7 +149,9 @@ const AddUpdateUserDialog = (props) => {
                         label="date"
                         type="text"
                         fullWidth
-                        defaultValue={moment(props.userData.created).format('YYYY-MM-DD')}
+                        defaultValue={moment(props.userData.created).format(
+                            'YYYY-MM-DD'
+                        )}
                         onChange={(e) => setUserDate(e.target.value)}
                     />
 
@@ -184,8 +187,6 @@ const AddUpdateUserDialog = (props) => {
                         defaultValue={props.userData.password}
                         onChange={(e) => setUserPassword(e.target.value)}
                     />
-
-
                 </DialogContent>
                 <DialogActions>
                     <Button

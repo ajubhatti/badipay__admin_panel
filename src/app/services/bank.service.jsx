@@ -1,6 +1,6 @@
 import { fetchWrapper } from 'app/helpers/fetch-wrapper'
-const bankAccountUrl = `http://192.168.129.240:4000/bankAccount`
-const bankUrl = `http://192.168.129.240:4000/bank`
+const bankAccountUrl = `${process.env.REACT_APP_BASE_URL}/bankAccount`
+const bankUrl = `${process.env.REACT_APP_BASE_URL}/bank`
 
 export const bankAccountService = {
     getAllBankAccount,
