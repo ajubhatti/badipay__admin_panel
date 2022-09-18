@@ -1,7 +1,6 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
 import BankAccountTable from '../bank/BankAccountTable'
-import UserListTable from './tables/UserListTable'
 import UserListingTable from '../user/UserListingTable'
 import WalletRequestListingTable from './tables/WalletRequestListingTable'
 import BannerListTable from './tables/BannerListTable'
@@ -9,6 +8,9 @@ import TickerListTable from './tables/TickerListTable'
 import CompanyListing from '../api-settings/company-listing/CompanyListing'
 import ApiListing from '../api-settings/apis/ApiListing'
 import BankListTable from '../bank/BankListTable'
+import AddUpdateCompany from '../api-settings/company-listing/AddUpdateCompany'
+import AmbikaSlabList from '../api-settings/company-listing/AmbikaSlabList'
+import ServiceList from '../api-settings/company-listing/ServiceList'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -118,6 +120,18 @@ const materialRoutes = [
     {
         path: '/api-setting/company',
         element: <CompanyListing />,
+    },
+    {
+        path: '/api-setting/company/add',
+        element: <AddUpdateCompany />,
+    },
+    {
+        path: '/api-setting/ambika-slabs',
+        element: <AmbikaSlabList />,
+    },
+    {
+        path: '/api-setting/service',
+        element: <ServiceList />,
     },
 ]
 

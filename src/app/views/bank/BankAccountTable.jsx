@@ -7,11 +7,8 @@ import {
     TableCell,
     Icon,
     TablePagination,
-    Card,
-    Avatar,
     MenuItem,
     Select,
-    Button,
     Fab,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -46,7 +43,6 @@ const BankAccountTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
     const [banksAccounts, setBanksAccounts] = useState([])
-
     const [downloadType, setDownloadType] = useState('csv')
 
     const handleChangePage = (event, newPage) => {
@@ -173,20 +169,20 @@ const BankAccountTable = () => {
                         .map((subscriber, index) => (
                             <TableRow key={index}>
                                 <TableCell align="left">
-                                    {subscriber.accountName}
+                                    {subscriber?.accountName}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {subscriber.accountNo}
+                                    {subscriber?.accountNo}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {subscriber.bankdetail[0].bankName}
+                                    {/* {subscriber?.bankdetail[0]?.bankName} */}
                                 </TableCell>
                                 <TableCell align="left">
-                                    {subscriber.bankBranch}
+                                    {subscriber?.bankBranch}
                                 </TableCell>
-                                <TableCell>{subscriber.ifscCode}</TableCell>
+                                <TableCell>{subscriber?.ifscCode}</TableCell>
                                 <TableCell>
-                                    {subscriber.isActive ? 'open' : 'close'}
+                                    {subscriber?.isActive ? 'open' : 'close'}
                                 </TableCell>
                                 <TableCell>
                                     <IconButton>

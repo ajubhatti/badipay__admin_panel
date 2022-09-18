@@ -7,12 +7,10 @@ import {
     TableCell,
     Icon,
     TablePagination,
-} from '@mui/material';
-import React,{useEffect,useState} from 'react';
-import { Box, styled } from '@mui/system';
-import { bankAccountService } from 'app/services/bank.service';
-
-
+} from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, styled } from '@mui/system'
+import { bankAccountService } from 'app/services/bank.service'
 
 const StyledTable = styled(Table)(({ theme }) => ({
     whiteSpace: 'pre',
@@ -34,11 +32,10 @@ const StyledTable = styled(Table)(({ theme }) => ({
     },
 }))
 
-
 const BankListTable = () => {
-    const [rowsPerPage, setRowsPerPage] = React.useState(5)
-    const [page, setPage] = React.useState(0)
-    const [banksAccounts,setBanksAccounts] = useState([])
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [page, setPage] = useState(0)
+    const [banksAccounts, setBanksAccounts] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -49,16 +46,15 @@ const BankListTable = () => {
         setPage(0)
     }
 
-    useEffect(() => { 
-         getAllbanks([]);
-    },[])
+    useEffect(() => {
+        getAllbanks([])
+    }, [])
 
     const getAllbanks = async () => {
-        await bankAccountService.getAllBank().then(res => { 
-            console.log("res ---", res)
-             setBanksAccounts(res);
+        await bankAccountService.getAllBank().then((res) => {
+            console.log('res ---', res)
+            setBanksAccounts(res?.data)
         })
-       
     }
 
     return (
@@ -90,8 +86,12 @@ const BankListTable = () => {
                                 <TableCell align="left">
                                     {subscriber.created}
                                 </TableCell>
-                                
-                                <TableCell>{subscriber.isActive ? 'Active' : 'Inactive'}</TableCell>
+
+                                <TableCell>
+                                    {subscriber.isActive
+                                        ? 'Active'
+                                        : 'Inactive'}
+                                </TableCell>
                                 <TableCell>
                                     <IconButton>
                                         <Icon color="error">close</Icon>

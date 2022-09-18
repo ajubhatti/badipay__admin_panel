@@ -92,12 +92,8 @@ const TickerListTable = () => {
     const getAllTicker = async () => {
         tickerService.getAllTicker().then((res) => {
             console.log('res--', res)
-            setTickerList(res)
+            setTickerList(res?.data)
         })
-        // await bankAccountService.getAllBank().then((res) => {
-        //     console.log('res ---', res)
-        //
-        // })
     }
 
     const handleClose = () => {

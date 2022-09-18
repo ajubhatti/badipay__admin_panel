@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 
 import { accountService } from '../../services/account.service'
-import AddUpdateUserDialog from '../material-kit/dialog/AddUpdateUserDialog'
+import AddUpdateUserDialog from './AddUpdateUserDialog'
 import { CSVLink, CSVDownload } from 'react-csv'
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'

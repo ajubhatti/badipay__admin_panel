@@ -15,6 +15,7 @@ import { Box, styled } from '@mui/system'
 import { companyService } from 'app/services/company.service'
 import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
 import { useNavigate } from 'react-router-dom'
+import { ambikaService } from 'app/services/ambika.service copy'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -80,7 +81,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
     },
 }))
 
-const CompanyListing = () => {
+const AmbikaSlabList = () => {
     const navigate = useNavigate()
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
@@ -102,7 +103,7 @@ const CompanyListing = () => {
     }, [])
 
     const getAllCompany = async () => {
-        await companyService.getAllCompanies().then((res) => {
+        await ambikaService.getAll().then((res) => {
             setCompanies(res?.data?.data || [])
         })
     }
@@ -127,12 +128,9 @@ const CompanyListing = () => {
                 <StyledTable>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Operator Name</TableCell>
-                            <TableCell>Operator Detail</TableCell>
-                            <TableCell>Is Active</TableCell>
-                            <TableCell>Is Visible</TableCell>
-                            <TableCell>Min Amount</TableCell>
-                            <TableCell>Max Amount</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>SPKey</TableCell>
                             <TableCell>created time</TableCell>
                             <TableCell>Action</TableCell>
                         </TableRow>
@@ -146,26 +144,13 @@ const CompanyListing = () => {
                             .map((subscriber, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="left">
-                                        {subscriber.companyName}
+                                        {subscriber.serviceProvider}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {subscriber.companyDetail}
-                                    </TableCell>
-                                    <TableCell>
-                                        {subscriber.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {subscriber.isVisible
-                                            ? 'Active'
-                                            : 'Inactive'}
+                                        {subscriber.serviceProviderType}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {subscriber.minAmount}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {subscriber.maxAmount}
+                                        {subscriber.SPKey}
                                     </TableCell>
                                     <TableCell align="left">
                                         {subscriber.created}
@@ -212,4 +197,4 @@ const CompanyListing = () => {
     )
 }
 
-export default CompanyListing
+export default AmbikaSlabList

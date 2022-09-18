@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { Box, styled } from '@mui/system'
 import { accountService } from '../../../services/account.service'
-import AddUpdateUserDialog from '../dialog/AddUpdateUserDialog'
+import AddUpdateUserDialog from '../../user/AddUpdateUserDialog'
 
 const StyledTable = styled(Table)(({ theme }) => ({
     whiteSpace: 'pre',

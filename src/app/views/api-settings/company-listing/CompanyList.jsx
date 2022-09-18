@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 
 import { accountService } from '../../../services/account.service'
-import AddUpdateUserDialog from '../../material-kit/dialog/AddUpdateUserDialog'
+import AddUpdateUserDialog from '../../user/AddUpdateUserDialog'
 import { CSVLink, CSVDownload } from 'react-csv'
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
@@ -78,8 +78,8 @@ const CompanyList = () => {
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
 
-    const [rowsPerPage, setRowsPerPage] = React.useState(5)
-    const [page, setPage] = React.useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [page, setPage] = useState(0)
     const [usersList, setUsersList] = useState([])
     const [userModelOpen, setUserModelOpen] = useState(false)
     const [userData, setUserData] = useState({})

@@ -15,6 +15,8 @@ import { Box, styled } from '@mui/system'
 import { companyService } from 'app/services/company.service'
 import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
 import { useNavigate } from 'react-router-dom'
+import { ambikaService } from 'app/services/ambika.service copy'
+import { servicesService } from 'app/services/services.service'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -80,7 +82,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
     },
 }))
 
-const CompanyListing = () => {
+const ServiceList = () => {
     const navigate = useNavigate()
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
@@ -102,8 +104,8 @@ const CompanyListing = () => {
     }, [])
 
     const getAllCompany = async () => {
-        await companyService.getAllCompanies().then((res) => {
-            setCompanies(res?.data?.data || [])
+        await servicesService.getAllService().then((res) => {
+            setCompanies(res?.data || [])
         })
     }
 
@@ -127,12 +129,8 @@ const CompanyListing = () => {
                 <StyledTable>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Operator Name</TableCell>
-                            <TableCell>Operator Detail</TableCell>
+                            <TableCell>Name</TableCell>
                             <TableCell>Is Active</TableCell>
-                            <TableCell>Is Visible</TableCell>
-                            <TableCell>Min Amount</TableCell>
-                            <TableCell>Max Amount</TableCell>
                             <TableCell>created time</TableCell>
                             <TableCell>Action</TableCell>
                         </TableRow>
@@ -146,26 +144,12 @@ const CompanyListing = () => {
                             .map((subscriber, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="left">
-                                        {subscriber.companyName}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {subscriber.companyDetail}
+                                        {subscriber.serviceName}
                                     </TableCell>
                                     <TableCell>
                                         {subscriber.isActive
                                             ? 'Active'
                                             : 'Inactive'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {subscriber.isVisible
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {subscriber.minAmount}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {subscriber.maxAmount}
                                     </TableCell>
                                     <TableCell align="left">
                                         {subscriber.created}
@@ -212,4 +196,4 @@ const CompanyListing = () => {
     )
 }
 
-export default CompanyListing
+export default ServiceList

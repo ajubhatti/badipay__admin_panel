@@ -53,6 +53,16 @@ export const navigations = [
                 path: '/api-setting/company',
                 iconText: 'COL',
             },
+            {
+                name: 'Ambika Slabs',
+                path: '/api-setting/ambika-slabs',
+                iconText: 'COL',
+            },
+            {
+                name: 'Services',
+                path: '/api-setting/service',
+                iconText: 'SR',
+            },
         ],
     },
     {
