@@ -63,8 +63,8 @@ const BankAccountTable = () => {
 
     const getAllbankAccounts = async () => {
         await bankAccountService.getAllBankAccount().then((res) => {
-            console.log('res ---', res)
-            setBanksAccounts(res)
+            console.log('res ---', res.data)
+            setBanksAccounts(res?.data)
         })
     }
 

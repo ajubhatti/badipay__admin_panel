@@ -39,40 +39,71 @@ export const navigations = [
         type: 'label',
     },
     {
-        name: 'Components',
-        icon: 'favorite',
-        badge: { value: '30+', color: 'secondary' },
+        name: 'API Setings',
+        icon: 'build',
+        badge: { color: 'secondary' },
+        children: [
+            {
+                name: 'API list',
+                path: '/api-setting/api',
+                iconText: 'APIL',
+            },
+            {
+                name: 'company list',
+                path: '/api-setting/company',
+                iconText: 'COL',
+            },
+        ],
+    },
+    {
+        name: 'User',
+        icon: 'account_box',
+        badge: {},
         children: [
             {
                 name: 'user list',
-                path: '/material/userList',
+                path: '/material/user',
                 iconText: 'UL',
             },
             {
+                name: 'Wallet list',
+                path: '/material/wallet-request',
+                iconText: 'WL',
+            },
+            {
                 name: 'banner list',
-                path: '/material/bannerList',
+                path: '/material/banner',
                 iconText: 'BL',
             },
             {
                 name: 'ticker list',
-                path: '/material/tickerList',
+                path: '/material/ticker',
                 iconText: 'BL',
             },
+        ],
+    },
+    {
+        name: 'Bank',
+        icon: 'location_city',
+        badge: {},
+        children: [
             {
                 name: 'bank list',
-                path: '/material/bankList',
+                path: '/material/bank',
                 iconText: 'BL',
             },
             {
                 name: 'bank account list',
-                path: '/material/bankAccountList',
+                path: '/material/bank-account',
                 iconText: 'BAL',
             },
-            {
-                name: 'Wallet list',
-                path: '/material/WalletRequestList',
-                iconText: 'WL',
-            },
+        ],
+    },
+    {
+        name: 'Components',
+        icon: 'favorite',
+        badge: { value: '30+', color: 'secondary' },
+        children: [
             {
                 name: 'Auto Complete',
                 path: '/material/autocomplete',

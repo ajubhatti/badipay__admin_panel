@@ -72,7 +72,7 @@ const Small = styled('small')(({ bgcolor }) => ({
     boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
 }))
 
-const UserListingTable = () => {
+const CompanyList = () => {
     const { palette } = useTheme()
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
@@ -558,4 +558,4 @@ const UserListingTable = () => {
     )
 }
 
-export default UserListingTable
+export default CompanyList

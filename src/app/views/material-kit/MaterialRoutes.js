@@ -7,6 +7,8 @@ import UserListingTable from './tables/UserListingTable'
 import WalletRequestListingTable from './tables/WalletRequestListingTable'
 import BannerListTable from './tables/BannerListTable'
 import TickerListTable from './tables/TickerListTable'
+import CompanyListing from '../api-settings/company-listing/CompanyListing'
+import ApiListing from '../api-settings/apis/ApiListing'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -86,29 +88,36 @@ const materialRoutes = [
     },
 
     {
-        path: '/material/bankList',
+        path: '/material/bank',
         element: <BankListTable />,
     },
     {
-        path: '/material/bankAccountList',
+        path: '/material/bank-account',
         element: <BankAccountTable />,
     },
     {
-        path: '/material/bannerList',
+        path: '/material/banner',
         element: <BannerListTable />,
     },
     {
-        path: '/material/tickerList',
+        path: '/material/ticker',
         element: <TickerListTable />,
     },
     {
-        path: '/material/WalletRequestList',
+        path: '/material/wallet-request',
         element: <WalletRequestListingTable />,
     },
     {
-        path: '/material/userList',
-        // element: <UserListTable />,
+        path: '/material/user',
         element: <UserListingTable />,
+    },
+    {
+        path: '/api-setting/api',
+        element: <ApiListing />,
+    },
+    {
+        path: '/api-setting/company',
+        element: <CompanyListing />,
     },
 ]
 

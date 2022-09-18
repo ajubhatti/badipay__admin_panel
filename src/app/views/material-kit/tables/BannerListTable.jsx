@@ -119,12 +119,14 @@ const BannerListTable = () => {
 
     const getAllbanners = async () => {
         await bannerService.getAllBanner().then((res) => {
-            setBannerList(res)
+            console.log('res.data :>> ', res.data)
+            setBannerList(res?.data)
         })
     }
 
     const ShowImage = (data) => {
-        let imgData = new Buffer.from(data.data).toString('base64')
+        console.log('data :>> ', data)
+        let imgData = new Buffer.from(data).toString('base64')
         return (
             <img
                 src={`data:image/*;base64,${imgData}`}
@@ -279,23 +281,24 @@ const BannerListTable = () => {
                             )
                             .map((banner, index) => (
                                 <TableRow key={index}>
+                                    {console.log({ banner })}
                                     <TableCell align="left">
-                                        {ShowImage(banner.img)}
+                                        {ShowImage(banner?.path)}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {banner.fileName}
+                                        {banner?.fileName}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {banner.description}
+                                        {banner?.description}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {moment(banner.created).format(
+                                        {moment(banner?.created).format(
                                             'MMMM Do YYYY, h:mm:ss'
                                         )}
                                     </TableCell>
 
                                     <TableCell>
-                                        {banner.isActive
+                                        {banner?.isActive
                                             ? 'Active'
                                             : 'Inactive'}
                                     </TableCell>
@@ -305,12 +308,12 @@ const BannerListTable = () => {
                                         >
                                             <Icon
                                                 color={`${
-                                                    !banner.isActive
+                                                    !banner?.isActive
                                                         ? 'primary'
                                                         : 'error'
                                                 }`}
                                             >
-                                                {banner.isActive
+                                                {banner?.isActive
                                                     ? 'close'
                                                     : 'check'}
                                             </Icon>
