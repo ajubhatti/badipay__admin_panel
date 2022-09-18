@@ -1,14 +1,14 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
-import BankListTable from './tables/BankListTable'
-import BankAccountTable from './tables/BankAccountTable'
+import BankAccountTable from '../bank/BankAccountTable'
 import UserListTable from './tables/UserListTable'
-import UserListingTable from './tables/UserListingTable'
+import UserListingTable from '../user/UserListingTable'
 import WalletRequestListingTable from './tables/WalletRequestListingTable'
 import BannerListTable from './tables/BannerListTable'
 import TickerListTable from './tables/TickerListTable'
 import CompanyListing from '../api-settings/company-listing/CompanyListing'
 import ApiListing from '../api-settings/apis/ApiListing'
+import BankListTable from '../bank/BankListTable'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))

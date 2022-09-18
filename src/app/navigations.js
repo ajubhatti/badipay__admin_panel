@@ -85,7 +85,7 @@ export const navigations = [
     {
         name: 'Bank',
         icon: 'location_city',
-        badge: {},
+        badge: false,
         children: [
             {
                 name: 'bank list',

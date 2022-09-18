@@ -18,15 +18,15 @@ import {
     TablePagination,
 } from '@mui/material'
 
-import { accountService } from '../../../services/account.service'
-import AddUpdateUserDialog from '../dialog/AddUpdateUserDialog'
+import { accountService } from '../../services/account.service'
+import AddUpdateUserDialog from '../material-kit/dialog/AddUpdateUserDialog'
 import { CSVLink, CSVDownload } from 'react-csv'
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
-import DateRangePick from '../dates/DateRangePick'
+import DateRangePick from '../material-kit/dates/DateRangePick'
 import moment from 'moment'
 import TextField from '@mui/material/TextField'
-import AddRemoveBalance from '../dialog/AddRemoveBalance'
+import AddRemoveBalance from '../material-kit/dialog/AddRemoveBalance'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',

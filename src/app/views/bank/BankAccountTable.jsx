@@ -16,10 +16,11 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { bankAccountService } from '../../../services/bank.service'
+
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import { CSVLink } from 'react-csv'
+import { bankAccountService } from 'app/services/bank.service'
 
 const StyledTable = styled(Table)(({ theme }) => ({
     whiteSpace: 'pre',

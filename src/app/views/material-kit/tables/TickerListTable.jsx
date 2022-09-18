@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { bankAccountService } from '../../../services/bank.service'
+
 import { tickerService } from 'app/services/ticker.service'
 import moment from 'moment'
 
