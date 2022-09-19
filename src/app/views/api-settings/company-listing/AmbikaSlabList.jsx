@@ -87,7 +87,7 @@ const AmbikaSlabList = () => {
     const [page, setPage] = useState(0)
     const [companies, setCompanies] = useState([])
     const [modelOpen, setModelOpen] = useState(false)
-    const [modelTitle, setmodelTitle] = useState('New Operator')
+    const [modelTitle, setModelTitle] = useState('New Operator')
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)

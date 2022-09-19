@@ -18,15 +18,6 @@ const AddUpdateServiceDialog = (props) => {
     const [email, setEmail] = useState()
     const [phone, setPhone] = useState()
 
-    const [userState, setUserState] = useState()
-    const [uerDistrict, setUserDistrict] = useState()
-    const [userCity, setUserCity] = useState()
-    const [userPincode, setUserPincode] = useState()
-    const [userDate, setUserDate] = useState()
-    const [userBalance, setUserBalance] = useState()
-    const [userPanCard, setUserPanCard] = useState()
-    const [userPassword, setUserPassword] = useState()
-
     const [companyData, setCompanyData] = useState({
         companyName: '',
         mobileAppCode: '',
