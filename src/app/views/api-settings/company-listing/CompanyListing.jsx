@@ -9,12 +9,16 @@ import {
     TablePagination,
     Card,
     Fab,
+    FormControlLabel,
+    Switch,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
 import { companyService } from 'app/services/company.service'
 import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCompanySuccess, getCompanies } from '../store/action'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -81,7 +85,10 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }))
 
 const CompanyListing = () => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { companyList } = useSelector((state) => state.company)
+    console.log('companyList', companyList)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
     const [companies, setCompanies] = useState([])
@@ -101,10 +108,17 @@ const CompanyListing = () => {
         getAllCompany([])
     }, [])
 
+    useEffect(() => {
+        setCompanies(companyList)
+    }, [companyList])
+
     const getAllCompany = async () => {
-        await companyService.getAllCompanies().then((res) => {
-            setCompanies(res?.data?.data || [])
-        })
+        dispatch(getCompanies())
+    }
+
+    const handleVisibleChange = (data, index, key) => (event) => {
+        companies[index][key] = event.target.checked
+        dispatch(fetchCompanySuccess(companies))
     }
 
     return (
@@ -152,14 +166,30 @@ const CompanyListing = () => {
                                         {subscriber.companyDetail}
                                     </TableCell>
                                     <TableCell>
-                                        {subscriber.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
+                                        <Switch
+                                            checked={subscriber.isActive}
+                                            onChange={handleVisibleChange(
+                                                subscriber,
+                                                index,
+                                                'isActive'
+                                            )}
+                                            value={subscriber.isActive}
+                                        />
                                     </TableCell>
+                                    {console.log(
+                                        'subscribe.isVisible',
+                                        subscriber.isVisible
+                                    )}
                                     <TableCell>
-                                        {subscriber.isVisible
-                                            ? 'Active'
-                                            : 'Inactive'}
+                                        <Switch
+                                            checked={subscriber.isVisible}
+                                            onChange={handleVisibleChange(
+                                                subscriber,
+                                                index,
+                                                'isVisible'
+                                            )}
+                                            value={subscriber.isVisible}
+                                        />
                                     </TableCell>
                                     <TableCell align="left">
                                         {subscriber.minAmount}

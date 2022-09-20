@@ -8,14 +8,29 @@ import {
     Icon,
     TablePagination,
     Card,
-    CardHeader,
     Fab,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { bankAccountService } from 'app/services/bank.service'
-import { Title } from '@mui/icons-material'
+
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getApiList } from './store/action'
+
+const CardHeader = styled('div')(() => ({
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    marginBottom: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+}))
+
+const Title = styled('span')(() => ({
+    fontSize: '1rem',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+}))
 
 const StyledTable = styled(Table)(({ theme }) => ({
     whiteSpace: 'pre',
@@ -39,9 +54,11 @@ const StyledTable = styled(Table)(({ theme }) => ({
 
 const ApiListing = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { apisList } = useSelector((state) => state.apis)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
-    const [banksAccounts, setBanksAccounts] = useState([])
+    const [apiListData, setApiListData] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -53,20 +70,17 @@ const ApiListing = () => {
     }
 
     useEffect(() => {
-        getAllbanks([])
-    }, [])
+        dispatch(getApiList())
+    }, [dispatch])
 
-    const getAllbanks = async () => {
-        await bankAccountService.getAllBank().then((res) => {
-            console.log('res ---', res)
-            setBanksAccounts(res?.data)
-        })
-    }
+    useEffect(() => {
+        setApiListData(apisList)
+    }, [apisList])
 
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>Operator List</Title>
+                <Title>Api List</Title>
                 <Fab
                     size="small"
                     color="secondary"
@@ -79,19 +93,19 @@ const ApiListing = () => {
                     <Icon>add</Icon>
                 </Fab>
             </CardHeader>
-            <Box width="100%" overflow="auto">
+            <Box width="100%" overflow="auto" sx={{ pt: '20px', mb: 3, ml: 3 }}>
                 <StyledTable>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Bank Name</TableCell>
-                            <TableCell>Bank Detail</TableCell>
+                            <TableCell>Api Name</TableCell>
+                            <TableCell>Api Detail</TableCell>
                             <TableCell>created time</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {banksAccounts
+                        {apiListData
                             .slice(
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
@@ -99,10 +113,10 @@ const ApiListing = () => {
                             .map((subscriber, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="left">
-                                        {subscriber.bankName}
+                                        {subscriber.apiName}
                                     </TableCell>
                                     <TableCell align="left">
-                                        {subscriber.bankDetail}
+                                        {subscriber.apiDetail}
                                     </TableCell>
                                     <TableCell align="left">
                                         {subscriber.created}
@@ -127,7 +141,7 @@ const ApiListing = () => {
                     sx={{ px: 2 }}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={banksAccounts.length}
+                    count={apiListData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
