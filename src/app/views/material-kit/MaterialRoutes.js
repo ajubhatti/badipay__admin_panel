@@ -11,6 +11,7 @@ import BankListTable from '../bank/BankListTable'
 import AddUpdateCompany from '../api-settings/company-listing/AddUpdateCompany'
 import AmbikaSlabList from '../api-settings/company-listing/AmbikaSlabList'
 import ServiceList from '../api-settings/company-listing/ServiceList'
+import OperatorSwitching from '../api-settings/company-listing/OperatorSwitching'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -120,6 +121,10 @@ const materialRoutes = [
     {
         path: '/api-setting/company',
         element: <CompanyListing />,
+    },
+    {
+        path: '/api-setting/operator',
+        element: <OperatorSwitching />,
     },
     {
         path: '/api-setting/company/add',

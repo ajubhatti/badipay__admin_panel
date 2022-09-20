@@ -7,6 +7,8 @@ import { MatxTheme } from 'app/components'
 import { useRoutes } from 'react-router-dom'
 import { AuthProvider } from 'app/contexts/JWTAuthContext'
 import { SettingsProvider } from 'app/contexts/SettingsContext'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "../css/style.css";
 
 const App = () => {
     const all_pages = useRoutes(AllPages())

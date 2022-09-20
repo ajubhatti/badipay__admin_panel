@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+.main-heading{
+    margin-bottom: 20px;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 700;
+    color: #7c7373;
+}
+.select-operator{
+    display:flex;
+    align-items: center;
+   
+}
+.select-operator h5{
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 25px;
+    color: #7c7373;
+    margin: 0px;
+}
+.list-of-operator .form-select{
+  width: 200px;
+  height: 45px;
+  border: 2px solid #000;
+  border-radius: 0px;
+  margin: 0px 10px;
+}
