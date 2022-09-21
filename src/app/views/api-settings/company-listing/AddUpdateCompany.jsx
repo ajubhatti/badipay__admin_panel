@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import { accountService } from 'app/services/account.service'
-import moment from 'moment'
 import { companyService } from 'app/services/company.service'
-import { Fab, FormControlLabel, Icon, Switch } from '@mui/material'
+import { FormControlLabel, Switch } from '@mui/material'
 import CustomDropDown from 'app/components/DropDown/CustomDropDown'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getApiList } from '../apis/store/action'
 import { Card } from 'react-bootstrap'
@@ -36,6 +30,8 @@ const Title = styled('span')(() => ({
 const AddUpdateCompany = (props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { id } = useParams()
+    console.log('id', id)
     const { apisList } = useSelector((state) => state.apis)
     const [companyData, setCompanyData] = useState({
         companyName: '',
@@ -47,7 +43,14 @@ const AddUpdateCompany = (props) => {
         providerType: '',
         minAmount: '',
         maxAmount: '',
+        referenceApi: [],
     })
+
+    const [apiArray, setApiArray] = useState([])
+
+    useEffect(() => {
+        setApiArray(apisList)
+    }, [apisList])
 
     useEffect(() => {
         dispatch(getApiList())
@@ -57,25 +60,29 @@ const AddUpdateCompany = (props) => {
         navigate('/api-setting/company')
     }
 
+    useEffect(() => {
+        if (id) {
+            // get company from id
+        }
+    }, [id])
+
     const handleSubmit = async () => {
-        console.log({ companyData })
+        console.log({ apiArray, companyData })
         // let obj = companyData?
         // obj.userName = userName
         // obj.phoneNumber = phone
         // obj.email = email
-        let id = companyData?.id || null
+        companyData.referenceApis = apiArray
 
         if (id) {
             await companyService.updateCompany(id, companyData).then((res) => {
                 console.log('update res --', res)
                 handleClose()
-                props.getAllCompany()
             })
         } else {
             await companyService.addCompany(companyData).then((res) => {
                 console.log('update res --', res)
                 handleClose()
-                props.getAllCompany()
             })
         }
     }
@@ -225,21 +232,21 @@ const AddUpdateCompany = (props) => {
                             })
                         }
                     />
-                    {apisList.map((x) => (
+
+                    {apiArray.map((x) => (
                         <TextField
+                            key={x._id}
                             autoFocus
                             margin="dense"
                             id="city"
                             label={x.apiName}
                             type="text"
                             fullWidth
-                            defaultValue={companyData?.city}
-                            onChange={(e) =>
-                                setCompanyData({
-                                    ...companyData,
-                                    maxAmount: e.target.value,
-                                })
-                            }
+                            value={x?.apiCode}
+                            defaultValue={x?.apiCode}
+                            onChange={(e) => {
+                                x.apiCode = e.target.value
+                            }}
                         />
                     ))}
 

@@ -131,6 +131,10 @@ const materialRoutes = [
         element: <AddUpdateCompany />,
     },
     {
+        path: '/api-setting/company/add/:id',
+        element: <AddUpdateCompany />,
+    },
+    {
         path: '/api-setting/ambika-slabs',
         element: <AmbikaSlabList />,
     },

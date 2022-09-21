@@ -9,13 +9,11 @@ import {
     TablePagination,
     Card,
     Fab,
-    FormControlLabel,
     Switch,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { companyService } from 'app/services/company.service'
-import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
+
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCompanySuccess, getCompanies } from '../store/action'
@@ -119,6 +117,17 @@ const CompanyListing = () => {
         dispatch(fetchCompanySuccess(companies))
     }
 
+    const changeStatus = (data) => {
+        console.log(data)
+        data.isActive = !data.isActive
+        delete data.email
+        delete data.role
+    }
+
+    const editUser = (data) => {
+        navigate('/api-setting/company/add/' + data._id)
+    }
+
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
@@ -199,11 +208,36 @@ const CompanyListing = () => {
                                         {subscriber.created}
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell sx={{ px: 0 }}>
+                                        <IconButton
+                                            onClick={() =>
+                                                changeStatus(subscriber)
+                                            }
+                                        >
+                                            <Icon
+                                                color={`${
+                                                    subscriber.isActive
+                                                        ? 'error'
+                                                        : 'primary'
+                                                }`}
+                                            >
+                                                {subscriber.isActive
+                                                    ? 'close'
+                                                    : 'check'}
+                                            </Icon>
+                                        </IconButton>
+                                        <IconButton
+                                            onClick={() => editUser(subscriber)}
+                                        >
+                                            <Icon>edit_icon</Icon>
+                                        </IconButton>
+                                    </TableCell>
+
+                                    {/* <TableCell>
                                         <IconButton>
                                             <Icon color="error">close</Icon>
                                         </IconButton>
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))}
                     </TableBody>
@@ -230,7 +264,7 @@ const CompanyListing = () => {
             {/* <AddUpdateCompanyDialog
                 setOpen={setModelOpen}
                 open={modelOpen}
-                userData={companies}
+                subscriber={companies}
                 title={modelTitle}
                 getAllCompany={() => {
                     getAllCompany()
