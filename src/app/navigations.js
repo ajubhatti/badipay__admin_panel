@@ -48,16 +48,17 @@ export const navigations = [
                 path: '/api-setting/api',
                 iconText: 'APIL',
             },
-             {
-                    name: 'Operator Switching',
-                    path: '/api-setting/operator',
-                    iconText: 'APIL',
-             },
             {
                 name: 'company list',
                 path: '/api-setting/company',
                 iconText: 'COL',
             },
+            {
+                name: 'Operator Switching',
+                path: '/api-setting/operator',
+                iconText: 'APIL',
+            },
+
             {
                 name: 'Ambika Slabs',
                 path: '/api-setting/ambika-slabs',

@@ -19,6 +19,7 @@ import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCompanySuccess, getCompanies } from '../store/action'
+import { getApiList } from '../apis/store/action'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -105,16 +106,13 @@ const CompanyListing = () => {
     }
 
     useEffect(() => {
-        getAllCompany([])
-    }, [])
+        dispatch(getCompanies())
+        dispatch(getApiList())
+    }, [dispatch])
 
     useEffect(() => {
         setCompanies(companyList)
     }, [companyList])
-
-    const getAllCompany = async () => {
-        dispatch(getCompanies())
-    }
 
     const handleVisibleChange = (data, index, key) => (event) => {
         companies[index][key] = event.target.checked
@@ -229,7 +227,7 @@ const CompanyListing = () => {
                 />
             </Box>
 
-            <AddUpdateCompanyDialog
+            {/* <AddUpdateCompanyDialog
                 setOpen={setModelOpen}
                 open={modelOpen}
                 userData={companies}
@@ -237,7 +235,7 @@ const CompanyListing = () => {
                 getAllCompany={() => {
                     getAllCompany()
                 }}
-            />
+            /> */}
         </Card>
     )
 }

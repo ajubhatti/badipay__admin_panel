@@ -33,7 +33,7 @@ const Title = styled('span')(() => ({
     textTransform: 'capitalize',
 }))
 
-const AddUpdateCompany = (props) => {
+const AddUpdateApis = (props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { apisList } = useSelector((state) => state.apis)
@@ -259,4 +259,4 @@ const AddUpdateCompany = (props) => {
     )
 }
 
-export default AddUpdateCompany
+export default AddUpdateApis
