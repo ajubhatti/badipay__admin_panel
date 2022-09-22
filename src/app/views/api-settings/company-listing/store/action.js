@@ -2,7 +2,7 @@ import {
     FETCH_COMPANIES,
     FETCH_COMPANIES_ERROR,
     FETCH_COMPANIES_SUCCESS,
-    SET_COMPANY_LOADING,
+    SET_LOADING,
 } from './actionTypes'
 // import { toast } from 'react-toastify'
 import { axiosAdmin } from 'app/services/api'
@@ -25,10 +25,8 @@ export const getCompanyById = (data) => async (dispatch) => {
 
 export const getCompanies = (data) => async (dispatch) => {
     try {
-        console.log('data :>> ', data)
         dispatch(setLoading(true))
         const res = await axiosAdmin.get(GET_COMPANY_BY_ID)
-        console.log('res :>> ', res)
         if (res.data?.data?.data) {
             dispatch(fetchCompanySuccess(res.data.data.data))
             dispatch(setLoading(false))
@@ -62,7 +60,7 @@ export const fetchCompanyError = (data) => {
 
 export const setLoading = (data) => {
     return {
-        type: SET_COMPANY_LOADING,
+        type: SET_LOADING,
         payload: data,
     }
 }

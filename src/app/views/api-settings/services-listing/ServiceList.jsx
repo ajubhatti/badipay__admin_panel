@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getApiList } from './store/action'
+import { getServices } from './store/action'
 import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import { Button, Form } from 'react-bootstrap'
 import {
     AiOutlineEdit,
     AiFillDelete,
     AiFillEye,
     AiOutlinePlus,
 } from 'react-icons/ai'
+import { Button, Form } from 'react-bootstrap'
 
-const ApiListing = () => {
+const ServiceList = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { apisList } = useSelector((state) => state.apis)
-    const [apiListData, setApiListData] = useState([])
+    const { serviceList } = useSelector((state) => state.servicesList)
+    const [serviceData, setServicesData] = useState([])
 
     const GetActionFormat = (cell, row) => (
         <div>
@@ -23,7 +23,7 @@ const ApiListing = () => {
                 type="button"
                 className="btn btn-outline-primary btn-sm ts-buttom m-1"
                 size="sm"
-                onClick={() => handleEdit(cell, row)}
+                onClick={() => handleModelEdit(cell, row)}
             >
                 <AiOutlineEdit style={{ color: 'green' }} />
             </button>
@@ -31,7 +31,7 @@ const ApiListing = () => {
                 type="button"
                 className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
                 size="sm"
-                onClick={() => handleDelete(cell, row)}
+                onClick={() => handleModelDelete(cell, row)}
             >
                 <AiFillDelete />
             </button>
@@ -39,7 +39,7 @@ const ApiListing = () => {
                 type="button"
                 className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
                 size="sm"
-                onClick={() => handleView(cell, row)}
+                onClick={() => handleModelView(cell, row)}
             >
                 <AiFillEye />
             </button>
@@ -48,19 +48,19 @@ const ApiListing = () => {
 
     const columns = [
         {
-            dataField: 'apiName',
-            text: 'Api Name',
+            dataField: 'serviceName',
+            text: 'service Name',
         },
         {
-            dataField: 'apiDetail',
-            text: 'Api Detail',
+            dataField: 'serviceDetail',
+            text: 'service Detail',
         },
         {
             dataField: 'isActive',
             text: 'Is Active',
         },
         {
-            dataField: 'apiImage',
+            dataField: 'iconImage',
             text: 'Icon',
         },
         {
@@ -75,28 +75,28 @@ const ApiListing = () => {
         },
     ]
 
-    const handleDelete = (cell, row) => {
+    const handleModelDelete = (cell, row) => {
         console.log('object delete:>> ', { cell, row })
     }
 
-    const handleView = (cell, row) => {
+    const handleModelView = (cell, row) => {
         console.log('object view:>> ', { cell, row })
     }
 
-    const handleEdit = (cell, row) => {
-        navigate('/api-setting/api/add/' + row._id)
+    const handleModelEdit = (cell, row) => {
+        navigate('/api-setting/service/add/' + row._id)
     }
 
     useEffect(() => {
-        dispatch(getApiList())
-    }, [dispatch])
+        setServicesData(serviceList)
+    }, [serviceList])
 
     useEffect(() => {
-        setApiListData(apisList)
-    }, [apisList])
+        dispatch(getServices())
+    }, [dispatch])
 
-    const addNewApi = () => {
-        navigate('/api-setting/api/add')
+    const addNewService = () => {
+        navigate('/api-setting/service/add')
     }
 
     const rowEvents = {
@@ -109,20 +109,20 @@ const ApiListing = () => {
         <div className="container w-100">
             <div className="mb-3 justify-content-between d-flex">
                 <div className="">
-                    <Form.Label>Api List</Form.Label>
+                    <Form.Label>Service List</Form.Label>
                 </div>
                 <div>
                     <Button
                         variant="primary"
                         type="button"
-                        onClick={() => addNewApi()}
+                        onClick={() => addNewService()}
                     >
                         <AiOutlinePlus />
                     </Button>
                 </div>
             </div>
             <ReactBootstrapTable
-                tableData={apiListData}
+                tableData={serviceData}
                 columns={columns}
                 rowEvents={rowEvents}
             />
@@ -130,4 +130,4 @@ const ApiListing = () => {
     )
 }
 
-export default ApiListing
+export default ServiceList

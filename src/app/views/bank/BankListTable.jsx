@@ -52,7 +52,6 @@ const BankListTable = () => {
 
     const getAllbanks = async () => {
         await bankAccountService.getAllBank().then((res) => {
-            console.log('res ---', res)
             setBanksAccounts(res?.data)
         })
     }

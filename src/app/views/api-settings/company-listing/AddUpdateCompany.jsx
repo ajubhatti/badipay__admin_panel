@@ -3,13 +3,15 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { companyService } from 'app/services/company.service'
 import { FormControlLabel, Switch } from '@mui/material'
-import CustomDropDown from 'app/components/DropDown/CustomDropDown'
+import CustomDropDown from 'app/components/ReactDropDown/ReactDropDown'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getApiList } from '../apis/store/action'
 import { Card } from 'react-bootstrap'
 import { Box } from '@mui/system'
 import styled from '@emotion/styled'
+import { getServices } from '../services-listing/store/action'
+import CustomReactSelect from 'app/components/ReactDropDown/ReactSelect'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -31,8 +33,8 @@ const AddUpdateCompany = (props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()
-    console.log('id', id)
     const { apisList } = useSelector((state) => state.apis)
+    const { serviceList } = useSelector((state) => state.servicesList)
     const [companyData, setCompanyData] = useState({
         companyName: '',
         mobileAppCode: '',
@@ -43,18 +45,32 @@ const AddUpdateCompany = (props) => {
         providerType: '',
         minAmount: '',
         maxAmount: '',
-        referenceApi: [],
+        referenceApis: [],
     })
 
     const [apiArray, setApiArray] = useState([])
+    const [servicesData, setServicesData] = useState([])
+    const [selectedValue, setSelectedValue] = useState('')
+
+    useEffect(() => {
+        dispatch(getApiList())
+        dispatch(getServices())
+    }, [dispatch])
 
     useEffect(() => {
         setApiArray(apisList)
     }, [apisList])
 
     useEffect(() => {
-        dispatch(getApiList())
-    }, [dispatch])
+        if (serviceList && serviceList.length > 0) {
+            let newService = serviceList.map((service) => ({
+                value: service._id,
+                label: service.serviceName,
+            }))
+            setSelectedValue(newService[0].id)
+            setServicesData(newService)
+        }
+    }, [serviceList])
 
     function handleClose() {
         navigate('/api-setting/company')
@@ -67,21 +83,15 @@ const AddUpdateCompany = (props) => {
     }, [id])
 
     const handleSubmit = async () => {
-        console.log({ apiArray, companyData })
-        // let obj = companyData?
-        // obj.userName = userName
-        // obj.phoneNumber = phone
-        // obj.email = email
         companyData.referenceApis = apiArray
+        companyData.providerType = '61ebf005b15b7b52ddc35dff'
 
         if (id) {
             await companyService.updateCompany(id, companyData).then((res) => {
-                console.log('update res --', res)
                 handleClose()
             })
         } else {
             await companyService.addCompany(companyData).then((res) => {
-                console.log('update res --', res)
                 handleClose()
             })
         }
@@ -92,6 +102,7 @@ const AddUpdateCompany = (props) => {
             <CardHeader>
                 <Title>New Operator</Title>
             </CardHeader>
+
             <Box width="100%" overflow="auto" sx={{ pt: '20px', mb: 3, ml: 3 }}>
                 <div>
                     <TextField
@@ -149,7 +160,6 @@ const AddUpdateCompany = (props) => {
                                 <Switch
                                     checked={companyData?.isActive}
                                     onChange={(e) => {
-                                        console.log(e.target.checked)
                                         setCompanyData({
                                             ...companyData,
                                             isActive: e.target.checked,
@@ -173,7 +183,6 @@ const AddUpdateCompany = (props) => {
                                 <Switch
                                     checked={companyData?.isVisible}
                                     onChange={(e) => {
-                                        console.log(e.target.checked)
                                         setCompanyData({
                                             ...companyData,
                                             isVisible: e.target.checked,
@@ -191,15 +200,29 @@ const AddUpdateCompany = (props) => {
                     </div>
 
                     <CustomDropDown
-                        title={'providerType'}
+                        title={'Provider Type'}
                         handleChange={(e) => {
-                            console.log('chek value ---', e)
+                            setSelectedValue(e)
                             setCompanyData({
                                 ...companyData,
                                 providerType: e,
                             })
                         }}
+                        selectedValue={selectedValue}
+                        options={servicesData}
                     />
+                    {/* <CustomReactSelect
+                        title={'Provider Type'}
+                        handleChange={(e) => {
+                            setSelectedValue(e)
+                            setCompanyData({
+                                ...companyData,
+                                providerType: e,
+                            })
+                        }}
+                        selectedValue={selectedValue}
+                        options={servicesData}
+                    /> */}
 
                     <TextField
                         autoFocus

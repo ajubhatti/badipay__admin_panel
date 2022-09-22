@@ -1,2 +1,3 @@
 export const FETCH_APIS = 'FETCH_APIS'
 export const SET_APIS_LOADING = 'SET_APIS_LOADING'
+export const FETCH_API_BY_ID = 'FETCH_API_BY_ID'

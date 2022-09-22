@@ -9,7 +9,7 @@ import { accountService } from 'app/services/account.service'
 import moment from 'moment'
 import { companyService } from 'app/services/company.service'
 import { FormControlLabel, Switch } from '@mui/material'
-import CustomDropDown from 'app/components/DropDown/CustomDropDown'
+import CustomDropDown from 'app/components/ReactDropDown/ReactDropDown'
 
 const AddUpdateServiceDialog = (props) => {
     const [open, setOpen] = useState(false)
@@ -31,7 +31,6 @@ const AddUpdateServiceDialog = (props) => {
     })
 
     useEffect(() => {
-        console.log('props--', props)
         setOpen(props.open)
 
         setUserName(props.userData.userName)
@@ -39,16 +38,15 @@ const AddUpdateServiceDialog = (props) => {
         setPhone(props.userData.phoneNumber)
     }, [props, props.open])
 
-    function handleClickOpen() {
+    const handleClickOpen = () => {
         props.setOpen(true)
     }
 
-    function handleClose() {
+    const handleClose = () => {
         props.setOpen(false)
     }
 
     const handleSubmit = async () => {
-        console.log({ companyData })
         // let obj = props.userData
         // obj.userName = userName
         // obj.phoneNumber = phone
@@ -56,7 +54,6 @@ const AddUpdateServiceDialog = (props) => {
         // let id = props.userData.id
 
         // await companyService.updateCompany(id, obj).then((res) => {
-        //     console.log('update res --', res)
         //     handleClose()
         //     props.getAllCompany()
         // })
@@ -126,7 +123,6 @@ const AddUpdateServiceDialog = (props) => {
                                 <Switch
                                     checked={props.userData.isActive}
                                     onChange={(e) => {
-                                        console.log(e.target.checked)
                                         setCompanyData({
                                             ...companyData,
                                             isActive: e.target.checked,
@@ -150,7 +146,6 @@ const AddUpdateServiceDialog = (props) => {
                                 <Switch
                                     checked={props.userData.isVisible}
                                     onChange={(e) => {
-                                        console.log(e.target.checked)
                                         setCompanyData({
                                             ...companyData,
                                             isVisible: e.target.checked,
@@ -169,7 +164,6 @@ const AddUpdateServiceDialog = (props) => {
 
                     <CustomDropDown
                         handleChange={(e) => {
-                            console.log('chek value ---', e)
                             setCompanyData({
                                 ...companyData,
                                 isVisible: e,

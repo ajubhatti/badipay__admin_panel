@@ -2,7 +2,7 @@ import {
     FETCH_COMPANIES,
     FETCH_COMPANIES_ERROR,
     FETCH_COMPANIES_SUCCESS,
-    SET_COMPANY_LOADING,
+    SET_LOADING,
 } from './actionTypes'
 
 const initialState = {
@@ -12,7 +12,6 @@ const initialState = {
 
 const companyReducer = (state = initialState, action) => {
     const { type, payload } = action
-    console.log('type,payload :>> ', type, payload)
 
     switch (type) {
         case FETCH_COMPANIES:
@@ -33,7 +32,7 @@ const companyReducer = (state = initialState, action) => {
                 loading: false,
             }
 
-        case SET_COMPANY_LOADING:
+        case SET_LOADING:
             return {
                 ...state,
                 loading: payload,

@@ -1,20 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
+import { companyService } from 'app/services/company.service'
 import { FormControlLabel, Switch } from '@mui/material'
 import CustomDropDown from 'app/components/ReactDropDown/ReactDropDown'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getApiList } from '../apis/store/action'
+import { Card } from 'react-bootstrap'
+import { Box } from '@mui/system'
+import styled from '@emotion/styled'
+import { getServices } from '../services-listing/store/action'
+import CustomReactSelect from 'app/components/ReactDropDown/ReactSelect'
 
-const AddUpdateCompanyDialog = (props) => {
-    const [open, setOpen] = useState(false)
+const CardHeader = styled('div')(() => ({
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    marginBottom: '12px',
+    marginTop: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+}))
 
-    const [userName, setUserName] = useState()
-    const [email, setEmail] = useState()
-    const [phone, setPhone] = useState()
+const Title = styled('span')(() => ({
+    fontSize: '1rem',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+}))
 
+const AddUpdateCompany = (props) => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { id } = useParams()
+    const { apisList } = useSelector((state) => state.apis)
+    const { serviceList } = useSelector((state) => state.servicesList)
     const [companyData, setCompanyData] = useState({
         companyName: '',
         mobileAppCode: '',
@@ -25,53 +45,73 @@ const AddUpdateCompanyDialog = (props) => {
         providerType: '',
         minAmount: '',
         maxAmount: '',
+        referenceApis: [],
     })
 
+    const [apiArray, setApiArray] = useState([])
+    const [servicesData, setServicesData] = useState([])
+    const [selectedValue, setSelectedValue] = useState('')
+
     useEffect(() => {
-        setOpen(props.open)
+        dispatch(getApiList())
+        dispatch(getServices())
+    }, [dispatch])
 
-        setUserName(props.userData.userName)
-        setEmail(props.userData.email)
-        setPhone(props.userData.phoneNumber)
-    }, [props, props.open])
+    useEffect(() => {
+        setApiArray(apisList)
+    }, [apisList])
 
-    function handleClickOpen() {
-        props.setOpen(true)
-    }
+    useEffect(() => {
+        if (serviceList && serviceList.length > 0) {
+            let newService = serviceList.map((service) => ({
+                value: service._id,
+                label: service.serviceName,
+            }))
+            setSelectedValue(newService[0].id)
+            setServicesData(newService)
+        }
+    }, [serviceList])
 
     function handleClose() {
-        props.setOpen(false)
+        navigate('/api-setting/company')
     }
 
+    useEffect(() => {
+        if (id) {
+            // get company from id
+        }
+    }, [id])
+
     const handleSubmit = async () => {
-        // let obj = props.userData
-        // obj.userName = userName
-        // obj.phoneNumber = phone
-        // obj.email = email
-        // let id = props.userData.id
-        // await companyService.updateCompany(id, obj).then((res) => {
-        //     handleClose()
-        //     props.getAllCompany()
-        // })
+        companyData.referenceApis = apiArray
+        companyData.providerType = '61ebf005b15b7b52ddc35dff'
+
+        if (id) {
+            await companyService.updateCompany(id, companyData).then((res) => {
+                handleClose()
+            })
+        } else {
+            await companyService.addCompany(companyData).then((res) => {
+                handleClose()
+            })
+        }
     }
 
     return (
-        <div>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="form-dialog-title"
-            >
-                <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
-                <DialogContent>
+        <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
+            <CardHeader>
+                <Title>New Operator</Title>
+            </CardHeader>
+            <Box width="100%" overflow="auto" sx={{ pt: '20px', mb: 3, ml: 3 }}>
+                <div>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="user_name"
+                        id="operator_name"
                         label="Operator name"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.userName}
+                        defaultValue={companyData?.companyName}
                         onChange={(e) =>
                             setCompanyData({
                                 ...companyData,
@@ -83,11 +123,11 @@ const AddUpdateCompanyDialog = (props) => {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="phone"
-                        label="Phone no."
+                        id="mobileAppCode"
+                        label="Mobile App Code"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.phoneNumber}
+                        defaultValue={companyData?.mobileAppCode}
                         onChange={(e) =>
                             setCompanyData({
                                 ...companyData,
@@ -99,11 +139,11 @@ const AddUpdateCompanyDialog = (props) => {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
+                        id="companyDetail"
+                        label="Company Detail"
+                        type="text"
                         fullWidth
-                        defaultValue={props.userData.email}
+                        defaultValue={companyData?.companyDetail}
                         onChange={(e) =>
                             setCompanyData({
                                 ...companyData,
@@ -117,7 +157,7 @@ const AddUpdateCompanyDialog = (props) => {
                             value="Is Active"
                             control={
                                 <Switch
-                                    checked={props.userData.isActive}
+                                    checked={companyData?.isActive}
                                     onChange={(e) => {
                                         setCompanyData({
                                             ...companyData,
@@ -140,7 +180,7 @@ const AddUpdateCompanyDialog = (props) => {
                             value="Is Visible"
                             control={
                                 <Switch
-                                    checked={props.userData.isVisible}
+                                    checked={companyData?.isVisible}
                                     onChange={(e) => {
                                         setCompanyData({
                                             ...companyData,
@@ -158,13 +198,29 @@ const AddUpdateCompanyDialog = (props) => {
                         />
                     </div>
 
-                    <CustomDropDown
+                    {/* <CustomDropDown
+                        title={'Provider Type'}
                         handleChange={(e) => {
+                            setSelectedValue(e)
                             setCompanyData({
                                 ...companyData,
-                                isVisible: e,
+                                providerType: e,
                             })
                         }}
+                        selectedValue={selectedValue}
+                        options={servicesData}
+                    /> */}
+                    <CustomReactSelect
+                        title={'Provider Type'}
+                        handleChange={(e) => {
+                            setSelectedValue(e)
+                            setCompanyData({
+                                ...companyData,
+                                providerType: e,
+                            })
+                        }}
+                        selectedValue={selectedValue}
+                        options={servicesData}
                     />
 
                     <TextField
@@ -174,7 +230,7 @@ const AddUpdateCompanyDialog = (props) => {
                         label="Min Amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.district}
+                        defaultValue={companyData?.district}
                         onChange={(e) =>
                             setCompanyData({
                                 ...companyData,
@@ -190,7 +246,7 @@ const AddUpdateCompanyDialog = (props) => {
                         label="Max Amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.city}
+                        defaultValue={companyData?.city}
                         onChange={(e) =>
                             setCompanyData({
                                 ...companyData,
@@ -198,9 +254,24 @@ const AddUpdateCompanyDialog = (props) => {
                             })
                         }
                     />
-                </DialogContent>
 
-                <DialogActions>
+                    {apiArray.map((x) => (
+                        <TextField
+                            key={x._id}
+                            autoFocus
+                            margin="dense"
+                            id="city"
+                            label={x.apiName}
+                            type="text"
+                            fullWidth
+                            value={x?.apiCode}
+                            defaultValue={x?.apiCode}
+                            onChange={(e) => {
+                                x.apiCode = e.target.value
+                            }}
+                        />
+                    ))}
+
                     <Button
                         variant="outlined"
                         color="secondary"
@@ -211,10 +282,10 @@ const AddUpdateCompanyDialog = (props) => {
                     <Button onClick={() => handleSubmit()} color="primary">
                         Save
                     </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+                </div>
+            </Box>
+        </Card>
     )
 }
 
-export default AddUpdateCompanyDialog
+export default AddUpdateCompany

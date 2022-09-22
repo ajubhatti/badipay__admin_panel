@@ -1,13 +1,13 @@
-import { FETCH_APIS, SET_APIS_LOADING } from './actionTypes'
+import { FETCH_APIS, FETCH_API_BY_ID, SET_APIS_LOADING } from './actionTypes'
 
 const initialState = {
     loading: false,
     apisList: [],
+    singleApi: {},
 }
 
 const apisReducer = (state = initialState, action) => {
     const { type, payload } = action
-    console.log('type,payload :>> ', type, payload)
 
     switch (type) {
         case FETCH_APIS:
@@ -20,6 +20,12 @@ const apisReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: payload,
+            }
+
+        case FETCH_API_BY_ID:
+            return {
+                ...state,
+                singleApi: payload,
             }
 
         default:

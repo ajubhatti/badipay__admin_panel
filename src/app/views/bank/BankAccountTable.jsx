@@ -60,7 +60,6 @@ const BankAccountTable = () => {
 
     const getAllbankAccounts = async () => {
         await bankAccountService.getAllBankAccount().then((res) => {
-            console.log('res ---', res.data)
             setBanksAccounts(res?.data)
         })
     }
@@ -116,7 +115,6 @@ const BankAccountTable = () => {
                 size="small"
                 defaultValue={downloadType}
                 onChange={(e) => {
-                    console.log('change --', e.target.value)
                     setDownloadType(e.target.value)
                 }}
             >

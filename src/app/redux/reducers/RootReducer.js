@@ -3,8 +3,9 @@ import ScrumBoardReducer from './ScrumBoardReducer'
 import NotificationReducer from './NotificationReducer'
 import EcommerceReducer from './EcommerceReducer'
 import NavigationReducer from './NavigationReducer'
-import companyReducer from 'app/views/api-settings/store/reducer'
+import companyReducer from 'app/views/api-settings/company-listing/store/reducer'
 import apisReducer from 'app/views/api-settings/apis/store/reducer'
+import servicesListReducer from 'app/views/api-settings/services-listing/store/reducer'
 
 const RootReducer = combineReducers({
     notifications: NotificationReducer,
@@ -13,6 +14,7 @@ const RootReducer = combineReducers({
     ecommerce: EcommerceReducer,
     company: companyReducer,
     apis: apisReducer,
+    servicesList: servicesListReducer,
 })
 
 export default RootReducer

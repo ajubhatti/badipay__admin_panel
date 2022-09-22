@@ -57,7 +57,6 @@ const UserListTable = () => {
 
     const getAllusers = async () => {
         await accountService.getAll().then((res) => {
-            console.log('res ---', res)
             setUsersList(res)
         })
     }
@@ -80,11 +79,9 @@ const UserListTable = () => {
     }
 
     const changeStatus = (data) => {
-        console.log(data)
         data.isActive = !data.isActive
         delete data.email
         delete data.role
-        console.log('payload ==', data)
         handleUpdate(data.id, data)
     }
 

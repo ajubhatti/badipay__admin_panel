@@ -12,11 +12,10 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
-import { companyService } from 'app/services/company.service'
-import AddUpdateCompanyDialog from './AddUpdateCompanyDialog'
+
 import { useNavigate } from 'react-router-dom'
-import { ambikaService } from 'app/services/ambika.service copy'
-import { servicesService } from 'app/services/services.service'
+import { useDispatch, useSelector } from 'react-redux'
+import { getApiList } from './store/action'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -31,35 +30,6 @@ const Title = styled('span')(() => ({
     fontSize: '1rem',
     fontWeight: '500',
     textTransform: 'capitalize',
-}))
-
-const UserTable = styled(Table)(() => ({
-    minWidth: 400,
-    whiteSpace: 'pre',
-    '& small': {
-        height: 15,
-        width: 50,
-        borderRadius: 500,
-        boxShadow:
-            '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
-    },
-    '& td': {
-        borderBottom: 'none',
-    },
-    '& td:first-of-type': {
-        paddingLeft: '16px !important',
-    },
-}))
-
-const Small = styled('small')(({ bgcolor }) => ({
-    height: 15,
-    width: 50,
-    color: '#fff',
-    padding: '2px 8px',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    background: bgcolor,
-    boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
 }))
 
 const StyledTable = styled(Table)(({ theme }) => ({
@@ -82,13 +52,13 @@ const StyledTable = styled(Table)(({ theme }) => ({
     },
 }))
 
-const ServiceList = () => {
+const ApiListing = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { apisList } = useSelector((state) => state.apis)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = useState(0)
-    const [companies, setCompanies] = useState([])
-    const [modelOpen, setModelOpen] = useState(false)
-    const [modelTitle, setmodelTitle] = useState('New Operator')
+    const [apiListData, setApiListData] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -100,26 +70,28 @@ const ServiceList = () => {
     }
 
     useEffect(() => {
-        getAllCompany([])
-    }, [])
+        dispatch(getApiList())
+    }, [dispatch])
 
-    const getAllCompany = async () => {
-        await servicesService.getAllService().then((res) => {
-            setCompanies(res?.data || [])
-        })
+    useEffect(() => {
+        setApiListData(apisList)
+    }, [apisList])
+
+    const handleEdit = (row) => {
+        navigate('/api-setting/api/add/' + row._id)
     }
 
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>Operator List</Title>
+                <Title>Api List</Title>
                 <Fab
                     size="small"
                     color="secondary"
                     aria-label="Add"
                     className="button"
                     onClick={() => {
-                        navigate('/api-setting/company/add')
+                        navigate('/api-setting/api/add')
                     }}
                 >
                     <Icon>add</Icon>
@@ -129,14 +101,15 @@ const ServiceList = () => {
                 <StyledTable>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Is Active</TableCell>
+                            <TableCell>Api Name</TableCell>
+                            <TableCell>Api Detail</TableCell>
                             <TableCell>created time</TableCell>
+                            <TableCell>Status</TableCell>
                             <TableCell>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {companies
+                        {apiListData
                             .slice(
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
@@ -144,18 +117,28 @@ const ServiceList = () => {
                             .map((subscriber, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="left">
-                                        {subscriber.serviceName}
+                                        {subscriber.apiName}
                                     </TableCell>
-                                    <TableCell>
-                                        {subscriber.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
+                                    <TableCell align="left">
+                                        {subscriber.apiDetail}
                                     </TableCell>
                                     <TableCell align="left">
                                         {subscriber.created}
                                     </TableCell>
 
                                     <TableCell>
+                                        {subscriber.isActive
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            onClick={() =>
+                                                handleEdit(subscriber)
+                                            }
+                                        >
+                                            <Icon>edit_icon</Icon>
+                                        </IconButton>
                                         <IconButton>
                                             <Icon color="error">close</Icon>
                                         </IconButton>
@@ -169,7 +152,7 @@ const ServiceList = () => {
                     sx={{ px: 2 }}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={companies.length}
+                    count={apiListData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
@@ -182,18 +165,8 @@ const ServiceList = () => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Box>
-
-            <AddUpdateCompanyDialog
-                setOpen={setModelOpen}
-                open={modelOpen}
-                userData={companies}
-                title={modelTitle}
-                getAllCompany={() => {
-                    getAllCompany()
-                }}
-            />
         </Card>
     )
 }
 
-export default ServiceList
+export default ApiListing

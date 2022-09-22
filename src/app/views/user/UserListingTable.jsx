@@ -121,7 +121,6 @@ const UserListingTable = () => {
         }
 
         await accountService.getAll(payload).then((res) => {
-            console.log('res ---', res)
             setUsersList(res?.data)
         })
     }
@@ -165,7 +164,6 @@ const UserListingTable = () => {
     }
 
     const changeStatus = (data) => {
-        console.log(data)
         data.isActive = !data.isActive
         delete data.email
         delete data.role
@@ -173,9 +171,7 @@ const UserListingTable = () => {
     }
 
     const handleUpdate = async (id, data) => {
-        console.log('payload ==', data)
         await accountService.update(id, data).then((res) => {
-            console.log('update res --', res)
             getAllusers()
         })
     }

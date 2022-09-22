@@ -1,12 +1,9 @@
 import React from 'react'
 import { MenuItem, FormControl, Select, InputLabel } from '@mui/material'
 
-const CustomDropDown = (props) => {
-    const [age, setAge] = React.useState('')
-
+const ReactDropDown = (props) => {
     const handleChange = (event) => {
         props.handleChange(event.target.value)
-        setAge(event.target.value)
     }
 
     return (
@@ -16,18 +13,18 @@ const CustomDropDown = (props) => {
                     {props.title}
                 </InputLabel>
                 <Select
-                    value={age}
+                    value={props.selectedValue}
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                 >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {props?.options.map((x) => (
+                        <MenuItem value={x.value}>{x.label}</MenuItem>
+                    ))}
                 </Select>
             </FormControl>
         </div>
     )
 }
 
-export default CustomDropDown
+export default ReactDropDown

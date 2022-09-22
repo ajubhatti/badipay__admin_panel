@@ -91,7 +91,6 @@ const TickerListTable = () => {
 
     const getAllTicker = async () => {
         tickerService.getAllTicker().then((res) => {
-            console.log('res--', res)
             setTickerList(res?.data)
         })
     }
@@ -101,7 +100,6 @@ const TickerListTable = () => {
     }
 
     const handleSubmit = async () => {
-        console.log(bannerDesc)
         let payload = {
             description: bannerDesc,
         }
@@ -111,17 +109,14 @@ const TickerListTable = () => {
         //  obj.email = email
         //  let id = props.userData.id
         if (bannerData && bannerData?._id) {
-            console.log('banner data ---', bannerData)
             await tickerService
                 .updateTicker(bannerData?._id, payload)
                 .then((res) => {
-                    console.log('update res --', res)
                     handleClose()
                     getAllTicker()
                 })
         } else {
             await tickerService.addTicker(payload).then((res) => {
-                console.log('update res --', res)
                 handleClose()
                 getAllTicker()
             })
@@ -129,7 +124,6 @@ const TickerListTable = () => {
     }
 
     const changeStatus = (data) => {
-        console.log(data)
         // delete data.email
         // delete data.role
         let payload = {
@@ -139,15 +133,12 @@ const TickerListTable = () => {
     }
 
     const handleUpdate = async (id, data) => {
-        console.log('payload ==', data)
         await tickerService.updateTicker(id, data).then((res) => {
-            console.log(res)
             getAllTicker()
         })
     }
 
     const editBanner = (data) => {
-        console.log('data---', data)
         setBannerData(data)
 
         setBannerModelOpen(true)
@@ -157,7 +148,6 @@ const TickerListTable = () => {
 
     const deleteBanner = async (data) => {
         await tickerService.deleteTicker(data._id).then((res) => {
-            console.log(res)
             getAllTicker()
         })
     }

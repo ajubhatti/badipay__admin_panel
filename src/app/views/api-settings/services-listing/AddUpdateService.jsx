@@ -2,62 +2,65 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form } from 'react-bootstrap'
-import { createApi, fetchApiById, getApiById, updateApis } from './store/action'
+import {
+    createService,
+    fetchServiceById,
+    getServicesById,
+    updateService,
+} from '../services-listing/store/action'
 
-const AddUpdateApis = () => {
+const AddUpdateService = (props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()
-    const { singleApi } = useSelector((state) => state.apis)
-    const [apiData, setApiData] = useState({
-        apiName: '',
-        apiDetail: '',
-        apiImage: '',
+
+    const { singleService } = useSelector((state) => state.servicesList)
+    const [serviceData, setServiceData] = useState({
+        serviceName: '',
+        serviceDetail: '',
         isActive: true,
     })
 
     useEffect(() => {
         if (id) {
-            setApiData({
-                apiName: singleApi?.apiName,
-                apiDetail: singleApi?.apiDetail,
-                isActive: singleApi?.isActive,
-                apiImage: singleApi?.apiImage,
+            setServiceData({
+                serviceName: singleService.serviceName,
+                serviceDetail: singleService.serviceDetail,
+                isActive: singleService.isActive,
             })
         }
 
         return () => {
             clearData()
-            fetchApiById({})
+            fetchServiceById({})
         }
-    }, [id, singleApi])
+    }, [id, singleService])
 
     useEffect(() => {
         if (id) {
-            dispatch(getApiById(id))
+            dispatch(getServicesById(id))
         }
     }, [dispatch, id])
 
     const handleClose = () => {
-        navigate('/api-setting/api')
+        navigate('/api-setting/service')
     }
 
     const clearData = () => {
-        setApiData({
-            apiName: '',
-            apiDetail: '',
-            apiImage: '',
+        setServiceData({
+            serviceName: '',
+            serviceDetail: '',
             isActive: true,
         })
     }
 
     const handleSubmit = async () => {
         if (id) {
-            dispatch(updateApis(id, apiData))
+            dispatch(updateService(id, serviceData))
             clearData()
             handleClose()
         } else {
-            dispatch(createApi(apiData))
+            dispatch(createService(serviceData))
             clearData()
             handleClose()
         }
@@ -67,46 +70,46 @@ const AddUpdateApis = () => {
         <div className="container">
             <div className="">
                 <Form>
-                    <Form.Group controlId="formGridApiName">
-                        <Form.Label>Api Name</Form.Label>
+                    <Form.Group controlId="formGridServiceName">
+                        <Form.Label>Service Name</Form.Label>
                         <Form.Control
-                            value={apiData?.apiName}
+                            value={serviceData?.serviceName}
                             type="text"
                             placeholder="Enter Service Name"
                             onChange={(e) => {
-                                setApiData({
-                                    ...apiData,
-                                    apiName: e.target.value,
+                                setServiceData({
+                                    ...serviceData,
+                                    serviceName: e.target.value,
                                 })
                             }}
                         />
                     </Form.Group>
 
-                    <Form.Group controlId="formGridApiDetail">
+                    <Form.Group controlId="formGridServiceDetail">
                         <Form.Label>Service Detail</Form.Label>
                         <Form.Control
-                            value={apiData?.apiDetail}
+                            value={serviceData?.serviceDetail}
                             as="textarea"
-                            placeholder="Enter Api Detail"
+                            placeholder="Enter Service Detail"
                             onChange={(e) => {
-                                setApiData({
-                                    ...apiData,
-                                    apiDetail: e.target.value,
+                                setServiceData({
+                                    ...serviceData,
+                                    serviceDetail: e.target.value,
                                 })
                             }}
                         />
                     </Form.Group>
 
-                    <Form.Group controlId="formGridApiIsActive">
+                    <Form.Group controlId="formGridServiceIsActive">
                         <Form.Label>Is Active</Form.Label>
 
                         <Form.Check
                             type="switch"
                             id="custom-switch"
-                            checked={apiData?.isActive}
+                            checked={serviceData?.isActive}
                             onChange={(e) => {
-                                setApiData({
-                                    ...apiData,
+                                setServiceData({
+                                    ...serviceData,
                                     isActive: e.target.checked,
                                 })
                             }}
@@ -129,4 +132,4 @@ const AddUpdateApis = () => {
     )
 }
 
-export default AddUpdateApis
+export default AddUpdateService

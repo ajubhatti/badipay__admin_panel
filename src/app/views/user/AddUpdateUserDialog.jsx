@@ -25,7 +25,6 @@ const AddUpdateUserDialog = (props) => {
     const [userPassword, setUserPassword] = useState()
 
     useEffect(() => {
-        console.log('props--', props)
         setOpen(props.open)
 
         setUserName(props.userData.userName)
@@ -42,14 +41,12 @@ const AddUpdateUserDialog = (props) => {
     }
 
     const handleSubmit = async () => {
-        console.log(userName, email, phone)
         let obj = props.userData
         obj.userName = userName
         obj.phoneNumber = phone
         obj.email = email
         let id = props.userData.id
         await accountService.update(id, obj).then((res) => {
-            console.log('update res --', res)
             handleClose()
             props.getAllusers()
         })

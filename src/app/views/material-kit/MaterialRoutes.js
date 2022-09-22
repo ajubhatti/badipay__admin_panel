@@ -10,8 +10,10 @@ import ApiListing from '../api-settings/apis/ApiListing'
 import BankListTable from '../bank/BankListTable'
 import AddUpdateCompany from '../api-settings/company-listing/AddUpdateCompany'
 import AmbikaSlabList from '../api-settings/company-listing/AmbikaSlabList'
-import ServiceList from '../api-settings/company-listing/ServiceList'
+import ServiceList from '../api-settings/services-listing/ServiceList'
 import OperatorSwitching from '../api-settings/company-listing/OperatorSwitching'
+import AddUpdateService from '../api-settings/services-listing/AddUpdateService'
+import AddUpdateApis from '../api-settings/apis/AddUpdateApis'
 
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
@@ -119,6 +121,14 @@ const materialRoutes = [
         element: <ApiListing />,
     },
     {
+        path: '/api-setting/api/add',
+        element: <AddUpdateApis />,
+    },
+    {
+        path: '/api-setting/api/add/:id',
+        element: <AddUpdateApis />,
+    },
+    {
         path: '/api-setting/company',
         element: <CompanyListing />,
     },
@@ -141,6 +151,14 @@ const materialRoutes = [
     {
         path: '/api-setting/service',
         element: <ServiceList />,
+    },
+    {
+        path: '/api-setting/service/add',
+        element: <AddUpdateService />,
+    },
+    {
+        path: '/api-setting/service/add/:id',
+        element: <AddUpdateService />,
     },
 ]
 

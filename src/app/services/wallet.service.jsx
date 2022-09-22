@@ -16,11 +16,10 @@ export const walletServices = {
     get userValue() {
         return userSubject.value
     },
-    updateBalance
+    updateBalance,
 }
 
 function getAll(payload) {
-    console.log('payload --', `${baseUrl}/getAll`, payload)
     return fetchWrapper.post(`${baseUrl}/getAll`, payload)
 }
 

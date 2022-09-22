@@ -10,7 +10,6 @@ export default function LabelledSwitch() {
     })
 
     const handleChange = (name) => (event) => {
-        console.log('name,event.target.checked', name, event.target.checked)
         setState({ ...state, [name]: event.target.checked })
     }
 

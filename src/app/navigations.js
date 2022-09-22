@@ -49,6 +49,11 @@ export const navigations = [
                 iconText: 'APIL',
             },
             {
+                name: 'Services',
+                path: '/api-setting/service',
+                iconText: 'SR',
+            },
+            {
                 name: 'company list',
                 path: '/api-setting/company',
                 iconText: 'COL',
@@ -58,16 +63,10 @@ export const navigations = [
                 path: '/api-setting/operator',
                 iconText: 'APIL',
             },
-
             {
                 name: 'Ambika Slabs',
                 path: '/api-setting/ambika-slabs',
                 iconText: 'COL',
-            },
-            {
-                name: 'Services',
-                path: '/api-setting/service',
-                iconText: 'SR',
             },
         ],
     },

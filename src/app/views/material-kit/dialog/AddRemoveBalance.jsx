@@ -22,7 +22,6 @@ const AddRemoveBalance = (props) => {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        console.log('props--', props)
         setOpen(props.open)
 
         setUserName(props.userData.userName)
@@ -46,9 +45,7 @@ const AddRemoveBalance = (props) => {
             remarks: remarks,
             password: password,
         }
-        console.log('payload ---', payload)
         await walletServices.updateBalance(payload).then((res) => {
-            console.log('res ---', res)
             handleClose()
             props.getAllusers()
         })

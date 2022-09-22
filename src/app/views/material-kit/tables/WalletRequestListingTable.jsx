@@ -116,7 +116,6 @@ const WalletRequestListingTable = () => {
         }
 
         await walletServices.getAll(payload).then((res) => {
-            console.log('res ---', res)
             if (res.data) {
                 setUsersList(res.data.wallets)
             }
@@ -142,17 +141,14 @@ const WalletRequestListingTable = () => {
     }
 
     const changeStatus = (data) => {
-        console.log(data)
         data.isActive = !data.isActive
         delete data.email
         delete data.role
-        console.log('payload ==', data)
         handleUpdate(data.id, data)
     }
 
     const handleUpdate = (id, data) => {
         accountService.update(id, data).then((res) => {
-            console.log('update res --', res)
             getAllWalletRequest()
         })
     }

@@ -119,13 +119,11 @@ const BannerListTable = () => {
 
     const getAllbanners = async () => {
         await bannerService.getAllBanner().then((res) => {
-            console.log('res.data :>> ', res.data)
             setBannerList(res?.data)
         })
     }
 
     const ShowImage = (data) => {
-        console.log('data :>> ', data)
         let imgData = new Buffer.from(data).toString('base64')
         return (
             <img
@@ -167,7 +165,6 @@ const BannerListTable = () => {
                 await bannerService
                     .updateBannerWithImage(bannerData?._id, formData)
                     .then((res) => {
-                        console.log('res of update ---', res)
                         getAllbanners()
                         handleClose()
                     })
@@ -182,34 +179,19 @@ const BannerListTable = () => {
                 await bannerService
                     .updateBanner(bannerData?._id, payload)
                     .then((res) => {
-                        console.log('res of update ---', res)
                         getAllbanners()
                         handleClose()
                     })
             }
         } else {
             await bannerService.uploadBanner(formData).then((res) => {
-                console.log('res of add ---', res)
                 getAllbanners()
                 handleClose()
             })
         }
-
-        // let obj = props.userData
-        // obj.userName = userName
-        // obj.phoneNumber = phone
-        // obj.email = email
-        // let id = props.userData.id
-        // await accountService.update(id, obj).then((res) => {
-        //     console.log('update res --', res)
-        //     handleClose()
-        // })
     }
 
     const changeStatus = (data) => {
-        console.log(data)
-        // delete data.email
-        // delete data.role
         let payload = {
             isActive: !data.isActive,
         }
@@ -217,22 +199,18 @@ const BannerListTable = () => {
     }
 
     const handleUpdate = async (id, data) => {
-        console.log('payload ==', data)
         await bannerService.updateBanner(id, data).then((res) => {
-            console.log(res)
             getAllbanners()
         })
     }
 
     const deleteBanner = async (data) => {
         await bannerService.deleteBanner(data._id).then((res) => {
-            console.log(res)
             getAllbanners()
         })
     }
 
     const editBanner = (data) => {
-        console.log('data---', data)
         setBannerData(data)
         setBannerImageUrl(data.img)
         setBannerModelOpen(true)
@@ -281,7 +259,6 @@ const BannerListTable = () => {
                             )
                             .map((banner, index) => (
                                 <TableRow key={index}>
-                                    {console.log({ banner })}
                                     <TableCell align="left">
                                         {ShowImage(banner?.path)}
                                     </TableCell>
