@@ -2,21 +2,23 @@ import {
     FETCH_COMPANIES,
     FETCH_COMPANIES_ERROR,
     FETCH_COMPANIES_SUCCESS,
+    FETCH_COMPANY_BY_ID,
     SET_LOADING,
 } from './actionTypes'
 // import { toast } from 'react-toastify'
 import { axiosAdmin } from 'app/services/api'
 import { GET_COMPANY_BY_ID } from 'app/constants/urls'
+import { companyService } from 'app/services/company.service'
 
-export const getCompanyById = (data) => async (dispatch) => {
+export const getCompaniesById = (data) => async (dispatch) => {
     try {
         dispatch(setLoading(true))
-        const res = await axiosAdmin.get(GET_COMPANY_BY_ID)
+        // const res = await axiosAdmin.get(GET_COMPANY_BY_ID)
 
-        // if (res.data?.data?.orderDetails) {
-        //     // dispatch(setOrder(res.data.data.orderDetails))
-        //     dispatch(setLoading(false))
-        // }
+        return await companyService.getCompanyById(data).then((res) => {
+            dispatch(fetchCompanyById(res?.data))
+            dispatch(setLoading(false))
+        })
     } catch (err) {
         // toast.error(err.response?.data?.message || err.message)
         dispatch(setLoading(false))
@@ -37,30 +39,49 @@ export const getCompanies = (data) => async (dispatch) => {
     }
 }
 
-export const fetchCompany = (data) => {
-    return {
-        type: FETCH_COMPANIES,
-        payload: data,
+export const updateService = (id, data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        await companyService.updateCompany(id, data).then((res) => {
+            dispatch(getCompanies())
+        })
+    } catch (err) {
+        dispatch(setLoading(false))
     }
 }
 
-export const fetchCompanySuccess = (data) => {
-    return {
-        type: FETCH_COMPANIES_SUCCESS,
-        payload: data,
+export const createService = (data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        await companyService.addCompany(data).then((res) => {
+            dispatch(getCompanies())
+        })
+    } catch (err) {
+        dispatch(setLoading(false))
     }
 }
 
-export const fetchCompanyError = (data) => {
-    return {
-        type: FETCH_COMPANIES_ERROR,
-        payload: data,
-    }
-}
+export const fetchCompany = (data) => ({
+    type: FETCH_COMPANIES,
+    payload: data,
+})
 
-export const setLoading = (data) => {
-    return {
-        type: SET_LOADING,
-        payload: data,
-    }
-}
+export const fetchCompanyById = (data) => ({
+    type: FETCH_COMPANY_BY_ID,
+    payload: data,
+})
+
+export const fetchCompanySuccess = (data) => ({
+    type: FETCH_COMPANIES_SUCCESS,
+    payload: data,
+})
+
+export const fetchCompanyError = (data) => ({
+    type: FETCH_COMPANIES_ERROR,
+    payload: data,
+})
+
+export const setLoading = (data) => ({
+    type: SET_LOADING,
+    payload: data,
+})

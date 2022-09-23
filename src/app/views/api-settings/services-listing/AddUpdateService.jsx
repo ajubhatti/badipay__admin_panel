@@ -29,16 +29,15 @@ const AddUpdateService = (props) => {
                 isActive: singleService.isActive,
             })
         }
-
-        return () => {
-            clearData()
-            fetchServiceById({})
-        }
     }, [id, singleService])
 
     useEffect(() => {
         if (id) {
             dispatch(getServicesById(id))
+        }
+        return () => {
+            clearData()
+            dispatch(fetchServiceById({}))
         }
     }, [dispatch, id])
 

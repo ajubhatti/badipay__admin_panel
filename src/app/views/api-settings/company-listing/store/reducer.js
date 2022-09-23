@@ -2,12 +2,14 @@ import {
     FETCH_COMPANIES,
     FETCH_COMPANIES_ERROR,
     FETCH_COMPANIES_SUCCESS,
+    FETCH_COMPANY_BY_ID,
     SET_LOADING,
 } from './actionTypes'
 
 const initialState = {
     loading: false,
     companyList: [],
+    singleCompany: {},
 }
 
 const companyReducer = (state = initialState, action) => {
@@ -36,6 +38,12 @@ const companyReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: payload,
+            }
+
+        case FETCH_COMPANY_BY_ID:
+            return {
+                ...state,
+                singleCompany: payload,
             }
 
         default:
