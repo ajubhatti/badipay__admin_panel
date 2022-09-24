@@ -11,6 +11,8 @@ const OperatorSwitching = () => {
     const dispatch = useDispatch()
     const { serviceList } = useSelector((state) => state.servicesList)
     const { companyList } = useSelector((state) => state.company)
+    const { searchSearviceData } = useSelector((state) => state.operator)
+
     const [searchData, setCompanyData] = useState({})
     const [serviceMenuData, setServiceMenuData] = useState([])
     const [operatorMenuData, setOperatorMenuData] = useState([])
@@ -49,6 +51,7 @@ const OperatorSwitching = () => {
             (x) => x._id === searchData.operator
         )
 
+        console.log('filteredData', filteredData)
         setSelectedOperatorDataId(filteredData?._id)
         setSelectedOperatorData(filteredData)
         e.preventDefault()
@@ -63,11 +66,14 @@ const OperatorSwitching = () => {
         }
 
         delete selectedOperatorData._id
+        delete selectedOperatorData.__v
+        delete selectedOperatorData.updated
 
         await companyService
             .updateCompany(selectedOperatorDataId, selectedOperatorData)
             .then((res) => {
                 console.log('updateRes', res)
+                setSelectedOperatorData(selectedOperatorData)
             })
     }
 
@@ -97,7 +103,7 @@ const OperatorSwitching = () => {
                                     >
                                         <h5>Select Operator</h5>
 
-                                        <div className="list-of-operator">
+                                        <div className="list-of-operator m-2">
                                             <Form.Group controlId="formGridServic">
                                                 <ReactSelect
                                                     title={'Services'}
@@ -113,7 +119,7 @@ const OperatorSwitching = () => {
                                             </Form.Group>
                                         </div>
 
-                                        <div className="list-of-operator">
+                                        <div className="list-of-operator m-2">
                                             <Form.Group controlId="formGridOperator">
                                                 <ReactSelect
                                                     title={'Operator'}
@@ -140,6 +146,7 @@ const OperatorSwitching = () => {
                         </div>
                     </div>
                 </div>
+
                 <div className="col-lg-12">
                     <div className="card rounded-0">
                         <div className="card-header">
@@ -150,143 +157,135 @@ const OperatorSwitching = () => {
                             <div className="row">
                                 <div className="col-md-12">
                                     <form onSubmit={submitHandler}>
-                                        <div>
-                                            <table className="table mb-4">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>NAME</th>
-                                                        <th>PENDING LIMIT</th>
-                                                        <th>TOTAL PENDING</th>
-                                                        <th>PRIORITY</th>
-                                                        <th>ENABLE/DISABLE</th>
-                                                        <th>FAILURE LIMIT</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {selectedOperatorData?.referenceApis?.map(
-                                                        (x, index) => (
-                                                            <tr key={x._id}>
-                                                                <th scope="row">
-                                                                    {index + 1}
-                                                                </th>
-                                                                <td>
-                                                                    {x.apiName}
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div>
-                                                                            <input
-                                                                                type="number"
-                                                                                className="form-input"
-                                                                                id="exampleCheck1"
-                                                                                // onChange={(
-                                                                                //     e
-                                                                                // ) => {
-                                                                                //     x.pendingLimit =
-                                                                                //         e.target.value
-                                                                                // }}
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) => {
-                                                                                    handleOnChange(
-                                                                                        index,
-                                                                                        x,
-                                                                                        'pendingLimit',
-                                                                                        e
-                                                                                    )
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <span>
-                                                                        0
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <input
-                                                                            type="number"
-                                                                            className="form-input"
-                                                                            id="exampleCheck1"
-                                                                            // onChange={(
-                                                                            //     e
-                                                                            // ) => {
-                                                                            //     x.priority =
-                                                                            //         e.target.value
-                                                                            // }}
-                                                                            onChange={(
-                                                                                e
-                                                                            ) => {
-                                                                                handleOnChange(
-                                                                                    index,
-                                                                                    x,
-                                                                                    'priority',
-                                                                                    e
-                                                                                )
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            className="form-check-input"
-                                                                            id="exampleCheck1"
-                                                                            // onChange={(
-                                                                            //     e
-                                                                            // ) => {
-                                                                            //     x.isActive =
-                                                                            //         e.target.value
-                                                                            // }}
-
-                                                                            onChange={(
-                                                                                e
-                                                                            ) => {
-                                                                                handleOnChange(
-                                                                                    index,
-                                                                                    x,
-                                                                                    'isActive',
-                                                                                    e
-                                                                                )
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <input
-                                                                            type="number"
-                                                                            className="form-input"
-                                                                            id="exampleCheck1"
-                                                                            // onChange={(
-                                                                            //     e
-                                                                            // ) => {
-                                                                            //     x.failureLimit =
-                                                                            //         e.target.value
-                                                                            // }}
-                                                                            onChange={(
-                                                                                e
-                                                                            ) => {
-                                                                                handleOnChange(
-                                                                                    index,
-                                                                                    x,
-                                                                                    'failureLimit',
-                                                                                    e
-                                                                                )
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <table className="table mb-4">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>NAME</th>
+                                                    <th>PENDING LIMIT</th>
+                                                    <th>TOTAL PENDING</th>
+                                                    <th>PRIORITY</th>
+                                                    <th>ENABLE/DISABLE</th>
+                                                    <th>FAILURE LIMIT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {selectedOperatorData?.referenceApis?.map(
+                                                    (x, index) => (
+                                                        <tr key={x._id}>
+                                                            <th scope="row">
+                                                                {index + 1}
+                                                            </th>
+                                                            <td>{x.apiName}</td>
+                                                            <td>
+                                                                <input
+                                                                    defaultValue={
+                                                                        x.pendingLimit
+                                                                    }
+                                                                    type="number"
+                                                                    className="form-input"
+                                                                    id="exampleCheck1"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleOnChange(
+                                                                            index,
+                                                                            x,
+                                                                            'pendingLimit',
+                                                                            e
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <span>
+                                                                    {
+                                                                        x.totalPending
+                                                                    }
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    defaultValue={
+                                                                        x.priority
+                                                                    }
+                                                                    type="number"
+                                                                    className="form-input"
+                                                                    id="exampleCheck1"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleOnChange(
+                                                                            index,
+                                                                            x,
+                                                                            'priority',
+                                                                            e
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <Form.Check
+                                                                    type="switch"
+                                                                    checked={
+                                                                        x.isActive ||
+                                                                        false
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleOnChange(
+                                                                            index,
+                                                                            x,
+                                                                            'isActive',
+                                                                            e
+                                                                        )
+                                                                    }}
+                                                                />
+                                                                {/* <input
+                                                                    checked={
+                                                                        x.isActive
+                                                                    }
+                                                                    type="checkbox"
+                                                                    className="form-check-input"
+                                                                    id="exampleCheck1"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleOnChange(
+                                                                            index,
+                                                                            x,
+                                                                            'isActive',
+                                                                            e
+                                                                        )
+                                                                    }}
+                                                                /> */}
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    defaultValue={
+                                                                        x.failureLimit
+                                                                    }
+                                                                    type="number"
+                                                                    className="form-input"
+                                                                    id="exampleCheck1"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleOnChange(
+                                                                            index,
+                                                                            x,
+                                                                            'failureLimit',
+                                                                            e
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
                                     </form>
                                 </div>
                             </div>

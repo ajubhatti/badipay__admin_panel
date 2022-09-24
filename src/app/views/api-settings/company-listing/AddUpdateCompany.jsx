@@ -71,7 +71,20 @@ const AddUpdateCompany = (props) => {
                 referenceApis: singleCompany?.referenceApis,
             })
             setSelectedValue(singleCompany?.providerType)
-            setApiArray(singleCompany?.referenceApis)
+
+            const arrWithColor = singleCompany?.referenceApis?.map((object) => {
+                return {
+                    ...object,
+                    failureLimit: object.failureLimit || 1,
+                    isActive: object.isActive || false,
+                    pendingLimit: object.pendingLimit || 0,
+                    priority: object.priority || 0,
+                    totalPending: object.totalPending || 0,
+                }
+            })
+            console.log('apisList first :>> ', arrWithColor)
+
+            setApiArray(arrWithColor)
         }
     }, [id, singleCompany])
 
@@ -81,6 +94,18 @@ const AddUpdateCompany = (props) => {
     }, [dispatch])
 
     useEffect(() => {
+        const arrWithColor = apisList.map((object) => {
+            return {
+                ...object,
+                failureLimit: 1,
+                isActive: false,
+                pendingLimit: 0,
+                priority: 0,
+                totalPending: 0,
+            }
+        })
+        console.log('apisList :>> ', arrWithColor)
+
         setApiArray(apisList)
     }, [apisList])
 
@@ -125,6 +150,7 @@ const AddUpdateCompany = (props) => {
     }, [dispatch, id])
 
     const handleSubmit = async () => {
+        console.log('apiArray', apiArray)
         companyData.referenceApis = apiArray
 
         if (id) {
@@ -148,7 +174,8 @@ const AddUpdateCompany = (props) => {
                     >
                         <Form.Label>Operator Name</Form.Label>
                         <Form.Control
-                            value={companyData?.companyName}
+                            // value={companyData?.companyName}
+                            defaultValue={companyData.companyName}
                             type="text"
                             placeholder="Enter Operator Name"
                             onChange={(e) => {
@@ -163,8 +190,9 @@ const AddUpdateCompany = (props) => {
                     <Form.Group controlId="formGridMobileCode" className="m-2">
                         <Form.Label>Mobile App Code</Form.Label>
                         <Form.Control
-                            value={companyData?.mobileAppCode}
-                            text="text"
+                            // value={companyData?.mobileAppCode}
+                            defaultValue={companyData.mobileAppCode}
+                            type="text"
                             placeholder="Enter Mobile App Code"
                             onChange={(e) => {
                                 setCompanyData({
@@ -181,8 +209,9 @@ const AddUpdateCompany = (props) => {
                     >
                         <Form.Label>Operator Detail</Form.Label>
                         <Form.Control
-                            value={companyData?.companyDetail}
-                            as="textarea"
+                            // value={companyData?.companyDetail}
+                            defaultValue={companyData?.companyDetail}
+                            type="textarea"
                             placeholder="Enter Company Detail"
                             onChange={(e) => {
                                 setCompanyData({
@@ -201,7 +230,7 @@ const AddUpdateCompany = (props) => {
 
                         <Form.Check
                             type="switch"
-                            checked={companyData?.isActive}
+                            checked={companyData?.isActive || false}
                             onChange={(e) => {
                                 setCompanyData({
                                     ...companyData,
@@ -216,10 +245,9 @@ const AddUpdateCompany = (props) => {
                         className="m-2"
                     >
                         <Form.Label>Is Visible</Form.Label>
-
                         <Form.Check
                             type="switch"
-                            checked={companyData?.isVisible}
+                            checked={companyData?.isVisible || false}
                             onChange={(e) => {
                                 setCompanyData({
                                     ...companyData,
@@ -250,10 +278,10 @@ const AddUpdateCompany = (props) => {
 
                     <Form.Group controlId="formGridMinAmount" className="m-2">
                         <Form.Label>Min Amount</Form.Label>
-
                         <Form.Control
-                            value={companyData?.minAmount}
-                            text="text"
+                            // value={companyData?.minAmount}
+                            defaultValue={companyData?.minAmount}
+                            type="text"
                             placeholder="Enter Mobile App Code"
                             onChange={(e) => {
                                 setCompanyData({
@@ -267,8 +295,9 @@ const AddUpdateCompany = (props) => {
                     <Form.Group controlId="formGridMaxAmount" className="m-2">
                         <Form.Label>Max Amount</Form.Label>
                         <Form.Control
-                            value={companyData?.maxAmount}
-                            text="text"
+                            // value={companyData?.maxAmount}
+                            defaultValue={companyData?.maxAmount}
+                            type="text"
                             placeholder="Enter Mobile App Code"
                             onChange={(e) => {
                                 setCompanyData({
@@ -287,8 +316,9 @@ const AddUpdateCompany = (props) => {
                         >
                             <Form.Label>{x.apiName}</Form.Label>
                             <Form.Control
-                                value={x?.apiCode}
-                                text="text"
+                                // value={x?.apiCode}
+                                defaultValue={x?.apiCode}
+                                type="text"
                                 placeholder={`Enter ${x.apiName} Code`}
                                 onChange={(e) => {
                                     x.apiCode = e.target.value
@@ -304,7 +334,11 @@ const AddUpdateCompany = (props) => {
                         >
                             Cancel
                         </Button>
-                        <Button onClick={() => handleSubmit()} color="primary">
+                        <Button
+                            onClick={() => handleSubmit()}
+                            variant="outlined"
+                            color="primary"
+                        >
                             Save
                         </Button>
                     </div>
