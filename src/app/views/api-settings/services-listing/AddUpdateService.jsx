@@ -6,7 +6,7 @@ import {
     createService,
     fetchServiceById,
     getServicesById,
-    updateService,
+    editService,
 } from '../services-listing/store/action'
 
 const AddUpdateService = (props) => {
@@ -18,6 +18,7 @@ const AddUpdateService = (props) => {
     const [serviceData, setServiceData] = useState({
         serviceName: '',
         serviceDetail: '',
+        title: '',
         isActive: true,
     })
 
@@ -27,6 +28,7 @@ const AddUpdateService = (props) => {
                 serviceName: singleService.serviceName,
                 serviceDetail: singleService.serviceDetail,
                 isActive: singleService.isActive,
+                title: singleService.title,
             })
         }
     }, [id, singleService])
@@ -55,7 +57,7 @@ const AddUpdateService = (props) => {
 
     const handleSubmit = async () => {
         if (id) {
-            dispatch(updateService(id, serviceData))
+            dispatch(editService(id, serviceData))
             clearData()
             handleClose()
         } else {
@@ -67,65 +69,119 @@ const AddUpdateService = (props) => {
 
     return (
         <div className="container">
-            <div className="">
-                <Form>
-                    <Form.Group controlId="formGridServiceName">
-                        <Form.Label>Service Name</Form.Label>
-                        <Form.Control
-                            value={serviceData?.serviceName}
-                            type="text"
-                            placeholder="Enter Service Name"
-                            onChange={(e) => {
-                                setServiceData({
-                                    ...serviceData,
-                                    serviceName: e.target.value,
-                                })
-                            }}
-                        />
-                    </Form.Group>
+            <div className="container-fluid">
+                <div className="row mt-3">
+                    <div className="col-lg-12">
+                        <h2 className="main-heading">
+                            {id ? 'Update' : 'Add'} Service
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div className="col-lg-12">
+                <div className="card rounded-0 mb-4">
+                    {/* <div className="card-header">
+                        <h6> SEARCH FILTERS</h6>
+                    </div> */}
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-8">
+                                <Form>
+                                    <Form.Group
+                                        controlId="formGridServiceName"
+                                        className="m-2"
+                                    >
+                                        <Form.Label>Service Name</Form.Label>
+                                        <Form.Control
+                                            value={serviceData?.serviceName}
+                                            type="text"
+                                            placeholder="Enter Service Name"
+                                            onChange={(e) => {
+                                                setServiceData({
+                                                    ...serviceData,
+                                                    serviceName: e.target.value,
+                                                })
+                                            }}
+                                        />
+                                    </Form.Group>
 
-                    <Form.Group controlId="formGridServiceDetail">
-                        <Form.Label>Service Detail</Form.Label>
-                        <Form.Control
-                            value={serviceData?.serviceDetail}
-                            as="textarea"
-                            placeholder="Enter Service Detail"
-                            onChange={(e) => {
-                                setServiceData({
-                                    ...serviceData,
-                                    serviceDetail: e.target.value,
-                                })
-                            }}
-                        />
-                    </Form.Group>
+                                    <Form.Group
+                                        controlId="formGridServiceDetail"
+                                        className="m-2"
+                                    >
+                                        <Form.Label>Service Detail</Form.Label>
+                                        <Form.Control
+                                            value={serviceData?.serviceDetail}
+                                            as="textarea"
+                                            placeholder="Enter Service Detail"
+                                            onChange={(e) => {
+                                                setServiceData({
+                                                    ...serviceData,
+                                                    serviceDetail:
+                                                        e.target.value,
+                                                })
+                                            }}
+                                        />
+                                    </Form.Group>
 
-                    <Form.Group controlId="formGridServiceIsActive">
-                        <Form.Label>Is Active</Form.Label>
+                                    <Form.Group
+                                        controlId="formGridServiceDetail"
+                                        className="m-2"
+                                    >
+                                        <Form.Label>Service Title</Form.Label>
+                                        <Form.Control
+                                            value={serviceData?.title}
+                                            type="text"
+                                            placeholder="Enter Service Title"
+                                            onChange={(e) => {
+                                                setServiceData({
+                                                    ...serviceData,
+                                                    title: e.target.value,
+                                                })
+                                            }}
+                                        />
+                                    </Form.Group>
 
-                        <Form.Check
-                            type="switch"
-                            id="custom-switch"
-                            checked={serviceData?.isActive}
-                            onChange={(e) => {
-                                setServiceData({
-                                    ...serviceData,
-                                    isActive: e.target.checked,
-                                })
-                            }}
-                        />
-                    </Form.Group>
+                                    <Form.Group
+                                        controlId="formGridServiceIsActive"
+                                        className="m-2"
+                                    >
+                                        <Form.Label>Is Active</Form.Label>
 
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button onClick={() => handleSubmit()} color="primary">
-                        Save
-                    </Button>
-                </Form>
+                                        <Form.Check
+                                            type="switch"
+                                            id="custom-switch"
+                                            checked={serviceData?.isActive}
+                                            onChange={(e) => {
+                                                setServiceData({
+                                                    ...serviceData,
+                                                    isActive: e.target.checked,
+                                                })
+                                            }}
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group>
+                                        <Button
+                                            onClick={() => handleClose()}
+                                            color="secondary"
+                                            className="m-2"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onClick={() => handleSubmit()}
+                                            color="primary"
+                                            className="m-2"
+                                        >
+                                            Save
+                                        </Button>
+                                    </Form.Group>
+                                </Form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

@@ -28,7 +28,7 @@ export const getServices = () => async (dispatch) => {
     }
 }
 
-export const updateService = (id, data) => async (dispatch) => {
+export const editService = (id, data) => async (dispatch) => {
     try {
         dispatch(setLoading(true))
         await servicesService.updateService(id, data).then((res) => {

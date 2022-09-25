@@ -1,34 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import { companyService } from 'app/services/company.service'
-import { FormControlLabel, Switch } from '@mui/material'
-import CustomDropDown from 'app/components/ReactDropDown/ReactDropDown'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getApiList } from '../apis/store/action'
 import { Card, Form } from 'react-bootstrap'
-import { Box } from '@mui/system'
-import styled from '@emotion/styled'
 import { getServices } from '../services-listing/store/action'
 import ReactSelect from 'app/components/ReactDropDown/ReactSelect'
 import { fetchCompanyById, getCompaniesById } from './store/action'
-
-const CardHeader = styled('div')(() => ({
-    paddingLeft: '24px',
-    paddingRight: '24px',
-    marginBottom: '12px',
-    marginTop: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-}))
-
-const Title = styled('span')(() => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    textTransform: 'capitalize',
-}))
 
 const AddUpdateCompany = (props) => {
     const dispatch = useDispatch()

@@ -39,7 +39,7 @@ export const getCompanies = (data) => async (dispatch) => {
     }
 }
 
-export const updateService = (id, data) => async (dispatch) => {
+export const editCompany = (id, data) => async (dispatch) => {
     try {
         dispatch(setLoading(true))
         await companyService.updateCompany(id, data).then((res) => {
@@ -50,7 +50,7 @@ export const updateService = (id, data) => async (dispatch) => {
     }
 }
 
-export const createService = (data) => async (dispatch) => {
+export const createCompany = (data) => async (dispatch) => {
     try {
         dispatch(setLoading(true))
         await companyService.addCompany(data).then((res) => {

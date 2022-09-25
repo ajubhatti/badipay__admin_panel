@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getServices } from './store/action'
+import { editService, getServices } from './store/action'
 import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import {
-    AiOutlineEdit,
-    AiFillDelete,
-    AiFillEye,
-    AiOutlinePlus,
-} from 'react-icons/ai'
+import { AiOutlineEdit, AiFillDelete, AiOutlinePlus } from 'react-icons/ai'
 import { Button, Form } from 'react-bootstrap'
+import moment from 'moment'
 
 const ServiceList = () => {
     const navigate = useNavigate()
@@ -18,7 +14,7 @@ const ServiceList = () => {
     const [serviceData, setServicesData] = useState([])
 
     const GetActionFormat = (cell, row) => (
-        <div>
+        <>
             <button
                 type="button"
                 className="btn btn-outline-primary btn-sm ts-buttom m-1"
@@ -35,16 +31,21 @@ const ServiceList = () => {
             >
                 <AiFillDelete />
             </button>
-            <button
-                type="button"
-                className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                size="sm"
-                onClick={() => handleModelView(cell, row)}
-            >
-                <AiFillEye />
-            </button>
-        </div>
+        </>
     )
+
+    const GetIsActiveSwitch = (cell, row) => (
+        <Form.Check
+            type="switch"
+            id="isServiceActive"
+            checked={row?.isActive}
+            onChange={(e) => {
+                handleUpdate(row, e.target.checked)
+            }}
+        />
+    )
+
+    const GetTime = (cell, row) => moment(row.created).format('DD-MM-YYYY')
 
     const columns = [
         {
@@ -56,8 +57,13 @@ const ServiceList = () => {
             text: 'service Detail',
         },
         {
+            dataField: 'title',
+            text: 'Title',
+        },
+        {
             dataField: 'isActive',
             text: 'Is Active',
+            formatter: GetIsActiveSwitch,
         },
         {
             dataField: 'iconImage',
@@ -66,6 +72,7 @@ const ServiceList = () => {
         {
             dataField: 'created',
             text: 'Created At',
+            formatter: GetTime,
         },
         {
             text: 'Action',
@@ -75,12 +82,20 @@ const ServiceList = () => {
         },
     ]
 
-    const handleModelDelete = (cell, row) => {
-        console.log('object delete:>> ', { cell, row })
+    const handleUpdate = (data, isChecked) => {
+        let payload = {
+            isActive: isChecked,
+            serviceDetail: data.serviceDetail,
+            serviceName: data.serviceName,
+            title: data.title,
+        }
+
+        dispatch(editService(data._id, payload))
+        dispatch(getServices())
     }
 
-    const handleModelView = (cell, row) => {
-        console.log('object view:>> ', { cell, row })
+    const handleModelDelete = (cell, row) => {
+        console.log('object delete:>> ', { cell, row })
     }
 
     const handleModelEdit = (cell, row) => {
@@ -107,25 +122,37 @@ const ServiceList = () => {
 
     return (
         <div className="container w-100">
-            <div className="mb-3 justify-content-between d-flex">
-                <div className="">
-                    <Form.Label>Service List</Form.Label>
+            <div className="container">
+                <div className="container-fluid">
+                    <div className="row mt-3">
+                        <div className="col-lg-12 justify-content-between d-flex">
+                            <h2 className="main-heading">Service List</h2>
+                            <div>
+                                <Button
+                                    variant="primary"
+                                    type="button"
+                                    onClick={() => addNewService()}
+                                >
+                                    <AiOutlinePlus />
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <Button
-                        variant="primary"
-                        type="button"
-                        onClick={() => addNewService()}
-                    >
-                        <AiOutlinePlus />
-                    </Button>
+                <div className="col-lg-12">
+                    <div className="card rounded-0 mb-4">
+                        <div className="card-body">
+                            <div className="row">
+                                <ReactBootstrapTable
+                                    tableData={serviceData}
+                                    columns={columns}
+                                    rowEvents={rowEvents}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <ReactBootstrapTable
-                tableData={serviceData}
-                columns={columns}
-                rowEvents={rowEvents}
-            />
         </div>
     )
 }

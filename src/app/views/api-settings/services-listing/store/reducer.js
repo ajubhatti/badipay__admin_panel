@@ -21,6 +21,7 @@ const servicesListReducer = (state = initialState, action) => {
                 ...state,
                 loading: payload,
             }
+
         case FETCH_SERVICE_BY_ID:
             return {
                 ...state,
