@@ -39,6 +39,23 @@ export const navigations = [
         type: 'label',
     },
     {
+        name: 'Recharge',
+        icon: 'send',
+        badge: { color: 'secondary' },
+        children: [
+            {
+                name: 'Recharge',
+                path: '/recharge',
+                iconText: 'RCH',
+            },
+            {
+                name: 'Discount',
+                path: '/recharge/discount',
+                iconText: 'DS',
+            },
+        ],
+    },
+    {
         name: 'API Setings',
         icon: 'build',
         badge: { color: 'secondary' },
@@ -76,24 +93,41 @@ export const navigations = [
         badge: {},
         children: [
             {
+                name: 'recharges',
+                path: '/user/recharges',
+                iconText: 'URC',
+            },
+            {
                 name: 'user list',
-                path: '/material/user',
+                path: '/user/list',
                 iconText: 'UL',
             },
             {
                 name: 'Wallet list',
-                path: '/material/wallet-request',
+                path: '/user/wallet-request',
                 iconText: 'WL',
             },
             {
                 name: 'banner list',
-                path: '/material/banner',
+                path: '/banner/list',
                 iconText: 'BL',
             },
             {
                 name: 'ticker list',
-                path: '/material/ticker',
+                path: '/ticker/list',
                 iconText: 'BL',
+            },
+        ],
+    },
+    {
+        name: 'Utility',
+        icon: 'assignment',
+        badge: '',
+        children: [
+            {
+                name: 'state',
+                path: '/utility/state',
+                iconText: 'STT',
             },
         ],
     },
@@ -104,12 +138,12 @@ export const navigations = [
         children: [
             {
                 name: 'bank list',
-                path: '/material/bank',
+                path: '/bank/list',
                 iconText: 'BL',
             },
             {
                 name: 'bank account list',
-                path: '/material/bank-account',
+                path: '/bank/account',
                 iconText: 'BAL',
             },
         ],

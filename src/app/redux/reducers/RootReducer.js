@@ -7,6 +7,8 @@ import companyReducer from 'app/views/api-settings/company-listing/store/reducer
 import apisReducer from 'app/views/api-settings/apis/store/reducer'
 import servicesListReducer from 'app/views/api-settings/services-listing/store/reducer'
 import operatorSwitchReducer from 'app/views/api-settings/operator-switching/store/reducer'
+import rechargeReducer from 'app/views/recharge/store/reducer'
+import utilityReducer from 'app/views/utilities/store/reducer'
 
 const RootReducer = combineReducers({
     notifications: NotificationReducer,
@@ -17,6 +19,8 @@ const RootReducer = combineReducers({
     apis: apisReducer,
     servicesList: servicesListReducer,
     operator: operatorSwitchReducer,
+    recharge: rechargeReducer,
+    utilities: utilityReducer,
 })
 
 export default RootReducer

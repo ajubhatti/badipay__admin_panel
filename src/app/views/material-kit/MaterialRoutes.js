@@ -1,20 +1,46 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
-import BankAccountTable from '../bank/BankAccountTable'
-import UserListingTable from '../user/UserListingTable'
-import WalletRequestListingTable from './tables/WalletRequestListingTable'
-import BannerListTable from './tables/BannerListTable'
-import TickerListTable from './tables/TickerListTable'
-import CompanyListing from '../api-settings/company-listing/OperatorListing'
-import ApiListing from '../api-settings/apis/ApiListing'
-import BankListTable from '../bank/BankListTable'
-import AddUpdateCompany from '../api-settings/company-listing/AddUpdateCompany'
-import AmbikaSlabList from '../api-settings/company-listing/AmbikaSlabList'
-import ServiceList from '../api-settings/services-listing/ServiceList'
-import OperatorSwitching from '../api-settings/operator-switching/OperatorSwitching'
-import AddUpdateService from '../api-settings/services-listing/AddUpdateService'
-import AddUpdateApis from '../api-settings/apis/AddUpdateApis'
-
+const BankAccountTable = Loadable(
+    lazy(() => import('../bank/BankAccountTable'))
+)
+const UserListingTable = Loadable(
+    lazy(() => import('../user/UserListingTable'))
+)
+const WalletRequestListingTable = Loadable(
+    lazy(() => import('./tables/WalletRequestListingTable'))
+)
+const BannerListTable = Loadable(lazy(() => import('./tables/BannerListTable')))
+const TickerListTable = Loadable(lazy(() => import('./tables/TickerListTable')))
+const CompanyListing = Loadable(
+    lazy(() => import('../api-settings/company-listing/OperatorListing'))
+)
+const ApiListing = Loadable(
+    lazy(() => import('../api-settings/apis/ApiListing'))
+)
+const BankListTable = Loadable(lazy(() => import('../bank/BankListTable')))
+const AddUpdateCompany = Loadable(
+    lazy(() => import('../api-settings/company-listing/AddUpdateCompany'))
+)
+const AmbikaSlabList = Loadable(
+    lazy(() => import('../api-settings/company-listing/AmbikaSlabList'))
+)
+const ServiceList = Loadable(
+    lazy(() => import('../api-settings/services-listing/ServiceList'))
+)
+const OperatorSwitching = Loadable(
+    lazy(() => import('../api-settings/operator-switching/OperatorSwitching'))
+)
+const AddUpdateService = Loadable(
+    lazy(() => import('../api-settings/services-listing/AddUpdateService'))
+)
+const AddUpdateApis = Loadable(
+    lazy(() => import('../api-settings/apis/AddUpdateApis'))
+)
+const DiscountOnRecharge = Loadable(
+    lazy(() => import('../recharge/DiscountOnRecharge'))
+)
+const RechargeList = Loadable(lazy(() => import('../recharge/RechargeList')))
+const StateList = Loadable(lazy(() => import('../utilities/StateList')))
 const AppTable = Loadable(lazy(() => import('./tables/AppTable')))
 const AppForm = Loadable(lazy(() => import('./forms/AppForm')))
 const AppButton = Loadable(lazy(() => import('./buttons/AppButton')))
@@ -93,27 +119,27 @@ const materialRoutes = [
     },
 
     {
-        path: '/material/bank',
+        path: '/bank/list',
         element: <BankListTable />,
     },
     {
-        path: '/material/bank-account',
+        path: '/bank/account',
         element: <BankAccountTable />,
     },
     {
-        path: '/material/banner',
+        path: '/banner/list',
         element: <BannerListTable />,
     },
     {
-        path: '/material/ticker',
+        path: '/ticker/list',
         element: <TickerListTable />,
     },
     {
-        path: '/material/wallet-request',
+        path: '/user/wallet-request',
         element: <WalletRequestListingTable />,
     },
     {
-        path: '/material/user',
+        path: '/user/list',
         element: <UserListingTable />,
     },
     {
@@ -159,6 +185,18 @@ const materialRoutes = [
     {
         path: '/api-setting/service/add/:id',
         element: <AddUpdateService />,
+    },
+    {
+        path: '/recharge/discount',
+        element: <DiscountOnRecharge />,
+    },
+    {
+        path: '/recharge',
+        element: <RechargeList />,
+    },
+    {
+        path: '/utility/state',
+        element: <StateList />,
     },
 ]
 

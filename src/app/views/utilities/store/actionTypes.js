@@ -1,0 +1,3 @@
+export const SET_LOADING = 'SET_LOADING'
+export const FETCH_STATE = 'FETCH_STATE'
+export const FETCH_STATE_BY_ID = 'FETCH_STATE_BY_ID'
