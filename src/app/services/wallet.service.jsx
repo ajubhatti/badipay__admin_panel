@@ -17,6 +17,7 @@ export const walletServices = {
         return userSubject.value
     },
     updateBalance,
+    updateWalletStatus,
 }
 
 function getAll(payload) {
@@ -32,15 +33,23 @@ function create(params) {
 }
 
 function update(id, params) {
-    return fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {
+    return fetchWrapper.put(`${baseUrl}/${id}`, params).then((wallet) => {
         // update stored user if the logged in user updated their own record
-        if (user.id === userSubject.value.id) {
-            // publish updated user to subscribers
-            user = { ...userSubject.value, ...user }
-            userSubject.next(user)
-        }
-        return user
+        // if (user.id === userSubject?.value?.id) {
+        //     // publish updated user to subscribers
+        //     user = { ...userSubject.value, ...user }
+        //     userSubject.next(user)
+        // }
+        return wallet
     })
+}
+
+function updateWalletStatus(params) {
+    return fetchWrapper
+        .post(`${baseUrl}/updateWalletStatus`, params)
+        .then((response) => {
+            return response
+        })
 }
 
 // prefixed with underscore because 'delete' is a reserved word in javascript

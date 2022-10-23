@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 import { accountService } from '../../../services/account.service'
 import AddUpdateUserDialog from '../../user/AddUpdateUserDialog'
-import { CSVLink, CSVDownload } from 'react-csv'
+import { CSVLink } from 'react-csv'
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import DateRangePick from '../dates/DateRangePick'
@@ -79,7 +79,7 @@ const WalletRequestListingTable = () => {
 
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
     const [page, setPage] = React.useState(0)
-    const [usersList, setUsersList] = useState([])
+    const [walletRequestList, setWalletRequestList] = useState([])
     const [open, setOpen] = useState(false)
     const [userData, setUserData] = useState({})
     const [downloadType, setDownloadType] = useState('csv')
@@ -117,9 +117,8 @@ const WalletRequestListingTable = () => {
 
         await walletServices.getAll(payload).then((res) => {
             if (res.data) {
-                setUsersList(res.data.wallets)
+                setWalletRequestList(res.data.wallets)
             }
-
         })
     }
 
@@ -127,7 +126,7 @@ const WalletRequestListingTable = () => {
         margin: theme.spacing(1),
     }))
 
-    const editUser = (data) => {
+    const editWallet = (data) => {
         setUserData(data)
         setOpen(true)
     }
@@ -176,7 +175,7 @@ const WalletRequestListingTable = () => {
             ],
         ]
 
-        const data = usersList.map((elt) => [
+        const data = walletRequestList.map((elt) => [
             elt.userName,
             elt.phoneNumber,
             elt.email,
@@ -203,6 +202,28 @@ const WalletRequestListingTable = () => {
         setSearchText(event.target.value)
     }
 
+    const handleChangeStatus = async (data) => {
+        console.log('data :>> ', data)
+        let payload = {}
+
+        await walletServices.getAll(payload).then((res) => {
+            if (res.data) {
+                setWalletRequestList(res.data.wallets)
+            }
+        })
+    }
+
+    const handleUpdateStatus = async (id, data) => {
+        console.log('data :>> ', data)
+        let payload = {
+            id: id,
+            statusOfWalletRequest: data,
+        }
+        await walletServices.updateWalletStatus(payload).then((res) => {
+            getAllWalletRequest()
+        })
+    }
+
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
@@ -217,7 +238,10 @@ const WalletRequestListingTable = () => {
                 </Select>
 
                 {downloadType == 'csv' ? (
-                    <CSVLink filename={'user data.csv'} data={usersList}>
+                    <CSVLink
+                        filename={'user data.csv'}
+                        data={walletRequestList}
+                    >
                         <Fab
                             size="small"
                             color="secondary"
@@ -321,216 +345,272 @@ const WalletRequestListingTable = () => {
                                 status
                             </TableCell>
 
+                            <TableCell sx={{ px: 0 }} colSpan={4}>
+                                actions
+                            </TableCell>
+
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 actions
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {usersList.length > 0
-                            ? usersList
-                                .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage
-                                )
-                                .map((userData, index) => (
-                                    <TableRow key={index} hover>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell
-                                            colSpan={4}
-                                            align="left"
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                            >
-                                                <Avatar
-                                                    src={userData?.imgUrl}
-                                                />
-                                                <Paragraph
-                                                    sx={{ m: 0, ml: 4 }}
-                                                >
-                                                    {userData?.userName}
-                                                </Paragraph>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.paymentType}
-                                        </TableCell>
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.referenceNo}
-                                        </TableCell>
+                        {walletRequestList.length > 0
+                            ? walletRequestList
+                                  .slice(
+                                      page * rowsPerPage,
+                                      page * rowsPerPage + rowsPerPage
+                                  )
+                                  .map((walletData, index) => (
+                                      <TableRow key={index} hover>
+                                          <TableCell>{index + 1}</TableCell>
+                                          <TableCell
+                                              colSpan={4}
+                                              align="left"
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              <Box
+                                                  display="flex"
+                                                  alignItems="center"
+                                              >
+                                                  <Avatar
+                                                      src={walletData?.imgUrl}
+                                                  />
+                                                  <Paragraph
+                                                      sx={{ m: 0, ml: 4 }}
+                                                  >
+                                                      {walletData?.userName}
+                                                  </Paragraph>
+                                              </Box>
+                                          </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.paymentType}
+                                          </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.referenceNo}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.depositBank}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.depositBank}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.depositBranch}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.depositBranch}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.requestAmount}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.requestAmount}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.amountType}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.amountType}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.finalWalletAmount}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.finalWalletAmount}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.remark}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.remark}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.approveBy}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.approveBy}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.approveDate}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.approveDate}
+                                          </TableCell>
 
-                                        <TableCell
-                                            align="left"
-                                            colSpan={2}
-                                            sx={{
-                                                px: 0,
-                                                textTransform: 'capitalize',
-                                            }}
-                                        >
-                                            {userData?.password}
-                                        </TableCell>
+                                          <TableCell
+                                              align="left"
+                                              colSpan={2}
+                                              sx={{
+                                                  px: 0,
+                                                  textTransform: 'capitalize',
+                                              }}
+                                          >
+                                              {walletData?.password}
+                                          </TableCell>
 
-                                        <TableCell
-                                            sx={{ px: 0 }}
-                                            align="left"
-                                            colSpan={2}
-                                        >
+                                          <TableCell
+                                              sx={{ px: 0 }}
+                                              align="left"
+                                              colSpan={2}
+                                              onClick={() =>
+                                                  handleChangeStatus(walletData)
+                                              }
+                                          >
+                                              <Small bgcolor={bgPrimary}>
+                                                  {walletData?.statusOfWalletRequest
+                                                      ? walletData?.statusOfWalletRequest
+                                                      : 'pending'}
+                                              </Small>
 
-                                            <Small bgcolor={bgPrimary}>
-                                                {userData?.statusOfWalletRequest ? userData?.statusOfWalletRequest : 'pending'}
-                                            </Small>
+                                              {/* {walletData?.statusOfWalletRequest ==
+                                              'pending' ? (
+                                                  <Small bgcolor={bgPrimary}>
+                                                      Active
+                                                  </Small>
+                                              ) : (
+                                                  <Small bgcolor={bgError}>
+                                                      Inactive
+                                                  </Small>
+                                              )} */}
+                                          </TableCell>
 
-                                            {/* {userData?.statusOfWalletRequest == 'pending' ? (
-                                                <Small bgcolor={bgPrimary}>
-                                                    Active
-                                                </Small>
-                                            ) : (
-                                                <Small bgcolor={bgError}>
-                                                    Inactive
-                                                </Small>
-                                            )} */}
-                                        </TableCell>
-
-                                        {/* <TableCell sx={{ px: 0 }} colSpan={2}>
+                                          {/* <TableCell sx={{ px: 0 }} colSpan={2}>
                                             <IconButton
                                                 onClick={() =>
-                                                    editUser(userData)
+                                                    editWallet(walletData)
                                                 }
                                             >
                                                 <Icon>edit_icon</Icon>
                                             </IconButton>
                                         </TableCell> */}
 
-                                        <TableCell sx={{ px: 0 }} colSpan={2}>
-                                            <IconButton
-                                                onClick={() =>
-                                                    changeStatus(userData)
-                                                }
-                                            >
-                                                <Icon color="error">
-                                                    {userData.isActive
-                                                        ? 'close'
-                                                        : 'check'}
-                                                </Icon>
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() =>
-                                                    editUser(userData)
-                                                }
-                                            >
-                                                <Icon>edit_icon</Icon>
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
+                                          <TableCell sx={{ px: 0 }} colSpan={4}>
+                                              {/* {walletData?.statusOfWalletRequest ==
+                                              'pending' ? ( */}
+                                              <Small
+                                                  disabled={
+                                                      walletData?.statusOfWalletRequest ==
+                                                      'pending'
+                                                  }
+                                                  bgcolor={bgPrimary}
+                                                  onClick={() => {
+                                                      if (
+                                                          walletData?.statusOfWalletRequest ==
+                                                          'pending'
+                                                      ) {
+                                                          handleUpdateStatus(
+                                                              walletData?._id,
+                                                              'approve'
+                                                          )
+                                                      }
+                                                  }}
+                                              >
+                                                  approve
+                                              </Small>
+                                              {/* ) : ( */}
+                                              <Small
+                                                  disabled={
+                                                      walletData?.statusOfWalletRequest ==
+                                                      'pending'
+                                                  }
+                                                  bgcolor={bgError}
+                                                  onClick={() => {
+                                                      if (
+                                                          walletData?.statusOfWalletRequest ==
+                                                          'pending'
+                                                      ) {
+                                                          handleUpdateStatus(
+                                                              walletData?._id,
+                                                              'cancel'
+                                                          )
+                                                      }
+                                                  }}
+                                              >
+                                                  reject
+                                              </Small>
+                                              {/* )} */}
+                                          </TableCell>
+
+                                          <TableCell sx={{ px: 0 }} colSpan={2}>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      changeStatus(walletData)
+                                                  }
+                                              >
+                                                  <Icon color="error">
+                                                      {walletData.isActive
+                                                          ? 'close'
+                                                          : 'check'}
+                                                  </Icon>
+                                              </IconButton>
+                                              <IconButton
+                                                  onClick={() =>
+                                                      editWallet(walletData)
+                                                  }
+                                              >
+                                                  <Icon>edit_icon</Icon>
+                                              </IconButton>
+                                          </TableCell>
+                                      </TableRow>
+                                  ))
                             : null}
                     </TableBody>
                 </UserTable>
@@ -539,7 +619,7 @@ const WalletRequestListingTable = () => {
                     sx={{ px: 2 }}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={usersList.length}
+                    count={walletRequestList.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{

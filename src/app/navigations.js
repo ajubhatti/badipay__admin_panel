@@ -53,6 +53,11 @@ export const navigations = [
                 path: '/recharge/discount',
                 iconText: 'DS',
             },
+            {
+                name: 'Transactions',
+                path: '/recharge/transactions',
+                iconText: 'TRNS',
+            },
         ],
     },
     {

@@ -1,5 +1,6 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
+import Transactions from '../recharge/Transactions'
 const BankAccountTable = Loadable(
     lazy(() => import('../bank/BankAccountTable'))
 )
@@ -189,6 +190,10 @@ const materialRoutes = [
     {
         path: '/recharge/discount',
         element: <DiscountOnRecharge />,
+    },
+    {
+        path: '/recharge/transactions',
+        element: <Transactions />,
     },
     {
         path: '/recharge',

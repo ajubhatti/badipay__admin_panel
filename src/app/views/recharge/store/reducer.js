@@ -1,8 +1,13 @@
-import { FETCH_RECHARGES, SET_RECHARGE_LOADING } from './actionTypes'
+import {
+    FETCH_RECHARGES,
+    FETCH_TRANSACTIONS,
+    SET_RECHARGE_LOADING,
+} from './actionTypes'
 
 const initialState = {
     loading: false,
     rechargesData: [],
+    transactionData: [],
 }
 
 const rechargeReducer = (state = initialState, action) => {
@@ -19,7 +24,11 @@ const rechargeReducer = (state = initialState, action) => {
                 ...state,
                 rechargesData: payload,
             }
-
+        case FETCH_TRANSACTIONS:
+            return {
+                ...state,
+                transactionData: payload,
+            }
         default:
             return state
     }
