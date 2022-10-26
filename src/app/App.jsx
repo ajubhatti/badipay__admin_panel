@@ -7,20 +7,33 @@ import { MatxTheme } from 'app/components'
 import { useRoutes } from 'react-router-dom'
 import { AuthProvider } from 'app/contexts/JWTAuthContext'
 import { SettingsProvider } from 'app/contexts/SettingsContext'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "../css/style.css";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../css/style.css'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
     const all_pages = useRoutes(AllPages())
 
     return (
-        <Provider store={Store}>
-            <SettingsProvider>
-                <MatxTheme>
-                    <AuthProvider>{all_pages}</AuthProvider>
-                </MatxTheme>
-            </SettingsProvider>
-        </Provider>
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnHover
+                limit={3}
+            />
+            <Provider store={Store}>
+                <SettingsProvider>
+                    <MatxTheme>
+                        <AuthProvider>{all_pages}</AuthProvider>
+                    </MatxTheme>
+                </SettingsProvider>
+            </Provider>
+        </>
     )
 }
 

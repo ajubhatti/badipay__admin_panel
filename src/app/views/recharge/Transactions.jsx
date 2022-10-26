@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getRechargeList, getTransactionsList } from './store/action'
+import { getTransactionsList } from './store/action'
 import { AiFillEye } from 'react-icons/ai'
 import { getStateList } from '../utilities/store/action'
 import { getCompanies } from '../api-settings/company-listing/store/action'
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
 import moment from 'moment'
+import BasicTable from 'app/components/ReactBootStrapTable/BasicTable'
 
 const Transactions = () => {
     const navigate = useNavigate()
@@ -29,7 +29,6 @@ const Transactions = () => {
         </div>
     )
 
-    console.log('transactionData', transactionData)
     const GetTime = (cell, row) =>
         moment(row?.created).format('DD-MM-YYYY HH:mm:ss')
 
@@ -90,7 +89,7 @@ const Transactions = () => {
         //         return (r.operatorName = rslt?.companyName || '')
         //     })
         // }
-        console.log('transactions :>> ', transactionData)
+
         if (transactionData) {
             setTransactionListData(transactionData?.transactions)
         }
@@ -114,11 +113,7 @@ const Transactions = () => {
                 </div>
             </div>
             {transactionListData && (
-                <ReactBootstrapTable
-                    tableData={transactionListData}
-                    columns={columns}
-                    rowEvents={rowEvents}
-                />
+                <BasicTable data={transactionListData} columns={columns} />
             )}
         </div>
     )

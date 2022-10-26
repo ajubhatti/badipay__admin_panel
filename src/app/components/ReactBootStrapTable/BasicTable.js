@@ -6,7 +6,7 @@ import paginationFactory, {
 } from 'react-bootstrap-table2-paginator'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css'
-import './style.css'
+// import './style.css'
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 
 const { SearchBar } = Search
@@ -24,12 +24,17 @@ const BasicTable = ({ columns, data }) => {
         firstPageTitle: 'Next page',
         lastPageTitle: 'Last page',
         showTotal: true,
-        totalSize: data.length,
+        totalSize: data?.length,
     }
 
     const contentTable = ({ paginationProps, paginationTableProps }) => (
         <div>
-            <ToolkitProvider keyField="id" columns={columns} data={data} search>
+            <ToolkitProvider
+                keyField="id"
+                columns={columns}
+                data={data || []}
+                search
+            >
                 {(toolkitprops) => (
                     <div>
                         <SearchBar {...toolkitprops.searchProps} />

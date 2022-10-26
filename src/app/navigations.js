@@ -61,6 +61,18 @@ export const navigations = [
         ],
     },
     {
+        name: 'Wallet',
+        icon: 'build',
+        badge: { color: 'black' },
+        children: [
+            {
+                name: 'Wallet list',
+                path: '/user/wallet-request',
+                iconText: 'WL',
+            },
+        ],
+    },
+    {
         name: 'API Setings',
         icon: 'build',
         badge: { color: 'secondary' },
@@ -107,11 +119,7 @@ export const navigations = [
                 path: '/user/list',
                 iconText: 'UL',
             },
-            {
-                name: 'Wallet list',
-                path: '/user/wallet-request',
-                iconText: 'WL',
-            },
+
             {
                 name: 'banner list',
                 path: '/banner/list',

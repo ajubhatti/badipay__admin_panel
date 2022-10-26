@@ -5,7 +5,7 @@ import {
     FETCH_COMPANY_BY_ID,
     SET_LOADING,
 } from './actionTypes'
-// import { toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { axiosAdmin } from 'app/services/api'
 import { GET_COMPANY_BY_ID } from 'app/constants/urls'
 import { companyService } from 'app/services/company.service'
@@ -20,7 +20,7 @@ export const getCompaniesById = (data) => async (dispatch) => {
             dispatch(setLoading(false))
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }
@@ -34,7 +34,7 @@ export const getCompanies = (data) => async (dispatch) => {
             dispatch(setLoading(false))
         }
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }

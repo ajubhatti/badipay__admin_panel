@@ -1,4 +1,5 @@
 import { utilityService } from 'app/services/utility.services'
+import { toast } from 'react-toastify'
 import { FETCH_STATE, FETCH_STATE_BY_ID, SET_LOADING } from './actionTypes'
 
 export const getStateById = (data) => async (dispatch) => {
@@ -9,7 +10,7 @@ export const getStateById = (data) => async (dispatch) => {
             dispatch(setLoading(false))
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }
@@ -24,7 +25,7 @@ export const getStateList = (data) => async (dispatch) => {
             }
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }

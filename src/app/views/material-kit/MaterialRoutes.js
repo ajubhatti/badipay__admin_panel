@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
 import Transactions from '../recharge/Transactions'
+import WalletRequestListingTable2 from '../wallet/WalletRequestListingTable2'
 const BankAccountTable = Loadable(
     lazy(() => import('../bank/BankAccountTable'))
 )
@@ -8,7 +9,7 @@ const UserListingTable = Loadable(
     lazy(() => import('../user/UserListingTable'))
 )
 const WalletRequestListingTable = Loadable(
-    lazy(() => import('./tables/WalletRequestListingTable'))
+    lazy(() => import('../wallet/WalletRequestListingTable'))
 )
 const BannerListTable = Loadable(lazy(() => import('./tables/BannerListTable')))
 const TickerListTable = Loadable(lazy(() => import('./tables/TickerListTable')))
@@ -137,7 +138,8 @@ const materialRoutes = [
     },
     {
         path: '/user/wallet-request',
-        element: <WalletRequestListingTable />,
+        // element: <WalletRequestListingTable />,
+        element: <WalletRequestListingTable2 />,
     },
     {
         path: '/user/list',

@@ -1,5 +1,6 @@
 import { rechargesService } from 'app/services/recharge.service'
 import { transactionsService } from 'app/services/transactions.service'
+import { toast } from 'react-toastify'
 import {
     FETCH_RECHARGES,
     FETCH_RECHARGES_BY_ID,
@@ -16,7 +17,7 @@ export const getRechargeById = (data) => async (dispatch) => {
             dispatch(setLoading(false))
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }
@@ -31,7 +32,7 @@ export const getRechargeList = (data) => async (dispatch) => {
             }
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }

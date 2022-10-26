@@ -9,6 +9,7 @@ import servicesListReducer from 'app/views/api-settings/services-listing/store/r
 import operatorSwitchReducer from 'app/views/api-settings/operator-switching/store/reducer'
 import rechargeReducer from 'app/views/recharge/store/reducer'
 import utilityReducer from 'app/views/utilities/store/reducer'
+import walletReducer from 'app/views/wallet/store/reducer'
 
 const RootReducer = combineReducers({
     notifications: NotificationReducer,
@@ -21,6 +22,7 @@ const RootReducer = combineReducers({
     operator: operatorSwitchReducer,
     recharge: rechargeReducer,
     utilities: utilityReducer,
+    wallet: walletReducer,
 })
 
 export default RootReducer

@@ -1,5 +1,5 @@
 import { FETCH_SERVICES, FETCH_SERVICE_BY_ID, SET_LOADING } from './actionTypes'
-// import { toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { servicesService } from 'app/services/services.service'
 
 export const getServicesById = (data) => async (dispatch) => {
@@ -10,7 +10,7 @@ export const getServicesById = (data) => async (dispatch) => {
             dispatch(setLoading(false))
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }
@@ -23,7 +23,7 @@ export const getServices = () => async (dispatch) => {
             dispatch(setLoading(false))
         })
     } catch (err) {
-        // toast.error(err.response?.data?.message || err.message)
+        toast.error(err?.response?.data?.message || err?.message)
         dispatch(setLoading(false))
     }
 }
