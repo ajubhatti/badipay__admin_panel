@@ -46,6 +46,10 @@ const Transactions = () => {
             text: 'status',
         },
         {
+            dataField: 'transactionId',
+            text: 'Transaction Id',
+        },
+        {
             dataField: 'created',
             text: 'Created At',
             formatter: GetTime,

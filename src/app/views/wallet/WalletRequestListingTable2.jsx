@@ -22,6 +22,7 @@ import {
 } from 'react-icons/ai'
 import ApproveRejectDialog from './ApproveRejectDialog'
 import { Button } from 'react-bootstrap'
+import ApprovalDialog from './ApprovalDialog'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -57,6 +58,9 @@ const WalletRequestListingTable2 = () => {
     const [modalData, setModalData] = useState({})
     const [type, setType] = useState('reject')
     const { walletList } = useSelector((state) => state.wallet)
+
+    const [show, setShow] = useState(false)
+    const [idForChange, setIdForChange] = useState('')
 
     console.log({ walletList })
 
@@ -168,10 +172,16 @@ const WalletRequestListingTable2 = () => {
     }
 
     const handleUpdateStatus = async (id, data) => {
+        setShow(true)
         console.log('data :>> ', data)
-        setModalShow(true)
+        // setModalShow(true)
         setType(data)
         setModalData({ id, data })
+    }
+
+    const handleChangeStatus = (id) => {
+        setShow(true)
+        setIdForChange(id)
     }
 
     const handleSaveUpdate = async (data) => {
@@ -188,6 +198,28 @@ const WalletRequestListingTable2 = () => {
             if (res.status === 200) {
                 toast.success('Status updated successfully')
                 setModalShow(false)
+            }
+            getAllWalletRequest()
+        })
+    }
+
+    const handleSaveUpdate2 = async (data) => {
+        let payload = {
+            id: idForChange,
+            statusOfWalletRequest: data.type,
+            userId: '',
+        }
+        if (data.reason) {
+            payload.reason = data.reason
+        }
+
+        console.log({ payload })
+
+        await walletServices.updateWalletStatus(payload).then((res) => {
+            if (res.status === 200) {
+                toast.success('Status updated successfully')
+                setModalShow(false)
+                setShow(false)
             }
             getAllWalletRequest()
         })
@@ -215,14 +247,25 @@ const WalletRequestListingTable2 = () => {
             text: 'Name',
         },
         {
-            dataField: 'approveDate',
-            text: 'Approve Date',
-            formatter: (cell, row) =>
-                moment(row?.approveDate).format('DD-MM-YYYY HH:mm:ss'),
-        },
-        {
             dataField: 'userdetail.phoneNumber',
             text: 'Mobile No',
+        },
+        {
+            dataField: 'slipNo',
+            text: 'Slip No',
+        },
+        {
+            dataField: 'statusChangeDate',
+            text: 'Approve Date',
+            formatter: (cell, row) => {
+                if (row?.statusChangeDate) {
+                    return moment(row?.statusChangeDate).format(
+                        'DD-MM-YYYY HH:mm:ss'
+                    )
+                } else {
+                    return <span>-</span>
+                }
+            },
         },
         {
             dataField: 'depositBank',
@@ -239,25 +282,33 @@ const WalletRequestListingTable2 = () => {
         {
             dataField: 'remark',
             text: 'Remarks',
-            formatters: (cell, row) => (
-                <span>{row?.remark !== '' ? row?.remark : 'N/A'}</span>
-            ),
+            formatters: (cell, row) => {
+                if (row?.remark) {
+                    return <span>{row?.remark}</span>
+                } else {
+                    return <span>-</span>
+                }
+            },
+        },
+        {
+            dataField: 'mode',
+            text: 'Mode',
         },
         {
             dataField: 'approveBy',
             text: 'Approve By',
         },
-        {
-            dataField: 'statusOfWalletRequest',
-            text: 'status',
-            formatters: (cell, row) => (
-                <span>
-                    {row?.statusOfWalletRequest
-                        ? row?.statusOfWalletRequest
-                        : 'pending'}
-                </span>
-            ),
-        },
+        // {
+        //     dataField: 'statusOfWalletRequest',
+        //     text: 'status',
+        //     formatters: (cell, row) => (
+        //         <span>
+        //             {row?.statusOfWalletRequest
+        //                 ? row?.statusOfWalletRequest
+        //                 : 'pending'}
+        //         </span>
+        //     ),
+        // },
         {
             text: 'Change Status',
             classes: 'p-1',
@@ -269,91 +320,64 @@ const WalletRequestListingTable2 = () => {
                     <div>
                         <Button
                             id="approve"
-                            variant="primary"
+                            // variant="primary"
                             type="button"
-                            className="btn  btn-sm ml-2 ts-buttom m-1"
                             size="sm"
-                            // onClick={() => handleView(cell, row)}
-                            //   disabled={
-                            //       walletData?.statusOfWalletRequest !==
-                            //       'pending'
-                            //   }
-                            bgcolor={bgPrimary}
+                            className={`btn btn-sm ml-2 ts-buttom m-1 btn-${
+                                row.statusOfWalletRequest === 'pending'
+                                    ? 'warning'
+                                    : row.statusOfWalletRequest === 'reject'
+                                    ? 'danger'
+                                    : 'success'
+                            }`}
                             onClick={() => {
-                                //   if (
-                                //       walletData?.statusOfWalletRequest ==
-                                //       'pending'
-                                //   ) {
-                                handleUpdateStatus(row?._id, 'approve')
-                                //   }
+                                if (row?.statusOfWalletRequest === 'pending') {
+                                    handleChangeStatus(row?._id)
+                                }
                             }}
                         >
-                            Approve
-                        </Button>
-                    </div>
-                    <div className="">
-                        <Button
-                            id="reject"
-                            variant="danger"
-                            type="button"
-                            className="btn  btn-sm ml-2 ts-buttom m-1"
-                            size="sm"
-                            // onClick={() => handleView(cell, row)}
-                            //   disabled={
-                            //       walletData?.statusOfWalletRequest !==
-                            //       'pending'
-                            //   }
-                            bgcolor={bgError}
-                            onClick={() => {
-                                //   if (
-                                //       walletData?.statusOfWalletRequest ==
-                                //       'pending'
-                                //   ) {
-                                handleUpdateStatus(row?._id, 'cancel')
-                                //   }
-                            }}
-                        >
-                            Reject
+                            {row?.statusOfWalletRequest}
                         </Button>
                     </div>
                 </div>
             ),
         },
-        {
-            text: 'Action',
-            headerStyle: () => {
-                return { width: '10%' }
-            },
-            formatter: (cell, row) => (
-                <div>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                        size="sm"
-                        onClick={() => handleView(cell, row)}
-                    >
-                        <AiFillEye />
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                        size="sm"
-                        onClick={() => changeStatus(cell, row)}
-                    >
-                        {row.isActive ? <AiOutlineClose /> : <AiOutlineCheck />}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                        size="sm"
-                        onClick={() => editWallet(row)}
-                    >
-                        <AiFillEdit />
-                    </button>
-                </div>
-            ),
-            classes: 'p-1',
-        },
+
+        // {
+        //     text: 'Action',
+        //     headerStyle: () => {
+        //         return { width: '10%' }
+        //     },
+        //     formatter: (cell, row) => (
+        //         <div>
+        //             <button
+        //                 type="button"
+        //                 className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+        //                 size="sm"
+        //                 onClick={() => handleView(cell, row)}
+        //             >
+        //                 <AiFillEye />
+        //             </button>
+        //             <button
+        //                 type="button"
+        //                 className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+        //                 size="sm"
+        //                 onClick={() => changeStatus(cell, row)}
+        //             >
+        //                 {row.isActive ? <AiOutlineClose /> : <AiOutlineCheck />}
+        //             </button>
+        //             <button
+        //                 type="button"
+        //                 className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+        //                 size="sm"
+        //                 onClick={() => editWallet(row)}
+        //             >
+        //                 <AiFillEdit />
+        //             </button>
+        //         </div>
+        //     ),
+        //     classes: 'p-1',
+        // },
     ]
 
     const handleView = (cell, row) => {
@@ -451,6 +475,7 @@ const WalletRequestListingTable2 = () => {
                     open={open}
                     userData={userData}
                 />
+
                 <ApproveRejectDialog
                     show={modalShow}
                     onHide={() => setModalShow(false)}
@@ -458,6 +483,16 @@ const WalletRequestListingTable2 = () => {
                     handleSave={(data) => {
                         console.log(data)
                         handleSaveUpdate(data)
+                    }}
+                />
+
+                <ApprovalDialog
+                    show={show}
+                    onHide={() => setShow(false)}
+                    message={type}
+                    handleSave={(data) => {
+                        console.log(data)
+                        handleSaveUpdate2(data)
                     }}
                 />
             </Card>
