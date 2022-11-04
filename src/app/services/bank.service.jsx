@@ -27,7 +27,7 @@ function addBankAccount(data) {
 }
 
 function updateBankAccount(id, data) {
-    return fetchWrapper.put(`${bankAccountUrl}/${id}`, data)
+    return fetchWrapper.put(`${bankAccountUrl}/${id}`)
 }
 
 function getAllBank() {
