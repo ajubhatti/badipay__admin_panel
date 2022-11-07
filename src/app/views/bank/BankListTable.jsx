@@ -6,6 +6,7 @@ import moment from 'moment'
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { Button } from 'react-bootstrap'
 import BankAccountModal from './BankAccountModal'
+import { BsPlus } from 'react-icons/bs'
 
 const BankListTable = () => {
     const [banksAccounts, setBanksAccounts] = useState([])
@@ -16,18 +17,21 @@ const BankListTable = () => {
     const bgPrimary = palette.primary.main
     const bgError = palette.error.main
 
+    const getAllbanks = async() => {
+        await bankAccountService.getAllBank().then((res) => {
+            setBanksAccounts(res?.data)
+        });
+    } 
+
     useEffect(() => {
-        async function getAllbanks() {
-            await bankAccountService.getAllBank().then((res) => {
-                setBanksAccounts(res?.data)
-            })
-        }
         getAllbanks();
     }, []);
 
     const handleChangeStatus = async(id, status) => {
-        await bankAccountService.updateBankAccount(id).then((res) => {
-            console.log("response is " , res);
+        await bankAccountService.updateBank(id, {isActive: status}).then((res) => {
+            if (res.status == "200") {
+                getAllbanks();
+            }
         })
     }
 
@@ -35,6 +39,14 @@ const BankListTable = () => {
         setBankEditInfo(bankInfo);
         setIsShowBankAccountModal(true);
         setIsBankAccountEdit(true);
+    }
+
+    const handleAddBank = () => {
+        setIsShowBankAccountModal(true);
+    }
+
+    const handleBankDelete = async(bankInfo) => {
+
     }
 
     const columns = [
@@ -77,7 +89,7 @@ const BankListTable = () => {
                             className="btn btn-sm ml-2 ts-buttom m-1"
                             size="sm"
                             bgcolor={bgError}
-                            onClick={() => handleChangeStatus(row._id, 'inactive')}
+                            onClick={() => handleChangeStatus(row._id, false)}
                         >
                             InActive
                         </Button>
@@ -88,7 +100,7 @@ const BankListTable = () => {
                             className="btn btn-sm ml-2 ts-buttom m-1"
                             size="sm"
                             bgcolor={bgPrimary}
-                            onClick={() => handleChangeStatus(row._id, 'active')}
+                            onClick={() => handleChangeStatus(row._id, true)}
                         >
                             Active
                         </Button>
@@ -116,7 +128,7 @@ const BankListTable = () => {
                         type="button"
                         className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
                         size="sm"
-                        onClick={() => {}}
+                        onClick={() => handleBankDelete(row)}
                     >
                         <AiFillDelete />
                     </button>
@@ -133,11 +145,29 @@ const BankListTable = () => {
     }
 
     const handleBankAccountClose = (isLoadData = false) => {
+        if (isLoadData) {
+            getAllbanks();
+        }
         setIsShowBankAccountModal(false);
+        setBankEditInfo([]);
+        setIsBankAccountEdit(false);
     }
 
     return (
         <div>
+            <div className='d-flex justify-content-end m-3'>
+                <Button
+                    variant="info"
+                    type="button"
+                    className="btn btn-sm ml-2 ts-buttom m-1"
+                    size="sm"
+                    bgcolor={bgPrimary}
+                    onClick={handleAddBank}
+                >
+                    <BsPlus />
+                    Add New
+                </Button>
+            </div>
             <ReactBootstrapTable
                 tableData={banksAccounts}
                 columns={columns}
@@ -151,6 +181,7 @@ const BankListTable = () => {
                     onCloseBankAccountModal={handleBankAccountClose}
                 />
             )}
+            
         </div>
     )
 }

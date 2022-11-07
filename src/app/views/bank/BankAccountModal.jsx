@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { bankAccountService } from 'app/services/bank.service'
 
 const defaultBankInfo = {
     "bankName" : "",
@@ -19,7 +20,19 @@ const BankAccountModal = (props) => {
     };
 
     const handleSaveAndClose = () => {
-        props.onCloseBankAccountModal(true);
+        if (props.isBankAccountEdit) {
+            bankAccountService.updateBank(props.bankInfo._id, {"bankDetail" : bankAccountInfo.bankDetail, "bankName" : bankAccountInfo.bankName}).then((res) => {
+                if (res.status == "200") {
+                    props.onCloseBankAccountModal(true);
+                }
+            });
+        } else {
+            bankAccountService.addBank({"bankDetail" : bankAccountInfo.bankDetail, "bankName" : bankAccountInfo.bankName}).then((res) => {
+                if (res.status == "200") {
+                    props.onCloseBankAccountModal(true);
+                }
+            });
+        }
     }
 
     const handleChange = (e) => {
