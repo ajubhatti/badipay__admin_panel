@@ -10,6 +10,7 @@ const defaultBankInfo = {
 
 const BankAccountModal = (props) => {
     const [bankAccountInfo, setBankAccountInfo] = useState(defaultBankInfo);
+    const [saveLoading, setSaveLoading] = useState(false);
 
     useEffect(() => {
         setBankAccountInfo(props.bankInfo);
@@ -20,6 +21,7 @@ const BankAccountModal = (props) => {
     };
 
     const handleSaveAndClose = () => {
+        setSaveLoading(true);
         if (props.isBankAccountEdit) {
             bankAccountService.updateBank(props.bankInfo._id, {"bankDetail" : bankAccountInfo.bankDetail, "bankName" : bankAccountInfo.bankName}).then((res) => {
                 if (res.status == "200") {
@@ -70,7 +72,7 @@ const BankAccountModal = (props) => {
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Close</Button>
-                <Button variant="primary" onClick={handleSaveAndClose}>Save changes</Button>
+                <Button variant="primary" disabled={saveLoading ? true : false }  onClick={handleSaveAndClose}>{saveLoading ? 'Loading…' : 'Save changes'}</Button>
             </Modal.Footer>
         </Modal>
         </>

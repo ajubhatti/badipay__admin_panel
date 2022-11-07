@@ -1,0 +1,55 @@
+.loader_area {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 112;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    background: #333333;
+    opacity: 0.9;
+}
+
+.loader {
+    position: relative;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    top: 40%;
+    left: 45%;
+}
+
+.loader_text {
+    position: relative;
+    top: 41%;
+    left: 45%;
+    color: #fff;
+    font-size: 25px;
+}
+
+
+/* Safari */
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

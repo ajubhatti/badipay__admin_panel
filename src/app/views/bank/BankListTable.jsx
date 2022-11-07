@@ -7,29 +7,37 @@ import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { Button } from 'react-bootstrap'
 import BankAccountModal from './BankAccountModal'
 import { BsPlus } from 'react-icons/bs'
+import style from './bankListStyle.css';
+import CustomLoader from 'app/components/CustomLoader/CustomLoader'
 
 const BankListTable = () => {
     const [banksAccounts, setBanksAccounts] = useState([])
     const [bankEditInfo, setBankEditInfo] = useState([])
     const [isShowBankAccountModal, setIsShowBankAccountModal] = useState(false)
     const [isBankAccountEdit, setIsBankAccountEdit] = useState(false);
+    const [isShowLoader, setIsShowLoader] = useState(false);
+    const [statusLoading, setStatusLoading] = useState(false);
     const { palette } = useTheme()
     const bgPrimary = palette.primary.main
     const bgError = palette.error.main
 
     const getAllbanks = async() => {
+        setIsShowLoader(true);
         await bankAccountService.getAllBank().then((res) => {
-            setBanksAccounts(res?.data)
+            setBanksAccounts(res?.data);
+            setIsShowLoader(false);
         });
-    } 
+    }
 
     useEffect(() => {
         getAllbanks();
     }, []);
 
     const handleChangeStatus = async(id, status) => {
+        setStatusLoading(true);
         await bankAccountService.updateBank(id, {isActive: status}).then((res) => {
             if (res.status == "200") {
+                setStatusLoading(false);
                 getAllbanks();
             }
         })
@@ -86,12 +94,13 @@ const BankListTable = () => {
                         <Button
                             variant="danger"
                             type="button"
+                            disabled={statusLoading}
                             className="btn btn-sm ml-2 ts-buttom m-1"
                             size="sm"
                             bgcolor={bgError}
-                            onClick={() => handleChangeStatus(row._id, false)}
+                            onClick={!statusLoading ? () => handleChangeStatus(row._id, false) : null}
                         >
-                            InActive
+                            {statusLoading ? 'Loading' : 'InActive' }
                         </Button>
                     :
                         <Button
@@ -100,9 +109,10 @@ const BankListTable = () => {
                             className="btn btn-sm ml-2 ts-buttom m-1"
                             size="sm"
                             bgcolor={bgPrimary}
-                            onClick={() => handleChangeStatus(row._id, true)}
+                            disabled={statusLoading}
+                            onClick={!statusLoading ? () => handleChangeStatus(row._id, true) : null}
                         >
-                            Active
+                            {statusLoading ? 'Loading' : 'Active' }
                         </Button>
                     }
                 </div>
@@ -155,6 +165,9 @@ const BankListTable = () => {
 
     return (
         <div>
+            { isShowLoader && (
+                <CustomLoader />
+            )}
             <div className='d-flex justify-content-end m-3'>
                 <Button
                     variant="info"
