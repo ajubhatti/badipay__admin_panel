@@ -9,14 +9,18 @@ import BankAccountModal from './BankAccountModal'
 import { BsPlus } from 'react-icons/bs'
 import style from './bankListStyle.css';
 import CustomLoader from 'app/components/CustomLoader/CustomLoader'
+import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
 const BankListTable = () => {
     const [banksAccounts, setBanksAccounts] = useState([])
-    const [bankEditInfo, setBankEditInfo] = useState([])
+    const [bankInfo, setBankInfo] = useState([])
     const [isShowBankAccountModal, setIsShowBankAccountModal] = useState(false)
     const [isBankAccountEdit, setIsBankAccountEdit] = useState(false);
     const [isShowLoader, setIsShowLoader] = useState(false);
     const [statusLoading, setStatusLoading] = useState(false);
+
+    const [isShowDeleteBankConfirmModal, setIsShowDeleteBankConfirmModal] = useState(false);
+
     const { palette } = useTheme()
     const bgPrimary = palette.primary.main
     const bgError = palette.error.main
@@ -44,7 +48,7 @@ const BankListTable = () => {
     }
 
     const handleEditBank = (bankInfo) => {
-        setBankEditInfo(bankInfo);
+        setBankInfo(bankInfo);
         setIsShowBankAccountModal(true);
         setIsBankAccountEdit(true);
     }
@@ -53,8 +57,22 @@ const BankListTable = () => {
         setIsShowBankAccountModal(true);
     }
 
-    const handleBankDelete = async(bankInfo) => {
+    const handleBankDelete = (bankInfo) => {
+        setIsShowDeleteBankConfirmModal(true);
+        setBankInfo(bankInfo);
+    }
 
+    const handleDelete = async() => {
+        await bankAccountService.deleteBank(bankInfo._id).then((res) => {
+            if (res.status == "200") {
+                setIsShowDeleteBankConfirmModal(false);
+                getAllbanks();
+            }
+        })
+    }
+
+    const onCloseDeleteBankConfirmModal = () => {
+        setIsShowDeleteBankConfirmModal(false);
     }
 
     const columns = [
@@ -159,7 +177,7 @@ const BankListTable = () => {
             getAllbanks();
         }
         setIsShowBankAccountModal(false);
-        setBankEditInfo([]);
+        setBankInfo([]);
         setIsBankAccountEdit(false);
     }
 
@@ -168,6 +186,7 @@ const BankListTable = () => {
             { isShowLoader && (
                 <CustomLoader />
             )}
+
             <div className='d-flex justify-content-end m-3'>
                 <Button
                     variant="info"
@@ -181,20 +200,31 @@ const BankListTable = () => {
                     Add New
                 </Button>
             </div>
+
             <ReactBootstrapTable
                 tableData={banksAccounts}
                 columns={columns}
                 rowEvents={rowEvents}
             />
+
             { isShowBankAccountModal && (
                 <BankAccountModal
-                    bankInfo={bankEditInfo}
+                    bankInfo={bankInfo}
                     isBankAccountEdit={isBankAccountEdit}
                     isShowBankAccountModal={isShowBankAccountModal}
                     onCloseBankAccountModal={handleBankAccountClose}
                 />
             )}
-            
+
+            { isShowDeleteBankConfirmModal && (
+                <ConfirmModal
+                    title="Are you sure ?"
+                    description="Are you sure you want to delete ?"
+                    handleDelete={handleDelete}
+                    isShowDeleteBankConfirmModal={isShowDeleteBankConfirmModal}
+                    onCloseDeleteBankConfirmModal={onCloseDeleteBankConfirmModal}
+                />
+            )}
         </div>
     )
 }

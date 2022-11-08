@@ -12,6 +12,7 @@ export const bankAccountService = {
     getBankById,
     addBank,
     updateBank,
+    deleteBank,
 }
 
 function getAllBankAccount() {
@@ -43,4 +44,8 @@ function addBank(data) {
 
 function updateBank(id, data) {
     return fetchWrapper.put(`${bankUrl}/${id}`, data)
+}
+
+function deleteBank (id) {
+    return fetchWrapper.delete(`${bankUrl}/${id}`);
 }

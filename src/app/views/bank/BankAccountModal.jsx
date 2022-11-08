@@ -44,7 +44,6 @@ const BankAccountModal = (props) => {
     }
 
     return (
-        <>
         <Modal
             show={props.isShowBankAccountModal}
             onHide={handleClose}
@@ -75,7 +74,6 @@ const BankAccountModal = (props) => {
                 <Button variant="primary" disabled={saveLoading ? true : false }  onClick={handleSaveAndClose}>{saveLoading ? 'Loading…' : 'Save changes'}</Button>
             </Modal.Footer>
         </Modal>
-        </>
     )
 }
 
