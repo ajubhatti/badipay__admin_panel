@@ -3,7 +3,7 @@ import Loadable from 'app/components/Loadable/Loadable'
 import Transactions from '../recharge/Transactions'
 import WalletRequestListingTable2 from '../wallet/WalletRequestListingTable2'
 const BankAccountTable = Loadable(
-    lazy(() => import('../bank/BankAccountTable'))
+    lazy(() => import('../bank/bankAccount/BankAccountTable'))
 )
 const UserListingTable = Loadable(
     lazy(() => import('../user/UserListingTable'))

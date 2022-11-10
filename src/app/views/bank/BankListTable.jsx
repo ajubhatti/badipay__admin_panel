@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '@mui/system'
-import { bankAccountService } from 'app/services/bank.service'
+import { bankService } from 'app/services/bank.service'
 import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
 import moment from 'moment'
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { Button } from 'react-bootstrap'
-import BankAccountModal from './BankAccountModal'
+import BankModal from './BankModal'
 import { BsPlus } from 'react-icons/bs'
 import style from './bankListStyle.css';
 import CustomLoader from 'app/components/CustomLoader/CustomLoader'
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
 const BankListTable = () => {
-    const [banksAccounts, setBanksAccounts] = useState([])
+    const [banks, setBanks] = useState([])
     const [bankInfo, setBankInfo] = useState([])
-    const [isShowBankAccountModal, setIsShowBankAccountModal] = useState(false)
-    const [isBankAccountEdit, setIsBankAccountEdit] = useState(false);
+    const [isShowBankModal, setIsShowBankModal] = useState(false)
+    const [isBankEdit, setIsBankEdit] = useState(false);
     const [isShowLoader, setIsShowLoader] = useState(false);
     const [statusLoading, setStatusLoading] = useState(false);
 
@@ -27,8 +27,8 @@ const BankListTable = () => {
 
     const getAllbanks = async() => {
         setIsShowLoader(true);
-        await bankAccountService.getAllBank().then((res) => {
-            setBanksAccounts(res?.data);
+        await bankService.getAllBank().then((res) => {
+            setBanks(res?.data);
             setIsShowLoader(false);
         });
     }
@@ -39,7 +39,7 @@ const BankListTable = () => {
 
     const handleChangeStatus = async(id, status) => {
         setStatusLoading(true);
-        await bankAccountService.updateBank(id, {isActive: status}).then((res) => {
+        await bankService.updateBank(id, {isActive: status}).then((res) => {
             if (res.status == "200") {
                 setStatusLoading(false);
                 getAllbanks();
@@ -49,12 +49,12 @@ const BankListTable = () => {
 
     const handleEditBank = (bankInfo) => {
         setBankInfo(bankInfo);
-        setIsShowBankAccountModal(true);
-        setIsBankAccountEdit(true);
+        setIsShowBankModal(true);
+        setIsBankEdit(true);
     }
 
     const handleAddBank = () => {
-        setIsShowBankAccountModal(true);
+        setIsShowBankModal(true);
     }
 
     const handleBankDelete = (bankInfo) => {
@@ -63,7 +63,7 @@ const BankListTable = () => {
     }
 
     const handleDelete = async() => {
-        await bankAccountService.deleteBank(bankInfo._id).then((res) => {
+        await bankService.deleteBank(bankInfo._id).then((res) => {
             if (res.status == "200") {
                 setIsShowDeleteBankConfirmModal(false);
                 getAllbanks();
@@ -172,13 +172,13 @@ const BankListTable = () => {
         },
     }
 
-    const handleBankAccountClose = (isLoadData = false) => {
+    const handleBankClose = (isLoadData = false) => {
         if (isLoadData) {
             getAllbanks();
         }
-        setIsShowBankAccountModal(false);
+        setIsShowBankModal(false);
         setBankInfo([]);
-        setIsBankAccountEdit(false);
+        setIsBankEdit(false);
     }
 
     return (
@@ -202,17 +202,17 @@ const BankListTable = () => {
             </div>
 
             <ReactBootstrapTable
-                tableData={banksAccounts}
+                tableData={banks}
                 columns={columns}
                 rowEvents={rowEvents}
             />
 
-            { isShowBankAccountModal && (
-                <BankAccountModal
+            { isShowBankModal && (
+                <BankModal
                     bankInfo={bankInfo}
-                    isBankAccountEdit={isBankAccountEdit}
-                    isShowBankAccountModal={isShowBankAccountModal}
-                    onCloseBankAccountModal={handleBankAccountClose}
+                    isBankEdit={isBankEdit}
+                    isShowBankModal={isShowBankModal}
+                    onCloseBankModal={handleBankClose}
                 />
             )}
 
@@ -221,8 +221,8 @@ const BankListTable = () => {
                     title="Are you sure ?"
                     description="Are you sure you want to delete ?"
                     handleDelete={handleDelete}
-                    isShowDeleteBankConfirmModal={isShowDeleteBankConfirmModal}
-                    onCloseDeleteBankConfirmModal={onCloseDeleteBankConfirmModal}
+                    isShowConfirmModal={isShowDeleteBankConfirmModal}
+                    onCloseConfirmModal={onCloseDeleteBankConfirmModal}
                 />
             )}
         </div>

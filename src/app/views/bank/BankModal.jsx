@@ -1,37 +1,37 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { bankAccountService } from 'app/services/bank.service'
+import { bankService } from 'app/services/bank.service'
 
 const defaultBankInfo = {
     "bankName" : "",
     "bankDetail": ""
 }
 
-const BankAccountModal = (props) => {
-    const [bankAccountInfo, setBankAccountInfo] = useState(defaultBankInfo);
+const BankModal = (props) => {
+    const [bankInfo, setBankInfo] = useState(defaultBankInfo);
     const [saveLoading, setSaveLoading] = useState(false);
 
     useEffect(() => {
-        setBankAccountInfo(props.bankInfo);
+        setBankInfo(props.bankInfo);
     }, [props.bankInfo])
 
     const handleClose = () => {
-        props.onCloseBankAccountModal();
+        props.onCloseBankModal();
     };
 
     const handleSaveAndClose = () => {
         setSaveLoading(true);
-        if (props.isBankAccountEdit) {
-            bankAccountService.updateBank(props.bankInfo._id, {"bankDetail" : bankAccountInfo.bankDetail, "bankName" : bankAccountInfo.bankName}).then((res) => {
+        if (props.isBankEdit) {
+            bankService.updateBank(props.bankInfo._id, {"bankDetail" : bankInfo.bankDetail, "bankName" : bankInfo.bankName}).then((res) => {
                 if (res.status == "200") {
-                    props.onCloseBankAccountModal(true);
+                    props.onCloseBankModal(true);
                 }
             });
         } else {
-            bankAccountService.addBank({"bankDetail" : bankAccountInfo.bankDetail, "bankName" : bankAccountInfo.bankName}).then((res) => {
+            bankService.addBank({"bankDetail" : bankInfo.bankDetail, "bankName" : bankInfo.bankName}).then((res) => {
                 if (res.status == "200") {
-                    props.onCloseBankAccountModal(true);
+                    props.onCloseBankModal(true);
                 }
             });
         }
@@ -40,31 +40,31 @@ const BankAccountModal = (props) => {
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setBankAccountInfo(prev => ({...prev, [name]: value}));
+        setBankInfo(prev => ({...prev, [name]: value}));
     }
 
     return (
         <Modal
-            show={props.isShowBankAccountModal}
+            show={props.isShowBankModal}
             onHide={handleClose}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
         >
             <Modal.Header closeButton>
-                <Modal.Title>{props.isBankAccountEdit ? 'Edit' : 'Add'} Bank Account</Modal.Title>
+                <Modal.Title>{props.isBankEdit ? 'Edit' : 'Add'} Bank</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label" htmlFor="bankName">Bank Name</label>
                     <div className="col-sm-10">
-                        <input type="text" name="bankName" onChange={handleChange} value={bankAccountInfo?.bankName} className="form-control" />
+                        <input type="text" name="bankName" onChange={handleChange} value={bankInfo?.bankName} className="form-control" />
                     </div>
                 </div>
                 <div className="mt-3 form-group row">
                     <label className="col-sm-2 col-form-label" htmlFor="bankDetail">Bank Detail</label>
                     <div className="col-sm-10">
-                        <input type="text" name="bankDetail" onChange={handleChange} value={bankAccountInfo?.bankDetail} className="form-control" />
+                        <input type="text" name="bankDetail" onChange={handleChange} value={bankInfo?.bankDetail} className="form-control" />
                     </div>
                 </div>
             </Modal.Body>
@@ -77,4 +77,4 @@ const BankAccountModal = (props) => {
     )
 }
 
-export default BankAccountModal;
+export default BankModal;

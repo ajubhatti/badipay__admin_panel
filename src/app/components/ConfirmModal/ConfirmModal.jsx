@@ -9,12 +9,12 @@ const ConfirmModal = (props) => {
     }
 
     const handleClose = () => {
-        props.onCloseDeleteBankConfirmModal();
+        props.onCloseConfirmModal();
     };
 
     return (
         <Modal
-            show={props.isShowDeleteBankConfirmModal}
+            show={props.isShowConfirmModal}
             onHide={handleClose}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"

@@ -2,17 +2,20 @@ import { fetchWrapper } from 'app/helpers/fetch-wrapper'
 const bankAccountUrl = `${process.env.REACT_APP_BASE_URL}/bankAccount`
 const bankUrl = `${process.env.REACT_APP_BASE_URL}/bank`
 
+export const bankService = {
+    getAllBank,
+    getBankById,
+    addBank,
+    updateBank,
+    deleteBank
+}
+
 export const bankAccountService = {
     getAllBankAccount,
     getBankAccountById,
     addBankAccount,
     updateBankAccount,
-
-    getAllBank,
-    getBankById,
-    addBank,
-    updateBank,
-    deleteBank,
+    deleteBankAccount,
 }
 
 function getAllBankAccount() {
@@ -28,7 +31,11 @@ function addBankAccount(data) {
 }
 
 function updateBankAccount(id, data) {
-    return fetchWrapper.put(`${bankAccountUrl}/${id}`)
+    return fetchWrapper.put(`${bankAccountUrl}/${id}`, data)
+}
+
+function deleteBankAccount (id) {
+    return fetchWrapper.delete(`${bankAccountUrl}/${id}`);
 }
 
 function getAllBank() {
