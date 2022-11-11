@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 
-const ApprovalDialog = ({ show, onHide, message, id, handleSave }) => {
+const ApprovalDialog = ({
+    show,
+    onHide,
+    message,
+    id,
+    handleSave,
+    isLoading,
+}) => {
     const [modalData, setModalData] = useState({
         password: '',
         reason: '',
@@ -22,10 +29,15 @@ const ApprovalDialog = ({ show, onHide, message, id, handleSave }) => {
         setValidated(true)
     }
     const submitSave = (type, data) => {
-        if (!modalData.password) {
-            setError({ type: 'error', message: 'Please enter your password' })
-        } else {
-            handleSave({ type, data })
+        if (!isLoading) {
+            if (!modalData.password) {
+                setError({
+                    type: 'error',
+                    message: 'Please enter your password',
+                })
+            } else {
+                handleSave({ type, data })
+            }
         }
     }
 

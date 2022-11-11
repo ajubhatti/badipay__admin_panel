@@ -58,6 +58,7 @@ const WalletRequestListingTable2 = () => {
     const [modalData, setModalData] = useState({})
     const [type, setType] = useState('reject')
     const { walletList } = useSelector((state) => state.wallet)
+    const [loading, setLoading] = useState(false)
 
     const [show, setShow] = useState(false)
     const [idForChange, setIdForChange] = useState('')
@@ -204,6 +205,8 @@ const WalletRequestListingTable2 = () => {
     }
 
     const handleSaveUpdate2 = async (data) => {
+        setLoading(true)
+        console.log('data', data)
         let payload = {
             id: idForChange,
             statusOfWalletRequest: data.type,
@@ -212,7 +215,9 @@ const WalletRequestListingTable2 = () => {
         if (data.reason) {
             payload.reason = data.reason
         }
-
+        if (data.data.amount && data.type === 'approve') {
+            payload.amount = data.data.amount
+        }
         console.log({ payload })
 
         await walletServices.updateWalletStatus(payload).then((res) => {
@@ -221,6 +226,7 @@ const WalletRequestListingTable2 = () => {
                 setModalShow(false)
                 setShow(false)
             }
+            setLoading(false)
             getAllWalletRequest()
         })
     }
@@ -268,16 +274,20 @@ const WalletRequestListingTable2 = () => {
             },
         },
         {
-            dataField: 'depositBank',
+            dataField: 'bankData.bankdetails.bankName',
             text: 'Deposit Bank',
-        },
-        {
-            dataField: 'depositBranch',
-            text: 'Branch',
         },
         {
             dataField: 'requestAmount',
             text: 'Requested Amount',
+        },
+        {
+            dataField: 'approveAmount',
+            text: 'Approve Amount',
+        },
+        {
+            dataField: 'debitAmount',
+            text: 'Debit Amount',
         },
         {
             dataField: 'remark',
@@ -291,7 +301,7 @@ const WalletRequestListingTable2 = () => {
             },
         },
         {
-            dataField: 'mode',
+            dataField: 'paymnetModeData.modeName',
             text: 'Mode',
         },
         {
@@ -494,6 +504,7 @@ const WalletRequestListingTable2 = () => {
                         console.log(data)
                         handleSaveUpdate2(data)
                     }}
+                    isLoading={loading}
                 />
             </Card>
         </div>

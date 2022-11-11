@@ -35,15 +35,19 @@ const Transactions = () => {
     const columns = [
         {
             dataField: 'userdetail.email',
-            text: 'user',
+            text: 'User',
         },
         {
             dataField: 'amount',
-            text: 'amount',
+            text: 'Amount',
         },
         {
             dataField: 'status',
-            text: 'status',
+            text: 'Status',
+        },
+        {
+            dataField: 'type',
+            text: 'Type',
         },
         {
             dataField: 'transactionId',
