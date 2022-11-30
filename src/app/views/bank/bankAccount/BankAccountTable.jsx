@@ -7,7 +7,6 @@ import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstr
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { useTheme } from '@mui/system'
 import BankAccountModal from './BankAccountModal'
-import style from '../bankListStyle.css';
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
 const BankAccountTable = () => {

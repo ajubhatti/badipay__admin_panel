@@ -7,7 +7,6 @@ import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { Button } from 'react-bootstrap'
 import BankModal from './BankModal'
 import { BsPlus } from 'react-icons/bs'
-import style from './bankListStyle.css';
 import CustomLoader from 'app/components/CustomLoader/CustomLoader'
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 

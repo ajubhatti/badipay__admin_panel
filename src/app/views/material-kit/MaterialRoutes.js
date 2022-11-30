@@ -39,7 +39,7 @@ const AddUpdateApis = Loadable(
     lazy(() => import('../api-settings/apis/AddUpdateApis'))
 )
 const DiscountOnRecharge = Loadable(
-    lazy(() => import('../recharge/DiscountOnRecharge'))
+    lazy(() => import('../recharge/discount/DiscountOnRecharge'))
 )
 const RechargeList = Loadable(lazy(() => import('../recharge/RechargeList')))
 const StateList = Loadable(lazy(() => import('../utilities/StateList')))

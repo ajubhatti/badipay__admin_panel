@@ -1,3 +1,5 @@
+import style from './CustomLoaderStyle.css'
+
 const CustomLoader = () => {
     return (
         <div className="loader_area">
