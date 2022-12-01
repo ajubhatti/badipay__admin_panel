@@ -10,8 +10,8 @@ const getAllApisAndServices = () => {
     }));
 }
 
-const getAllDiscount = () => {
-    return axios.get(`${api_url}/discount`).then(function(response) {
+const getAllDiscount = (params) => {
+    return axios.post(`${api_url}/discount/getDiscountList`, params).then(function(response) {
         return response;
     });
 }

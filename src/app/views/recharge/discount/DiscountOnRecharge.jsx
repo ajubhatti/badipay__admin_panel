@@ -5,18 +5,25 @@ import { BsPlus } from 'react-icons/bs';
 
 import { useTheme } from '@mui/system'
 import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable';
-// import DiscountModal from './DiscountModal';
+import DiscountModal from './DiscountModal';
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal';
 
 import {discountServices} from 'app/services/discount.service'
 import ReactSelect from 'react-select';
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
 
 const DiscountOnRecharge = () => {
     const [isShowLoader, setIsShowLoader] = useState(false);
     const [isShowDiscountModal, setIsShowDiscountModal] = useState(false);
     const [isShowDeleteDiscountConfirmModal, setIsShowDeleteDiscountConfirmModal] = useState(false);
     const [isDiscountEdit, setIsDiscountEdit] = useState(false);
+
+    const [selectedProviderIndex, setSelectedProviderIndex] = useState('');
+    const [selectedServiceIndex, setSelectedServiceIndex] = useState('');
+    
     const [discountInfo, setdDiscountInfo] = useState([]);
+    const [discounts, setdDiscounts] = useState([]);
+    
     const [providers, setProviders] = useState([]);
     const [services, setServices] = useState([]);
     const [isShowDiscountData, setIsShowDiscountData] = useState(false);
@@ -27,7 +34,7 @@ const DiscountOnRecharge = () => {
 
     const columns = [
         {
-            dataField: '_id',
+            dataField: 'discountData._id',
             text: 'Sr No.',
             headerStyle: () => {
                 return { width: '5%' }
@@ -37,25 +44,52 @@ const DiscountOnRecharge = () => {
             },
         },
         {
-            dataField: '',
-            text: 'Service Name',
+            dataField: 'companyName',
+            text: 'Company Name',
         },
         {
-            dataField: '',
-            text: 'Service Provider',
+            dataField: 'discountData.amount',
+            text: 'Discount Amount',
         },
         {
-            dataField: 'type',
+            dataField: 'discountData.type',
             text: 'Discount Type',
         },
         {
-            dataField: 'amount',
-            text: 'Discount Amount',
+            dataField: 'discountData.discountLimit',
+            text: 'Discount Limit',
         },
         {
             text: "Status",
             dataField: 'status',
             formatter: (cell, row) => row?.isActive ? "Active" : "Inactive"
+        },
+        {
+            text: 'Action',
+            headerStyle: () => {
+                return { width: '10%' }
+            },
+            formatter: (cell, row) => (
+                <div>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+                        size="sm"
+                        onClick={() => handleEdit(row)}
+                    >
+                        <AiFillEdit />
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+                        size="sm"
+                        onClick={() => handleDelete(row)}
+                    >
+                        <AiFillDelete />
+                    </button>
+                </div>
+            ),
+            classes: 'p-1',
         },
     ]
 
@@ -94,24 +128,29 @@ const DiscountOnRecharge = () => {
         getAllProviders();
     }, []);
 
-    const getAllDiscounts = async() => {
+    const getAllDiscounts = async(params) => {
         setIsShowLoader(true);
-        await discountServices.getAllDiscount().then((res) => {
-            console.log(res);
+        await discountServices.getAllDiscount(params).then((res) => {
+            setdDiscounts(res.data?.data);
+            setIsShowDiscountData(true);
             setIsShowLoader(false);
         });
     }
-
-    useEffect(() => {
-        getAllDiscounts();
-    }, []);
 
     const handleAddDiscount = () => {
         setIsShowDiscountModal(true);
     }
 
     const handleDiscountClose = () => {
+        setdDiscountInfo([]);
+        setIsDiscountEdit(false);
+        setIsShowDiscountModal(false);
+    }
 
+    const handleEdit = (info) => {
+        setdDiscountInfo(info);
+        setIsDiscountEdit(true);
+        setIsShowDiscountModal(true);
     }
 
     const handleDelete = async() => {
@@ -127,12 +166,25 @@ const DiscountOnRecharge = () => {
         setIsShowDeleteDiscountConfirmModal(false);
     }
 
-    const handleChange = () => {
-
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        console.log("e.target", e.target);
+        if (name == "selectedProviderIndex") {
+            setSelectedProviderIndex(value);
+        } else {
+            setSelectedServiceIndex(value);
+        }
     }
 
-    const submitHandler = () => {
+    const handleFilter = () => {
+        console.log("selectedProviderIndex : " + selectedProviderIndex, "selectedServiceIndex : " +  selectedServiceIndex);
+        if (selectedProviderIndex != '' && selectedServiceIndex != '') {
+            getAllDiscounts({apiId: selectedProviderIndex, serviceId: selectedServiceIndex});
+        }
+    }
 
+    const handleSaveDiscountModal = (data) => {
+        setIsShowLoader(true);
     }
 
     return (
@@ -153,22 +205,23 @@ const DiscountOnRecharge = () => {
                                     <div className="col-md-12">
                                         <div className="select-operator">
                                             <div className="col-md-4 m-2">
-                                                <ReactSelect
-                                                    title={'Providers'}
-                                                    handleChange={handleChange}
-                                                    options={providers}
-                                                />
+                                                <select name="selectedProviderIndex" onChange={handleChange} className="form-control" id="selectedProviderIndex">
+                                                    {providers.map((provider) => {
+                                                        return <option key={provider.value} value={provider.value}>{provider.label}</option>
+                                                    })}
+                                                </select>
                                             </div>
                                             <div className="col-md-4 m-2">
-                                                <ReactSelect
-                                                    title={'services'}
-                                                    handleChange={handleChange}
-                                                    options={services}
-                                                />
+                                                <select name="selectedServiceIndex" onChange={handleChange} className="form-control" id="selectedServiceIndex">
+                                                    {services.map((service) => {
+                                                        return <option key={service.value} value={service.value}>{service.label}</option>
+                                                    })}
+                                                </select>
                                             </div>
                                             <Button
                                                 className="btn btn-md btn-primary col-md-2"
                                                 type="submit"
+                                                onClick={handleFilter}
                                             >
                                                 Search
                                             </Button>
@@ -194,22 +247,24 @@ const DiscountOnRecharge = () => {
                                         Add New
                                     </Button>
                                 </div>
-                    
+
                                 <ReactBootstrapTable
-                                    tableData={[]}
+                                    tableData={discounts}
                                     columns={columns}
                                     rowEvents={rowEvents}
                                 />
-                    
+
                                 { isShowDiscountModal && (
-                                    {/* <DiscountModal
+                                    <DiscountModal
                                         discountInfo={discountInfo}
                                         isDiscountEdit={isDiscountEdit}
                                         isShowDiscountModal={isShowDiscountModal}
                                         onCloseDiscountModal={handleDiscountClose}
-                                    /> */}
+                                        onSaveDiscountModal={handleSaveDiscountModal}
+                                        selectedServiceIndex={selectedServiceIndex}
+                                    />
                                 )}
-                    
+
                                 { isShowDeleteDiscountConfirmModal && (
                                     <ConfirmModal
                                         title="Are you sure ?"
