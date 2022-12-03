@@ -16,7 +16,28 @@ const getAllDiscount = (params) => {
     });
 }
 
+const addDiscount = (params) => {
+    return axios.post(`${api_url}/discount`, params).then(function(response) {
+        return response;
+    });
+}
+
+const updateDiscount = (id, params) => {
+    return axios.put(`${api_url}/discount/${id}`, params).then(function(response) {
+        return response;
+    });
+}
+
+const deleteDiscount = (id) => {
+    return axios.delete(`${api_url}/discount/${id}`).then(function(response) {
+        return response;
+    });
+}
+
 export const discountServices = {
     getAllApisAndServices,
-    getAllDiscount
+    getAllDiscount,
+    addDiscount,
+    updateDiscount,
+    deleteDiscount
 }

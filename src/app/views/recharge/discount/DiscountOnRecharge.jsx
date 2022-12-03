@@ -8,9 +8,8 @@ import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstr
 import DiscountModal from './DiscountModal'
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
-import { discountServices } from 'app/services/discount.service'
-import ReactSelect from 'react-select'
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
+import {discountServices} from 'app/services/discount.service'
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
 
 const DiscountOnRecharge = () => {
     const [isShowLoader, setIsShowLoader] = useState(false)
@@ -21,8 +20,9 @@ const DiscountOnRecharge = () => {
     ] = useState(false)
     const [isDiscountEdit, setIsDiscountEdit] = useState(false)
 
-    const [selectedProviderIndex, setSelectedProviderIndex] = useState('')
-    const [selectedServiceIndex, setSelectedServiceIndex] = useState('')
+    const [selectedProviderIndex, setSelectedProviderIndex] = useState('');
+    const [selectedServiceIndex, setSelectedServiceIndex] = useState('');
+    const [discountModalSave, setDiscountModalSave] = useState(false);
 
     const [discountInfo, setdDiscountInfo] = useState([])
     const [discounts, setdDiscounts] = useState([])
@@ -93,7 +93,7 @@ const DiscountOnRecharge = () => {
                         type="button"
                         className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
                         size="sm"
-                        onClick={() => handleDelete(row)}
+                        onClick={() => handleDiscountDelete(row)}
                     >
                         <AiFillDelete />
                     </button>
@@ -162,18 +162,26 @@ const DiscountOnRecharge = () => {
     }
 
     const handleEdit = (info) => {
-        setdDiscountInfo(info)
-        setIsDiscountEdit(true)
-        setIsShowDiscountModal(true)
+        let tmpInfo = [];
+        tmpInfo._id = info?._id;
+        tmpInfo.discountData = info?.discountData;
+        setdDiscountInfo(info);
+        setIsDiscountEdit(true);
+        setIsShowDiscountModal(true);
     }
 
-    const handleDelete = async () => {
-        /* await bankService.deleteBank(bankInfo._id).then((res) => {
+    const handleDiscountDelete = (info) => {
+        setIsShowDeleteDiscountConfirmModal(true);
+        setdDiscountInfo(info);
+    }
+
+    const handleDelete = async() => {
+        await discountServices.deleteDiscount(discountInfo._id).then((res) => {
             if (res.status == "200") {
-                setIsShowDeleteBankConfirmModal(false);
-                getAllbanks();
+                setIsShowDeleteDiscountConfirmModal(false);
+                getAllDiscounts({apiId: selectedProviderIndex, serviceId: selectedServiceIndex});
             }
-        }) */
+        })
     }
 
     const onCloseDeleteDiscountConfirmModal = () => {
@@ -181,20 +189,15 @@ const DiscountOnRecharge = () => {
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target
-        console.log('e.target', e.target)
-        if (name == 'selectedProviderIndex') {
-            setSelectedProviderIndex(value)
+        const {name, value} = e.target;
+        if (name == "selectedProviderIndex") {
+            setSelectedProviderIndex(value);
         } else {
             setSelectedServiceIndex(value)
         }
     }
 
     const handleFilter = () => {
-        console.log(
-            'selectedProviderIndex : ' + selectedProviderIndex,
-            'selectedServiceIndex : ' + selectedServiceIndex
-        )
         if (selectedProviderIndex != '' && selectedServiceIndex != '') {
             getAllDiscounts({
                 apiId: selectedProviderIndex,
@@ -203,8 +206,26 @@ const DiscountOnRecharge = () => {
         }
     }
 
-    const handleSaveDiscountModal = (data) => {
-        setIsShowLoader(true)
+    const handleSaveDiscountModal = async(data) => {
+        setIsShowLoader(true);
+        setDiscountModalSave(true);
+        data.apiId = selectedProviderIndex;
+        data.serviceId = selectedServiceIndex;
+        if (isDiscountEdit) {
+            await discountServices.updateDiscount(data._id, data).then((res) => {
+                getAllDiscounts(data);
+                setIsShowLoader(false);
+            }).catch((error) => {
+                
+                setIsShowLoader(false);
+            });
+        } else {
+            await discountServices.addDiscount(data).then((res) => {
+                getAllDiscounts(data);
+                setIsShowLoader(false);
+            });
+        }
+        setIsShowDiscountModal(false);
     }
 
     return (
@@ -312,18 +333,11 @@ const DiscountOnRecharge = () => {
                                     <DiscountModal
                                         discountInfo={discountInfo}
                                         isDiscountEdit={isDiscountEdit}
-                                        isShowDiscountModal={
-                                            isShowDiscountModal
-                                        }
-                                        onCloseDiscountModal={
-                                            handleDiscountClose
-                                        }
-                                        onSaveDiscountModal={
-                                            handleSaveDiscountModal
-                                        }
-                                        selectedServiceIndex={
-                                            selectedServiceIndex
-                                        }
+                                        isShowDiscountModal={isShowDiscountModal}
+                                        onCloseDiscountModal={handleDiscountClose}
+                                        onSaveDiscountModal={handleSaveDiscountModal}
+                                        selectedServiceIndex={selectedServiceIndex}
+                                        discountModalSave={discountModalSave}
                                     />
                                 )}
 
