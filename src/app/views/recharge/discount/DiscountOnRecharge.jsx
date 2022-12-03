@@ -1,32 +1,35 @@
 import CustomLoader from 'app/components/CustomLoader/CustomLoader'
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap';
-import { BsPlus } from 'react-icons/bs';
+import { Button } from 'react-bootstrap'
+import { BsPlus } from 'react-icons/bs'
 
 import { useTheme } from '@mui/system'
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable';
-import DiscountModal from './DiscountModal';
-import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal';
+import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
+import DiscountModal from './DiscountModal'
+import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
-import {discountServices} from 'app/services/discount.service'
-import ReactSelect from 'react-select';
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
+import { discountServices } from 'app/services/discount.service'
+import ReactSelect from 'react-select'
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 
 const DiscountOnRecharge = () => {
-    const [isShowLoader, setIsShowLoader] = useState(false);
-    const [isShowDiscountModal, setIsShowDiscountModal] = useState(false);
-    const [isShowDeleteDiscountConfirmModal, setIsShowDeleteDiscountConfirmModal] = useState(false);
-    const [isDiscountEdit, setIsDiscountEdit] = useState(false);
+    const [isShowLoader, setIsShowLoader] = useState(false)
+    const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
+    const [
+        isShowDeleteDiscountConfirmModal,
+        setIsShowDeleteDiscountConfirmModal,
+    ] = useState(false)
+    const [isDiscountEdit, setIsDiscountEdit] = useState(false)
 
-    const [selectedProviderIndex, setSelectedProviderIndex] = useState('');
-    const [selectedServiceIndex, setSelectedServiceIndex] = useState('');
-    
-    const [discountInfo, setdDiscountInfo] = useState([]);
-    const [discounts, setdDiscounts] = useState([]);
-    
-    const [providers, setProviders] = useState([]);
-    const [services, setServices] = useState([]);
-    const [isShowDiscountData, setIsShowDiscountData] = useState(false);
+    const [selectedProviderIndex, setSelectedProviderIndex] = useState('')
+    const [selectedServiceIndex, setSelectedServiceIndex] = useState('')
+
+    const [discountInfo, setdDiscountInfo] = useState([])
+    const [discounts, setdDiscounts] = useState([])
+
+    const [providers, setProviders] = useState([])
+    const [services, setServices] = useState([])
+    const [isShowDiscountData, setIsShowDiscountData] = useState(false)
 
     const { palette } = useTheme()
     const bgPrimary = palette.primary.main
@@ -60,9 +63,16 @@ const DiscountOnRecharge = () => {
             text: 'Discount Limit',
         },
         {
-            text: "Status",
-            dataField: 'status',
-            formatter: (cell, row) => row?.isActive ? "Active" : "Inactive"
+            dataField: 'discountData.referalAmount',
+            text: 'Referal Discount Amount',
+        },
+        {
+            dataField: 'discountData.referalType',
+            text: 'Referal Discount Type',
+        },
+        {
+            dataField: 'discountData.referalDiscountLimit',
+            text: 'Referal Discount Limit',
         },
         {
             text: 'Action',
@@ -99,61 +109,65 @@ const DiscountOnRecharge = () => {
         },
     }
 
-    const getAllProviders = async() => {
-        setIsShowLoader(true);
+    const getAllProviders = async () => {
+        setIsShowLoader(true)
         await discountServices.getAllApisAndServices().then((res) => {
-            let provider = [];
-            provider = res?.apisResponse?.data?.data?.data.filter((provider) => {
-                return provider.isActive;
-            }).map(function (provider) {
-                return {"value" : provider._id, "label" : provider.apiName};
-            });
-            provider.unshift({"value" : 0, "label" : "Select Provider"});
-            setProviders(provider);
+            let provider = []
+            provider = res?.apisResponse?.data?.data?.data
+                .filter((provider) => {
+                    return provider.isActive
+                })
+                .map(function (provider) {
+                    return { value: provider._id, label: provider.apiName }
+                })
+            provider.unshift({ value: 0, label: 'Select Provider' })
+            setProviders(provider)
 
-            let service = [];
-            service = res?.serviceResponse?.data?.data.filter((service) => {
-                return service.isActive;
-            }).map(function (service) {
-                return {"value" : service._id, "label" : service.serviceName};
-            });
-            service.unshift({"value" : 0, "label" : "Select Service"});
-            setServices(service);
-            
-            setIsShowLoader(false);
-        });
+            let service = []
+            service = res?.serviceResponse?.data?.data
+                .filter((service) => {
+                    return service.isActive
+                })
+                .map(function (service) {
+                    return { value: service._id, label: service.serviceName }
+                })
+            service.unshift({ value: 0, label: 'Select Service' })
+            setServices(service)
+
+            setIsShowLoader(false)
+        })
     }
 
     useEffect(() => {
-        getAllProviders();
-    }, []);
+        getAllProviders()
+    }, [])
 
-    const getAllDiscounts = async(params) => {
-        setIsShowLoader(true);
+    const getAllDiscounts = async (params) => {
+        setIsShowLoader(true)
         await discountServices.getAllDiscount(params).then((res) => {
-            setdDiscounts(res.data?.data);
-            setIsShowDiscountData(true);
-            setIsShowLoader(false);
-        });
+            setdDiscounts(res.data?.data)
+            setIsShowDiscountData(true)
+            setIsShowLoader(false)
+        })
     }
 
     const handleAddDiscount = () => {
-        setIsShowDiscountModal(true);
+        setIsShowDiscountModal(true)
     }
 
     const handleDiscountClose = () => {
-        setdDiscountInfo([]);
-        setIsDiscountEdit(false);
-        setIsShowDiscountModal(false);
+        setdDiscountInfo([])
+        setIsDiscountEdit(false)
+        setIsShowDiscountModal(false)
     }
 
     const handleEdit = (info) => {
-        setdDiscountInfo(info);
-        setIsDiscountEdit(true);
-        setIsShowDiscountModal(true);
+        setdDiscountInfo(info)
+        setIsDiscountEdit(true)
+        setIsShowDiscountModal(true)
     }
 
-    const handleDelete = async() => {
+    const handleDelete = async () => {
         /* await bankService.deleteBank(bankInfo._id).then((res) => {
             if (res.status == "200") {
                 setIsShowDeleteBankConfirmModal(false);
@@ -163,35 +177,39 @@ const DiscountOnRecharge = () => {
     }
 
     const onCloseDeleteDiscountConfirmModal = () => {
-        setIsShowDeleteDiscountConfirmModal(false);
+        setIsShowDeleteDiscountConfirmModal(false)
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        console.log("e.target", e.target);
-        if (name == "selectedProviderIndex") {
-            setSelectedProviderIndex(value);
+        const { name, value } = e.target
+        console.log('e.target', e.target)
+        if (name == 'selectedProviderIndex') {
+            setSelectedProviderIndex(value)
         } else {
-            setSelectedServiceIndex(value);
+            setSelectedServiceIndex(value)
         }
     }
 
     const handleFilter = () => {
-        console.log("selectedProviderIndex : " + selectedProviderIndex, "selectedServiceIndex : " +  selectedServiceIndex);
+        console.log(
+            'selectedProviderIndex : ' + selectedProviderIndex,
+            'selectedServiceIndex : ' + selectedServiceIndex
+        )
         if (selectedProviderIndex != '' && selectedServiceIndex != '') {
-            getAllDiscounts({apiId: selectedProviderIndex, serviceId: selectedServiceIndex});
+            getAllDiscounts({
+                apiId: selectedProviderIndex,
+                serviceId: selectedServiceIndex,
+            })
         }
     }
 
     const handleSaveDiscountModal = (data) => {
-        setIsShowLoader(true);
+        setIsShowLoader(true)
     }
 
     return (
         <div>
-            { isShowLoader && (
-                <CustomLoader />
-            )}
+            {isShowLoader && <CustomLoader />}
 
             <div className="container-fluid">
                 <div className="row">
@@ -205,16 +223,52 @@ const DiscountOnRecharge = () => {
                                     <div className="col-md-12">
                                         <div className="select-operator">
                                             <div className="col-md-4 m-2">
-                                                <select name="selectedProviderIndex" onChange={handleChange} className="form-control" id="selectedProviderIndex">
-                                                    {providers.map((provider) => {
-                                                        return <option key={provider.value} value={provider.value}>{provider.label}</option>
-                                                    })}
+                                                <select
+                                                    name="selectedProviderIndex"
+                                                    onChange={handleChange}
+                                                    className="form-control"
+                                                    id="selectedProviderIndex"
+                                                >
+                                                    {providers.map(
+                                                        (provider) => {
+                                                            return (
+                                                                <option
+                                                                    key={
+                                                                        provider.value
+                                                                    }
+                                                                    value={
+                                                                        provider.value
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        provider.label
+                                                                    }
+                                                                </option>
+                                                            )
+                                                        }
+                                                    )}
                                                 </select>
                                             </div>
                                             <div className="col-md-4 m-2">
-                                                <select name="selectedServiceIndex" onChange={handleChange} className="form-control" id="selectedServiceIndex">
+                                                <select
+                                                    name="selectedServiceIndex"
+                                                    onChange={handleChange}
+                                                    className="form-control"
+                                                    id="selectedServiceIndex"
+                                                >
                                                     {services.map((service) => {
-                                                        return <option key={service.value} value={service.value}>{service.label}</option>
+                                                        return (
+                                                            <option
+                                                                key={
+                                                                    service.value
+                                                                }
+                                                                value={
+                                                                    service.value
+                                                                }
+                                                            >
+                                                                {service.label}
+                                                            </option>
+                                                        )
                                                     })}
                                                 </select>
                                             </div>
@@ -232,9 +286,9 @@ const DiscountOnRecharge = () => {
                         </div>
                     </div>
                     <div className="col-lg-12">
-                        { isShowDiscountData && (
+                        {isShowDiscountData && (
                             <>
-                                <div className='d-flex justify-content-end m-3'>
+                                <div className="d-flex justify-content-end m-3">
                                     <Button
                                         variant="info"
                                         type="button"
@@ -254,24 +308,36 @@ const DiscountOnRecharge = () => {
                                     rowEvents={rowEvents}
                                 />
 
-                                { isShowDiscountModal && (
+                                {isShowDiscountModal && (
                                     <DiscountModal
                                         discountInfo={discountInfo}
                                         isDiscountEdit={isDiscountEdit}
-                                        isShowDiscountModal={isShowDiscountModal}
-                                        onCloseDiscountModal={handleDiscountClose}
-                                        onSaveDiscountModal={handleSaveDiscountModal}
-                                        selectedServiceIndex={selectedServiceIndex}
+                                        isShowDiscountModal={
+                                            isShowDiscountModal
+                                        }
+                                        onCloseDiscountModal={
+                                            handleDiscountClose
+                                        }
+                                        onSaveDiscountModal={
+                                            handleSaveDiscountModal
+                                        }
+                                        selectedServiceIndex={
+                                            selectedServiceIndex
+                                        }
                                     />
                                 )}
 
-                                { isShowDeleteDiscountConfirmModal && (
+                                {isShowDeleteDiscountConfirmModal && (
                                     <ConfirmModal
                                         title="Are you sure ?"
                                         description="Are you sure you want to delete ?"
                                         handleDelete={handleDelete}
-                                        isShowConfirmModal={isShowDeleteDiscountConfirmModal}
-                                        onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
+                                        isShowConfirmModal={
+                                            isShowDeleteDiscountConfirmModal
+                                        }
+                                        onCloseConfirmModal={
+                                            onCloseDeleteDiscountConfirmModal
+                                        }
                                     />
                                 )}
                             </>

@@ -46,10 +46,17 @@ const AddUpdateUserDialog = (props) => {
         obj.phoneNumber = phone
         obj.email = email
         let id = props.userData.id
-        await accountService.update(id, obj).then((res) => {
-            handleClose()
-            props.getAllusers()
-        })
+        if (!id) {
+            await accountService.create(obj).then((res) => {
+                handleClose()
+                props.getAllusers()
+            })
+        } else {
+            await accountService.update(id, obj).then((res) => {
+                handleClose()
+                props.getAllusers()
+            })
+        }
     }
 
     return (

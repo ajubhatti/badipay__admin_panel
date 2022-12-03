@@ -49,14 +49,21 @@ export const navigations = [
                 iconText: 'RCH',
             },
             {
-                name: 'Discount',
-                path: '/recharge/discount',
-                iconText: 'DS',
-            },
-            {
                 name: 'Transactions',
                 path: '/recharge/transactions',
                 iconText: 'TRNS',
+            },
+        ],
+    },
+    {
+        name: 'Discount',
+        icon: 'build',
+        badge: { color: 'black' },
+        children: [
+            {
+                name: 'Discount',
+                path: '/recharge/discount',
+                iconText: 'DS',
             },
         ],
     },
