@@ -1,64 +1,70 @@
-import { companyService } from "app/services/company.service";
-import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { companyService } from 'app/services/company.service'
+import { useEffect, useState } from 'react'
+import { Button, Modal } from 'react-bootstrap'
 import CustomLoader from 'app/components/CustomLoader/CustomLoader'
 
 const defaultDiscountInfo = {
-    "operatorId": "",
-    "amount" : "",
-    "discountLimit": "",
-    "type": "",
-    "referalAmount": "",
-    "referalDiscountLimit": "",
-    "referalType": ""
+    operatorId: '',
+    amount: '',
+    discountLimit: '',
+    type: '',
+    referalAmount: '',
+    referalDiscountLimit: '',
+    referalType: '',
 }
 
 const DiscountModal = (props) => {
-    const [discountInfo, setDiscountInfo] = useState(defaultDiscountInfo);
-    const [isShowLoader, setIsShowLoader] = useState(false);
-    const [companies, setCompanies] = useState([]);
+    const [discountInfo, setDiscountInfo] = useState(defaultDiscountInfo)
+    const [isShowLoader, setIsShowLoader] = useState(false)
+    const [companies, setCompanies] = useState([])
 
-    const getAllCompanies = async() => {
-        setIsShowLoader(true);
+    const getAllCompanies = async () => {
+        setIsShowLoader(true)
         await companyService.getAllCompanies().then((res) => {
             const companies = res?.data?.data.filter((company) => {
-                return company.providerType == props.selectedServiceIndex;
-            });
+                return company.providerType == props.selectedServiceIndex
+            })
 
-            companies.unshift({"_id" : 0, "companyName" : "Select Operator"});
+            companies.unshift({ _id: 0, companyName: 'Select Operator' })
 
-            setCompanies(companies);
-            setIsShowLoader(false);
-        });
+            setCompanies(companies)
+            setIsShowLoader(false)
+        })
     }
 
     useEffect(() => {
-        getAllCompanies();
+        getAllCompanies()
     }, [props.selectedServiceIndex])
 
     useEffect(() => {
-        setDiscountInfo(props.discountInfo);
+        console.log(props.discountInfo)
+        setDiscountInfo(props.discountInfo.discountData)
+        if (props.discountInfo.discountData) {
+        } else {
+            setDiscountInfo((prev) => ({
+                ...prev,
+                operatorId: props?.discountInfo?._id,
+            }))
+        }
     }, [props.discountInfo])
 
     const handleClose = () => {
-        props.onCloseDiscountModal();
-    };
+        props.onCloseDiscountModal()
+    }
 
     const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setDiscountInfo(prev => ({...prev, [name]: value}));
+        const name = e.target.name
+        const value = e.target.value
+        setDiscountInfo((prev) => ({ ...prev, [name]: value }))
     }
 
     const handleSaveDiscountModal = () => {
-        props.onSaveDiscountModal(discountInfo);
+        props.onSaveDiscountModal(discountInfo)
     }
 
     return (
         <>
-            { isShowLoader && (
-                <CustomLoader />
-            )} 
+            {isShowLoader && <CustomLoader />}
             <Modal
                 show={props.isShowDiscountModal}
                 onHide={handleClose}
@@ -66,57 +72,145 @@ const DiscountModal = (props) => {
                 aria-labelledby="contained-modal-title-vcenter"
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{props.isDiscountEdit ? 'Edit' : 'Add'} Discount</Modal.Title>
+                    <Modal.Title>
+                        {props.isDiscountEdit ? 'Edit' : 'Add'} Discount
+                    </Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="opearatorId">Operator</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="operatorId"
+                        >
+                            Operator
+                        </label>
                         <div className="col-sm-10">
-                            <select name="opearatorId" value={discountInfo?.opearatorId} onChange={handleChange} className="form-control" id="opearatorId">
+                            <select
+                                name="operatorId"
+                                value={
+                                    discountInfo?.operatorId ||
+                                    props?.discountInfo?._id
+                                }
+                                onChange={handleChange}
+                                className="form-control"
+                                id="operatorId"
+                            >
                                 {companies.map((company) => {
-                                    return <option key={company._id}  value={company._id}>{company.companyName}</option>
+                                    return (
+                                        <option
+                                            key={company._id}
+                                            value={company._id}
+                                        >
+                                            {company.companyName}
+                                        </option>
+                                    )
                                 })}
                             </select>
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="amount">Amount</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="amount"
+                        >
+                            Amount
+                        </label>
                         <div className="col-sm-10">
-                            <input type="number" name="amount" onChange={handleChange} value={discountInfo?.amount} className="form-control" />
+                            <input
+                                type="number"
+                                name="amount"
+                                onChange={handleChange}
+                                value={discountInfo?.amount}
+                                className="form-control"
+                            />
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="discountLimit">Limit</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="discountLimit"
+                        >
+                            Limit
+                        </label>
                         <div className="col-sm-10">
-                            <input type="number" name="discountLimit" onChange={handleChange} value={discountInfo?.discountLimit} className="form-control" />
+                            <input
+                                type="number"
+                                name="discountLimit"
+                                onChange={handleChange}
+                                value={discountInfo?.discountLimit}
+                                className="form-control"
+                            />
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="type">Type</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="type"
+                        >
+                            Type
+                        </label>
                         <div className="col-sm-10">
-                            <select name="type" onChange={handleChange} className="form-control" id="type">
+                            <select
+                                name="type"
+                                onChange={handleChange}
+                                className="form-control"
+                                id="type"
+                            >
                                 <option value="number">Number</option>
                                 <option value="percentage">Percentage</option>
                             </select>
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="referalAmount">Referal Amount</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="referalAmount"
+                        >
+                            Referal Amount
+                        </label>
                         <div className="col-sm-10">
-                            <input type="number" name="referalAmount" onChange={handleChange} value={discountInfo?.referalAmount} className="form-control" />
+                            <input
+                                type="number"
+                                name="referalAmount"
+                                onChange={handleChange}
+                                value={discountInfo?.referalAmount}
+                                className="form-control"
+                            />
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="referalDiscountLimit">Referal Limit</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="referalDiscountLimit"
+                        >
+                            Referal Limit
+                        </label>
                         <div className="col-sm-10">
-                            <input type="number" name="referalDiscountLimit" onChange={handleChange} value={discountInfo?.referalDiscountLimit} className="form-control" />
+                            <input
+                                type="number"
+                                name="referalDiscountLimit"
+                                onChange={handleChange}
+                                value={discountInfo?.referalDiscountLimit}
+                                className="form-control"
+                            />
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="referalType">Referal Type</label>
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="referalType"
+                        >
+                            Referal Type
+                        </label>
                         <div className="col-sm-10">
-                            <select name="referalType" value={discountInfo?.referalType}  onChange={handleChange} className="form-control" id="referalType">
+                            <select
+                                name="referalType"
+                                value={discountInfo?.referalType}
+                                onChange={handleChange}
+                                className="form-control"
+                                id="referalType"
+                            >
                                 <option value="number">Number</option>
                                 <option value="percentage">Percentage</option>
                             </select>
@@ -125,16 +219,38 @@ const DiscountModal = (props) => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    {console.log(
+                        discountInfo,
+                        discountInfo?.amount,
+                        discountInfo?.discountLimit,
+                        discountInfo?.type,
+                        discountInfo?.referalAmount,
+                        discountInfo?.referalDiscountLimit,
+                        discountInfo?.referalType,
+                        props.discountModalSave
+                    )}
                     <Button
                         variant="primary"
-                        disabled={!discountInfo?.amount || !discountInfo?.discountLimit || !discountInfo?.type || !discountInfo?.referalAmount || !discountInfo?.referalDiscountLimit || !discountInfo?.referalType || props.discountModalSave}
+                        disabled={
+                            !discountInfo?.amount ||
+                            !discountInfo?.discountLimit ||
+                            !discountInfo?.type ||
+                            !discountInfo?.referalAmount ||
+                            !discountInfo?.referalDiscountLimit ||
+                            !discountInfo?.referalType
+                            // props.discountModalSave
+                        }
                         onClick={handleSaveDiscountModal}
-                    >Save changes</Button>
+                    >
+                        Save changes
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </>
     )
 }
 
-export default DiscountModal;
+export default DiscountModal

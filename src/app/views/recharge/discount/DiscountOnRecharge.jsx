@@ -8,8 +8,8 @@ import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstr
 import DiscountModal from './DiscountModal'
 import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
 
-import {discountServices} from 'app/services/discount.service'
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
+import { discountServices } from 'app/services/discount.service'
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 
 const DiscountOnRecharge = () => {
     const [isShowLoader, setIsShowLoader] = useState(false)
@@ -20,9 +20,9 @@ const DiscountOnRecharge = () => {
     ] = useState(false)
     const [isDiscountEdit, setIsDiscountEdit] = useState(false)
 
-    const [selectedProviderIndex, setSelectedProviderIndex] = useState('');
-    const [selectedServiceIndex, setSelectedServiceIndex] = useState('');
-    const [discountModalSave, setDiscountModalSave] = useState(false);
+    const [selectedProviderIndex, setSelectedProviderIndex] = useState('')
+    const [selectedServiceIndex, setSelectedServiceIndex] = useState('')
+    const [discountModalSave, setDiscountModalSave] = useState(false)
 
     const [discountInfo, setdDiscountInfo] = useState([])
     const [discounts, setdDiscounts] = useState([])
@@ -162,24 +162,27 @@ const DiscountOnRecharge = () => {
     }
 
     const handleEdit = (info) => {
-        let tmpInfo = [];
-        tmpInfo._id = info?._id;
-        tmpInfo.discountData = info?.discountData;
-        setdDiscountInfo(info);
-        setIsDiscountEdit(true);
-        setIsShowDiscountModal(true);
+        let tmpInfo = []
+        tmpInfo._id = info?._id
+        tmpInfo.discountData = info?.discountData
+        setdDiscountInfo(info)
+        setIsDiscountEdit(true)
+        setIsShowDiscountModal(true)
     }
 
     const handleDiscountDelete = (info) => {
-        setIsShowDeleteDiscountConfirmModal(true);
-        setdDiscountInfo(info);
+        setIsShowDeleteDiscountConfirmModal(true)
+        setdDiscountInfo(info)
     }
 
-    const handleDelete = async() => {
+    const handleDelete = async () => {
         await discountServices.deleteDiscount(discountInfo._id).then((res) => {
-            if (res.status == "200") {
-                setIsShowDeleteDiscountConfirmModal(false);
-                getAllDiscounts({apiId: selectedProviderIndex, serviceId: selectedServiceIndex});
+            if (res.status == '200') {
+                setIsShowDeleteDiscountConfirmModal(false)
+                getAllDiscounts({
+                    apiId: selectedProviderIndex,
+                    serviceId: selectedServiceIndex,
+                })
             }
         })
     }
@@ -189,9 +192,9 @@ const DiscountOnRecharge = () => {
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        if (name == "selectedProviderIndex") {
-            setSelectedProviderIndex(value);
+        const { name, value } = e.target
+        if (name == 'selectedProviderIndex') {
+            setSelectedProviderIndex(value)
         } else {
             setSelectedServiceIndex(value)
         }
@@ -206,26 +209,29 @@ const DiscountOnRecharge = () => {
         }
     }
 
-    const handleSaveDiscountModal = async(data) => {
-        setIsShowLoader(true);
-        setDiscountModalSave(true);
-        data.apiId = selectedProviderIndex;
-        data.serviceId = selectedServiceIndex;
-        if (isDiscountEdit) {
-            await discountServices.updateDiscount(data._id, data).then((res) => {
-                getAllDiscounts(data);
-                setIsShowLoader(false);
-            }).catch((error) => {
-                
-                setIsShowLoader(false);
-            });
+    const handleSaveDiscountModal = async (data) => {
+        console.log({ data })
+        setIsShowLoader(true)
+        setDiscountModalSave(true)
+        data.apiId = selectedProviderIndex
+        data.serviceId = selectedServiceIndex
+        if (isDiscountEdit && data?._id) {
+            await discountServices
+                .updateDiscount(data._id, data)
+                .then((res) => {
+                    getAllDiscounts(data)
+                    setIsShowLoader(false)
+                })
+                .catch((error) => {
+                    setIsShowLoader(false)
+                })
         } else {
             await discountServices.addDiscount(data).then((res) => {
-                getAllDiscounts(data);
-                setIsShowLoader(false);
-            });
+                getAllDiscounts(data)
+                setIsShowLoader(false)
+            })
         }
-        setIsShowDiscountModal(false);
+        setIsShowDiscountModal(false)
     }
 
     return (
@@ -333,10 +339,18 @@ const DiscountOnRecharge = () => {
                                     <DiscountModal
                                         discountInfo={discountInfo}
                                         isDiscountEdit={isDiscountEdit}
-                                        isShowDiscountModal={isShowDiscountModal}
-                                        onCloseDiscountModal={handleDiscountClose}
-                                        onSaveDiscountModal={handleSaveDiscountModal}
-                                        selectedServiceIndex={selectedServiceIndex}
+                                        isShowDiscountModal={
+                                            isShowDiscountModal
+                                        }
+                                        onCloseDiscountModal={
+                                            handleDiscountClose
+                                        }
+                                        onSaveDiscountModal={
+                                            handleSaveDiscountModal
+                                        }
+                                        selectedServiceIndex={
+                                            selectedServiceIndex
+                                        }
                                         discountModalSave={discountModalSave}
                                     />
                                 )}
