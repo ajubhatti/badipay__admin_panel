@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import Button from '@mui/material/Button'
-import { companyService } from 'app/services/company.service'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { getApiList } from '../apis/store/action'
-import { Card, Form } from 'react-bootstrap'
-import { getServices } from '../services-listing/store/action'
-import ReactSelect from 'app/components/ReactDropDown/ReactSelect'
-import { fetchCompanyById, getCompaniesById } from './store/action'
+import React, { useState, useEffect } from "react"
+import Button from "@mui/material/Button"
+import { companyService } from "app/services/company.service"
+import { useNavigate, useParams } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { getApiList } from "../apis/store/action"
+import { Card, Form } from "react-bootstrap"
+import { getServices } from "../services-listing/store/action"
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { fetchCompanyById, getCompaniesById } from "./store/action"
 
 const AddUpdateCompany = (props) => {
     const dispatch = useDispatch()
@@ -18,24 +18,24 @@ const AddUpdateCompany = (props) => {
     const { singleCompany } = useSelector((state) => state.company)
 
     const [companyData, setCompanyData] = useState({
-        companyName: '',
-        mobileAppCode: '',
-        companyDetail: '',
-        image: '',
+        companyName: "",
+        mobileAppCode: "",
+        companyDetail: "",
+        image: "",
         isActive: true,
         isVisible: true,
-        providerType: '',
-        minAmount: '',
-        maxAmount: '',
+        providerType: "",
+        minAmount: "",
+        maxAmount: "",
         referenceApis: [],
     })
 
     const [apiArray, setApiArray] = useState([])
     const [servicesData, setServicesData] = useState([])
-    const [selectedValue, setSelectedValue] = useState('')
+    const [selectedValue, setSelectedValue] = useState("")
 
     useEffect(() => {
-        console.log('singleCompany', singleCompany)
+        console.log("singleCompany", singleCompany)
         if (id) {
             setCompanyData({
                 companyName: singleCompany?.companyName,
@@ -61,7 +61,7 @@ const AddUpdateCompany = (props) => {
                     totalPending: object.totalPending || 0,
                 }
             })
-            console.log('apisList first :>> ', arrWithColor)
+            console.log("apisList first :>> ", arrWithColor)
 
             setApiArray(arrWithColor)
         }
@@ -83,7 +83,7 @@ const AddUpdateCompany = (props) => {
                 totalPending: 0,
             }
         })
-        console.log('apisList :>> ', arrWithColor)
+        console.log("apisList :>> ", arrWithColor)
 
         setApiArray(apisList)
     }, [apisList])
@@ -100,20 +100,20 @@ const AddUpdateCompany = (props) => {
     }, [serviceList])
 
     const handleClose = () => {
-        navigate('/api-setting/company')
+        navigate("/api-setting/company")
     }
 
     const clearData = () => {
         setCompanyData({
-            companyName: '',
-            mobileAppCode: '',
-            companyDetail: '',
-            image: '',
+            companyName: "",
+            mobileAppCode: "",
+            companyDetail: "",
+            image: "",
             isActive: true,
             isVisible: true,
-            providerType: '',
-            minAmount: '',
-            maxAmount: '',
+            providerType: "",
+            minAmount: "",
+            maxAmount: "",
             referenceApis: [],
         })
     }
@@ -129,7 +129,7 @@ const AddUpdateCompany = (props) => {
     }, [dispatch, id])
 
     const handleSubmit = async () => {
-        console.log('apiArray', apiArray)
+        console.log("apiArray", apiArray)
         companyData.referenceApis = apiArray
 
         if (id) {
@@ -242,7 +242,7 @@ const AddUpdateCompany = (props) => {
                     >
                         <Form.Label>Provider Type</Form.Label>
                         <ReactSelect
-                            title={'Provider Type'}
+                            title={"Provider Type"}
                             handleChange={(e) => {
                                 setSelectedValue(e)
                                 setCompanyData({

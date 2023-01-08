@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form } from 'react-bootstrap'
+import React, { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { Button, Form } from "react-bootstrap"
 import {
     createService,
     fetchServiceById,
     getServicesById,
     editService,
-} from '../services-listing/store/action'
+} from "../services-listing/store/action"
 
 const AddUpdateService = (props) => {
     const dispatch = useDispatch()
@@ -16,9 +16,9 @@ const AddUpdateService = (props) => {
 
     const { singleService } = useSelector((state) => state.servicesList)
     const [serviceData, setServiceData] = useState({
-        serviceName: '',
-        serviceDetail: '',
-        title: '',
+        serviceName: "",
+        serviceDetail: "",
+        title: "",
         isActive: true,
     })
 
@@ -44,13 +44,13 @@ const AddUpdateService = (props) => {
     }, [dispatch, id])
 
     const handleClose = () => {
-        navigate('/api-setting/service')
+        navigate("/api-setting/service")
     }
 
     const clearData = () => {
         setServiceData({
-            serviceName: '',
-            serviceDetail: '',
+            serviceName: "",
+            serviceDetail: "",
             isActive: true,
         })
     }
@@ -73,7 +73,7 @@ const AddUpdateService = (props) => {
                 <div className="row mt-3">
                     <div className="col-lg-12">
                         <h2 className="main-heading">
-                            {id ? 'Update' : 'Add'} Service
+                            {id ? "Update" : "Add"} Service
                         </h2>
                     </div>
                 </div>
@@ -81,7 +81,7 @@ const AddUpdateService = (props) => {
             <div className="col-lg-12">
                 <div className="card rounded-0 mb-4">
                     {/* <div className="card-header">
-                        <h6> SEARCH FILTERS</h6>
+                        <h6> Search Filters</h6>
                     </div> */}
                     <div className="card-body">
                         <div className="row">

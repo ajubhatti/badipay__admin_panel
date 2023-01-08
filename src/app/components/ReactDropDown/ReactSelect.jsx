@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import Select from 'react-select'
+import React, { useEffect, useState } from "react"
+import Select from "react-select"
 
-const ReactSelect = (props) => {
-    const [selectedValue, setSelectedValue] = useState('')
+const ReactSelect = ({ options, selectedValue, handleChange }) => {
+    const [defaultValue, setDefaultValue] = useState("")
 
     useEffect(() => {
-        setSelectedValue(
-            props?.options.find(
-                (option) => option.value === props?.selectedValue
-            )
+        setDefaultValue(
+            options.find((option) => option.value === selectedValue)
         )
-    }, [props?.selectedValue, props?.options])
+    }, [selectedValue, options])
 
-    const handleChange = (event) => {
-        props.handleChange(event?.value)
+    const handleOnChange = (event) => {
+        handleChange(event?.value)
     }
 
     return (
         <Select
-            value={selectedValue}
-            defaultValue={selectedValue}
-            onChange={handleChange}
-            options={props?.options}
+            value={defaultValue}
+            defaultValue={defaultValue}
+            onChange={handleOnChange}
+            options={options}
         />
     )
 }

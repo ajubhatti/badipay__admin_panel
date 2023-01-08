@@ -1,16 +1,16 @@
-import '../fake-db'
-import React from 'react'
-import { Store } from './redux/Store'
-import { Provider } from 'react-redux'
-import { AllPages } from './routes/routes'
-import { MatxTheme } from 'app/components'
-import { useRoutes } from 'react-router-dom'
-import { AuthProvider } from 'app/contexts/JWTAuthContext'
-import { SettingsProvider } from 'app/contexts/SettingsContext'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '../css/style.css'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import "../fake-db"
+import React from "react"
+import { Store } from "./redux/Store"
+import { Provider } from "react-redux"
+import { AllPages } from "./routes/routes"
+import { MatxTheme } from "app/components"
+import { useRoutes } from "react-router-dom"
+import { AuthProvider } from "app/contexts/JWTAuthContext"
+import { SettingsProvider } from "app/contexts/SettingsContext"
+import { ToastContainer } from "react-toastify"
+import "bootstrap/dist/css/bootstrap.min.css"
+import "../css/style.css"
+import "react-toastify/dist/ReactToastify.css"
 
 const App = () => {
     const all_pages = useRoutes(AllPages())

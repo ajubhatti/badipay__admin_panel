@@ -1,11 +1,11 @@
-import ReactSelect from 'app/components/ReactDropDown/ReactSelect'
-import { companyService } from 'app/services/company.service'
-import { filter } from 'lodash'
-import React, { useEffect, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { getCompanies } from '../company-listing/store/action'
-import { getServices } from '../services-listing/store/action'
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { companyService } from "app/services/company.service"
+import { filter } from "lodash"
+import React, { useEffect, useState } from "react"
+import { Button, Form } from "react-bootstrap"
+import { useDispatch, useSelector } from "react-redux"
+import { getCompanies } from "../company-listing/store/action"
+import { getServices } from "../services-listing/store/action"
 
 const OperatorSwitching = () => {
     const dispatch = useDispatch()
@@ -17,7 +17,7 @@ const OperatorSwitching = () => {
     const [serviceMenuData, setServiceMenuData] = useState([])
     const [operatorMenuData, setOperatorMenuData] = useState([])
     const [selectedOperatorData, setSelectedOperatorData] = useState({})
-    const [selectedOperatorDataId, setSelectedOperatorDataId] = useState('')
+    const [selectedOperatorDataId, setSelectedOperatorDataId] = useState("")
 
     useEffect(() => {
         if (serviceList && serviceList.length > 0) {
@@ -51,7 +51,7 @@ const OperatorSwitching = () => {
             (x) => x._id === searchData.operator
         )
 
-        console.log('filteredData', filteredData)
+        console.log("filteredData", filteredData)
         setSelectedOperatorDataId(filteredData?._id)
         setSelectedOperatorData(filteredData)
         e.preventDefault()
@@ -59,7 +59,7 @@ const OperatorSwitching = () => {
 
     const handleOnChange = async (index, data, key, e) => {
         let selectedJson = selectedOperatorData.referenceApis[index]
-        if (key === 'isActive') {
+        if (key === "isActive") {
             selectedJson[key] = e.target.checked
         } else {
             selectedJson[key] = e.target.value
@@ -72,7 +72,7 @@ const OperatorSwitching = () => {
         await companyService
             .updateCompany(selectedOperatorDataId, selectedOperatorData)
             .then((res) => {
-                console.log('updateRes', res)
+                console.log("updateRes", res)
                 setSelectedOperatorData(selectedOperatorData)
             })
     }
@@ -92,7 +92,7 @@ const OperatorSwitching = () => {
                 <div className="col-lg-12">
                     <div className="card rounded-0 mb-4">
                         <div className="card-header">
-                            <h6> SEARCH FILTERS</h6>
+                            <h6> Search Filters</h6>
                         </div>
                         <div className="card-body">
                             <div className="row">
@@ -106,7 +106,7 @@ const OperatorSwitching = () => {
                                         <div className="list-of-operator m-2">
                                             <Form.Group controlId="formGridServic">
                                                 <ReactSelect
-                                                    title={'Services'}
+                                                    title={"Services"}
                                                     handleChange={(e) => {
                                                         // setSelectedValue(e)
                                                         setCompanyData({
@@ -122,7 +122,7 @@ const OperatorSwitching = () => {
                                         <div className="list-of-operator m-2">
                                             <Form.Group controlId="formGridOperator">
                                                 <ReactSelect
-                                                    title={'Operator'}
+                                                    title={"Operator"}
                                                     handleChange={(e) => {
                                                         // setSelectedValue(e)
                                                         setCompanyData({
@@ -191,7 +191,7 @@ const OperatorSwitching = () => {
                                                                         handleOnChange(
                                                                             index,
                                                                             x,
-                                                                            'pendingLimit',
+                                                                            "pendingLimit",
                                                                             e
                                                                         )
                                                                     }}
@@ -218,7 +218,7 @@ const OperatorSwitching = () => {
                                                                         handleOnChange(
                                                                             index,
                                                                             x,
-                                                                            'priority',
+                                                                            "priority",
                                                                             e
                                                                         )
                                                                     }}
@@ -237,7 +237,7 @@ const OperatorSwitching = () => {
                                                                         handleOnChange(
                                                                             index,
                                                                             x,
-                                                                            'isActive',
+                                                                            "isActive",
                                                                             e
                                                                         )
                                                                     }}
@@ -275,7 +275,7 @@ const OperatorSwitching = () => {
                                                                         handleOnChange(
                                                                             index,
                                                                             x,
-                                                                            'failureLimit',
+                                                                            "failureLimit",
                                                                             e
                                                                         )
                                                                     }}

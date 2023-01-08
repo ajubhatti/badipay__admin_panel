@@ -1,15 +1,15 @@
-import CustomLoader from 'app/components/CustomLoader/CustomLoader'
-import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
-import { BsPlus } from 'react-icons/bs'
+import CustomLoader from "app/components/CustomLoader/CustomLoader"
+import React, { useEffect, useState } from "react"
+import { Button } from "react-bootstrap"
+import { BsPlus } from "react-icons/bs"
 
-import { useTheme } from '@mui/system'
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import DiscountModal from './DiscountModal'
-import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
+import { useTheme } from "@mui/system"
+import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
+import DiscountModal from "./DiscountModal"
+import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
-import { discountServices } from 'app/services/discount.service'
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
+import { discountServices } from "app/services/discount.service"
+import { AiFillDelete, AiFillEdit } from "react-icons/ai"
 
 const DiscountOnRecharge = () => {
     const [isShowLoader, setIsShowLoader] = useState(false)
@@ -20,8 +20,8 @@ const DiscountOnRecharge = () => {
     ] = useState(false)
     const [isDiscountEdit, setIsDiscountEdit] = useState(false)
 
-    const [selectedProviderIndex, setSelectedProviderIndex] = useState('')
-    const [selectedServiceIndex, setSelectedServiceIndex] = useState('')
+    const [selectedProviderIndex, setSelectedProviderIndex] = useState("")
+    const [selectedServiceIndex, setSelectedServiceIndex] = useState("")
     const [discountModalSave, setDiscountModalSave] = useState(false)
 
     const [discountInfo, setdDiscountInfo] = useState([])
@@ -37,47 +37,47 @@ const DiscountOnRecharge = () => {
 
     const columns = [
         {
-            dataField: 'discountData._id',
-            text: 'Sr No.',
+            dataField: "discountData._id",
+            text: "Sr No.",
             headerStyle: () => {
-                return { width: '5%' }
+                return { width: "5%" }
             },
             formatter: (cellContent, row, index) => {
                 return <span>{index + 1}</span>
             },
         },
         {
-            dataField: 'companyName',
-            text: 'Company Name',
+            dataField: "companyName",
+            text: "Company Name",
         },
         {
-            dataField: 'discountData.amount',
-            text: 'Discount Amount',
+            dataField: "discountData.amount",
+            text: "Discount Amount",
         },
         {
-            dataField: 'discountData.type',
-            text: 'Discount Type',
+            dataField: "discountData.type",
+            text: "Discount Type",
         },
         {
-            dataField: 'discountData.discountLimit',
-            text: 'Discount Limit',
+            dataField: "discountData.discountLimit",
+            text: "Discount Limit",
         },
         {
-            dataField: 'discountData.referalAmount',
-            text: 'Referal Discount Amount',
+            dataField: "discountData.referalAmount",
+            text: "Referal Discount Amount",
         },
         {
-            dataField: 'discountData.referalType',
-            text: 'Referal Discount Type',
+            dataField: "discountData.referalType",
+            text: "Referal Discount Type",
         },
         {
-            dataField: 'discountData.referalDiscountLimit',
-            text: 'Referal Discount Limit',
+            dataField: "discountData.referalDiscountLimit",
+            text: "Referal Discount Limit",
         },
         {
-            text: 'Action',
+            text: "Action",
             headerStyle: () => {
-                return { width: '10%' }
+                return { width: "10%" }
             },
             formatter: (cell, row) => (
                 <div>
@@ -99,7 +99,7 @@ const DiscountOnRecharge = () => {
                     </button>
                 </div>
             ),
-            classes: 'p-1',
+            classes: "p-1",
         },
     ]
 
@@ -120,7 +120,7 @@ const DiscountOnRecharge = () => {
                 .map(function (provider) {
                     return { value: provider._id, label: provider.apiName }
                 })
-            provider.unshift({ value: 0, label: 'Select Provider' })
+            provider.unshift({ value: 0, label: "Select Provider" })
             setProviders(provider)
 
             let service = []
@@ -131,7 +131,7 @@ const DiscountOnRecharge = () => {
                 .map(function (service) {
                     return { value: service._id, label: service.serviceName }
                 })
-            service.unshift({ value: 0, label: 'Select Service' })
+            service.unshift({ value: 0, label: "Select Service" })
             setServices(service)
 
             setIsShowLoader(false)
@@ -177,7 +177,7 @@ const DiscountOnRecharge = () => {
 
     const handleDelete = async () => {
         await discountServices.deleteDiscount(discountInfo._id).then((res) => {
-            if (res.status == '200') {
+            if (res.status == "200") {
                 setIsShowDeleteDiscountConfirmModal(false)
                 getAllDiscounts({
                     apiId: selectedProviderIndex,
@@ -193,7 +193,7 @@ const DiscountOnRecharge = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        if (name == 'selectedProviderIndex') {
+        if (name == "selectedProviderIndex") {
             setSelectedProviderIndex(value)
         } else {
             setSelectedServiceIndex(value)
@@ -201,7 +201,7 @@ const DiscountOnRecharge = () => {
     }
 
     const handleFilter = () => {
-        if (selectedProviderIndex != '' && selectedServiceIndex != '') {
+        if (selectedProviderIndex != "" && selectedServiceIndex != "") {
             getAllDiscounts({
                 apiId: selectedProviderIndex,
                 serviceId: selectedServiceIndex,
@@ -243,7 +243,7 @@ const DiscountOnRecharge = () => {
                     <div className="col-lg-12">
                         <div className="card rounded-0 mb-4">
                             <div className="card-header">
-                                <h6> SEARCH FILTERS</h6>
+                                <h6> Search Filters</h6>
                             </div>
                             <div className="card-body">
                                 <div className="row">

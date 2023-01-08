@@ -1,6 +1,6 @@
-import { FETCH_SERVICES, FETCH_SERVICE_BY_ID, SET_LOADING } from './actionTypes'
-import { toast } from 'react-toastify'
-import { servicesService } from 'app/services/services.service'
+import { FETCH_SERVICES, FETCH_SERVICE_BY_ID, SET_LOADING } from "./actionTypes"
+import { toast } from "react-toastify"
+import { servicesService } from "app/services/services.service"
 
 export const getServicesById = (data) => async (dispatch) => {
     try {

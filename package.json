@@ -50,6 +50,7 @@
         "react-table-6": "^6.11.0",
         "react-to-print": "^2.14.4",
         "react-toastify": "^8.2.0",
+        "reactstrap": "^9.1.5",
         "redux": "^4.1.2",
         "redux-thunk": "^2.4.0",
         "rxjs": "^7.5.4",
@@ -62,7 +63,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "ghp": "react-scripts build && gh-pages -d build" 
+        "ghp": "react-scripts build && gh-pages -d build"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -70,8 +71,7 @@
     "prettier": {
         "trailingComma": "es5",
         "tabWidth": 4,
-        "semi": false,
-        "singleQuote": true
+        "semi": false
     },
     "browserslist": [
         ">0.2%",
