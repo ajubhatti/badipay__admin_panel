@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { getApiList } from './store/action'
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import { Button, Form } from 'react-bootstrap'
+import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { getApiList } from "./store/action"
+import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
+import { Button, Form } from "react-bootstrap"
 import {
     AiOutlineEdit,
     AiFillDelete,
     AiFillEye,
     AiOutlinePlus,
-} from 'react-icons/ai'
+} from "react-icons/ai"
 
 const ApiListing = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { apisList } = useSelector((state) => state.apis)
+    const { apisList, loading } = useSelector((state) => state.apis)
     const [apiListData, setApiListData] = useState([])
 
     const GetActionFormat = (cell, row) => (
@@ -25,7 +25,7 @@ const ApiListing = () => {
                 size="sm"
                 onClick={() => handleEdit(cell, row)}
             >
-                <AiOutlineEdit style={{ color: 'green' }} />
+                <AiOutlineEdit style={{ color: "green" }} />
             </button>
             <button
                 type="button"
@@ -48,43 +48,43 @@ const ApiListing = () => {
 
     const columns = [
         {
-            dataField: 'apiName',
-            text: 'Api Name',
+            dataField: "apiName",
+            text: "Api Name",
         },
         {
-            dataField: 'apiDetail',
-            text: 'Api Detail',
+            dataField: "apiDetail",
+            text: "Api Detail",
         },
         {
-            dataField: 'isActive',
-            text: 'Is Active',
+            dataField: "isActive",
+            text: "Is Active",
         },
         {
-            dataField: 'apiImage',
-            text: 'Icon',
+            dataField: "apiImage",
+            text: "Icon",
         },
         {
-            dataField: 'created',
-            text: 'Created At',
+            dataField: "created",
+            text: "Created At",
         },
         {
-            text: 'Action',
-            dataField: '',
+            text: "Action",
+            dataField: "",
             formatter: GetActionFormat,
-            classes: 'p-1',
+            classes: "p-1",
         },
     ]
 
     const handleDelete = (cell, row) => {
-        console.log('object delete:>> ', { cell, row })
+        console.log("object delete:>> ", { cell, row })
     }
 
     const handleView = (cell, row) => {
-        console.log('object view:>> ', { cell, row })
+        console.log("object view:>> ", { cell, row })
     }
 
     const handleEdit = (cell, row) => {
-        navigate('/api-setting/api/add/' + row._id)
+        navigate("/api-setting/api/add/" + row._id)
     }
 
     useEffect(() => {
@@ -96,7 +96,7 @@ const ApiListing = () => {
     }, [apisList])
 
     const addNewApi = () => {
-        navigate('/api-setting/api/add')
+        navigate("/api-setting/api/add")
     }
 
     const rowEvents = {
@@ -104,6 +104,8 @@ const ApiListing = () => {
             // console.log(e, row, rowIndex)
         },
     }
+
+    console.log("loading", loading)
 
     return (
         <div className="container w-100">
@@ -122,6 +124,7 @@ const ApiListing = () => {
                 </div>
             </div>
             <ReactBootstrapTable
+                loading={loading}
                 tableData={apiListData}
                 columns={columns}
                 rowEvents={rowEvents}
