@@ -1,14 +1,14 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import useAuth from 'app/hooks/useAuth'
-import useSettings from 'app/hooks/useSettings'
-import { styled, useTheme, Box } from '@mui/system'
-import { Span } from '../../../components/Typography'
-import { MatxMenu, MatxSearchBox } from 'app/components'
-import ShoppingCart from '../../ShoppingCart/ShoppingCart'
-import NotificationBar from '../../NotificationBar/NotificationBar'
-import { themeShadows } from 'app/components/MatxTheme/themeColors'
-import { NotificationProvider } from 'app/contexts/NotificationContext'
+import React from "react"
+import { Link, useNavigate } from "react-router-dom"
+import useAuth from "app/hooks/useAuth"
+import useSettings from "app/hooks/useSettings"
+import { styled, useTheme, Box } from "@mui/system"
+import { Span } from "../../../components/Typography"
+import { MatxMenu, MatxSearchBox } from "app/components"
+import ShoppingCart from "../../ShoppingCart/ShoppingCart"
+import NotificationBar from "../../NotificationBar/NotificationBar"
+import { themeShadows } from "app/components/MatxTheme/themeColors"
+import { NotificationProvider } from "app/contexts/NotificationContext"
 import {
     Icon,
     IconButton,
@@ -16,79 +16,80 @@ import {
     Avatar,
     useMediaQuery,
     Hidden,
-} from '@mui/material'
-import { topBarHeight } from 'app/utils/constant'
+} from "@mui/material"
+import { topBarHeight } from "app/utils/constant"
+import Cookies from "app/helpers/cookies"
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
     color: theme.palette.text.primary,
 }))
 
-const TopbarRoot = styled('div')(({ theme }) => ({
+const TopbarRoot = styled("div")(({ theme }) => ({
     top: 0,
     zIndex: 96,
-    transition: 'all 0.3s ease',
+    transition: "all 0.3s ease",
     boxShadow: themeShadows[8],
     height: topBarHeight,
 }))
 
 const TopbarContainer = styled(Box)(({ theme }) => ({
-    padding: '8px',
+    padding: "8px",
     paddingLeft: 18,
     paddingRight: 20,
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     background: theme.palette.primary.main,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
         paddingLeft: 16,
         paddingRight: 16,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
         paddingLeft: 14,
         paddingRight: 16,
     },
 }))
 
 const UserMenu = styled(Box)(() => ({
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
     borderRadius: 24,
     padding: 4,
-    '& span': {
-        margin: '0 8px',
+    "& span": {
+        margin: "0 8px",
     },
 }))
 
 const StyledItem = styled(MenuItem)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     minWidth: 185,
-    '& a': {
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
+    "& a": {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        textDecoration: "none",
     },
-    '& span': {
-        marginRight: '10px',
+    "& span": {
+        marginRight: "10px",
         color: theme.palette.text.primary,
     },
 }))
 
-const IconBox = styled('div')(({ theme }) => ({
-    display: 'inherit',
-    [theme.breakpoints.down('md')]: {
-        display: 'none !important',
+const IconBox = styled("div")(({ theme }) => ({
+    display: "inherit",
+    [theme.breakpoints.down("md")]: {
+        display: "none !important",
     },
 }))
 
 const Layout1Topbar = () => {
     const theme = useTheme()
     const { settings, updateSettings } = useSettings()
-    const { logout, user } = useAuth()
-    const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
+    const isMdScreen = useMediaQuery(theme.breakpoints.down("md"))
+    const navigate = useNavigate()
 
     const updateSidebarMode = (sidebarSettings) => {
         updateSettings({
@@ -105,14 +106,19 @@ const Layout1Topbar = () => {
         let mode
         if (isMdScreen) {
             mode =
-                layout1Settings.leftSidebar.mode === 'close'
-                    ? 'mobile'
-                    : 'close'
+                layout1Settings.leftSidebar.mode === "close"
+                    ? "mobile"
+                    : "close"
         } else {
             mode =
-                layout1Settings.leftSidebar.mode === 'full' ? 'close' : 'full'
+                layout1Settings.leftSidebar.mode === "full" ? "close" : "full"
         }
         updateSidebarMode({ mode })
+    }
+
+    const logout = () => {
+        Cookies.clear()
+        navigate("/session/signin")
     }
 
     return (
@@ -143,19 +149,21 @@ const Layout1Topbar = () => {
                         <NotificationBar />
                     </NotificationProvider>
 
-                    <ShoppingCart />
+                    {/* <ShoppingCart /> */}
 
                     <MatxMenu
                         menuButton={
                             <UserMenu>
                                 <Hidden xsDown>
                                     <Span>
-                                        Hi <strong>{user.name}</strong>
+                                        Hi <strong>{"user.name"}</strong>
                                     </Span>
                                 </Hidden>
                                 <Avatar
-                                    src={user.avatar}
-                                    sx={{ cursor: 'pointer' }}
+                                    src={
+                                        "https://source.unsplash.com/user/c_v_r/1900x800"
+                                    }
+                                    sx={{ cursor: "pointer" }}
                                 />
                             </UserMenu>
                         }

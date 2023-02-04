@@ -11,6 +11,7 @@ import rechargeReducer from "app/views/recharge/store/reducer"
 import utilityReducer from "app/views/utilities/store/reducer"
 import walletReducer from "app/views/wallet/store/reducer"
 import SPSlabReducer from "app/views/api-settings/slab-config/store/reducer"
+import LoginReducers from "./loginReducer"
 
 const RootReducer = combineReducers({
     notifications: NotificationReducer,
@@ -25,6 +26,7 @@ const RootReducer = combineReducers({
     utilities: utilityReducer,
     wallet: walletReducer,
     SPSlab: SPSlabReducer,
+    user: LoginReducers,
 })
 
 export default RootReducer

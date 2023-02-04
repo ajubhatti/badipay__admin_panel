@@ -1,7 +1,7 @@
-import React, { createContext, useEffect, useReducer } from 'react'
-import jwtDecode from 'jwt-decode'
-import axios from 'axios.js'
-import { MatxLoading } from 'app/components'
+import React, { createContext, useEffect, useReducer } from "react"
+import jwtDecode from "jwt-decode"
+import axios from "axios.js"
+import { MatxLoading } from "app/components"
 
 const initialState = {
     isAuthenticated: false,
@@ -21,17 +21,17 @@ const isValidToken = (accessToken) => {
 
 const setSession = (accessToken) => {
     if (accessToken) {
-        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem("accessToken", accessToken)
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
     } else {
-        localStorage.removeItem('accessToken')
+        localStorage.removeItem("accessToken")
         delete axios.defaults.headers.common.Authorization
     }
 }
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'INIT': {
+        case "INIT": {
             const { isAuthenticated, user } = action.payload
 
             return {
@@ -41,7 +41,7 @@ const reducer = (state, action) => {
                 user,
             }
         }
-        case 'LOGIN': {
+        case "LOGIN": {
             const { user } = action.payload
 
             return {
@@ -50,14 +50,14 @@ const reducer = (state, action) => {
                 user,
             }
         }
-        case 'LOGOUT': {
+        case "LOGOUT": {
             return {
                 ...state,
                 isAuthenticated: false,
                 user: null,
             }
         }
-        case 'REGISTER': {
+        case "REGISTER": {
             const { user } = action.payload
 
             return {
@@ -74,9 +74,9 @@ const reducer = (state, action) => {
 
 const AuthContext = createContext({
     ...initialState,
-    method: 'JWT',
+    method: "JWT",
     login: () => Promise.resolve(),
-    logout: () => { },
+    logout: () => {},
     register: () => Promise.resolve(),
 })
 
@@ -84,7 +84,8 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('/api/auth/login', {
+        debugger
+        const response = await axios.post("/api/auth/login", {
             email,
             password,
         })
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }) => {
         setSession(accessToken)
 
         dispatch({
-            type: 'LOGIN',
+            type: "LOGIN",
             payload: {
                 user,
             },
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const register = async (email, username, password) => {
-        const response = await axios.post('/api/auth/register', {
+        const response = await axios.post("/api/auth/register", {
             email,
             username,
             password,
@@ -112,7 +113,7 @@ export const AuthProvider = ({ children }) => {
         setSession(accessToken)
 
         dispatch({
-            type: 'REGISTER',
+            type: "REGISTER",
             payload: {
                 user,
             },
@@ -121,21 +122,21 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setSession(null)
-        dispatch({ type: 'LOGOUT' })
+        dispatch({ type: "LOGOUT" })
     }
 
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             try {
-                const accessToken = window.localStorage.getItem('accessToken')
+                const accessToken = window.localStorage.getItem("accessToken")
 
                 if (accessToken && isValidToken(accessToken)) {
                     setSession(accessToken)
-                    const response = await axios.get('/api/auth/profile')
+                    const response = await axios.get("/api/auth/profile")
                     const { user } = response.data
 
                     dispatch({
-                        type: 'INIT',
+                        type: "INIT",
                         payload: {
                             isAuthenticated: true,
                             user,
@@ -143,7 +144,7 @@ export const AuthProvider = ({ children }) => {
                     })
                 } else {
                     dispatch({
-                        type: 'INIT',
+                        type: "INIT",
                         payload: {
                             isAuthenticated: false,
                             user: null,
@@ -153,7 +154,7 @@ export const AuthProvider = ({ children }) => {
             } catch (err) {
                 console.error(err)
                 dispatch({
-                    type: 'INIT',
+                    type: "INIT",
                     payload: {
                         isAuthenticated: false,
                         user: null,
@@ -171,7 +172,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 ...state,
-                method: 'JWT',
+                method: "JWT",
                 login,
                 logout,
                 register,

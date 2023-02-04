@@ -1,18 +1,18 @@
-import { useEffect } from 'react'
-import useAuth from 'app/hooks/useAuth'
-import { H6, Small } from '../Typography'
-import { Box, styled, useTheme } from '@mui/system'
-import { useNavigate } from 'react-router-dom'
-import useSettings from 'app/hooks/useSettings'
-import React, { Fragment, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { themeShadows } from '../MatxTheme/themeColors'
-import { sideNavWidth, topBarHeight } from 'app/utils/constant'
+import { useEffect } from "react"
+import useAuth from "app/hooks/useAuth"
+import { H6, Small } from "../Typography"
+import { Box, styled, useTheme } from "@mui/system"
+import { useNavigate } from "react-router-dom"
+import useSettings from "app/hooks/useSettings"
+import React, { Fragment, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { themeShadows } from "../MatxTheme/themeColors"
+import { sideNavWidth, topBarHeight } from "app/utils/constant"
 import {
     getCartList,
     deleteProductFromCart,
     updateCartAmount,
-} from 'app/redux/actions/EcommerceActions'
+} from "app/redux/actions/EcommerceActions"
 import {
     Icon,
     Badge,
@@ -20,66 +20,66 @@ import {
     Drawer,
     Button,
     ThemeProvider,
-} from '@mui/material'
+} from "@mui/material"
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
-    '& span': {
+    "& span": {
         color: theme.palette.text.primary,
     },
-    '& #disable': {
+    "& #disable": {
         color: theme.palette.text.disabled,
     },
 }))
 
-const MiniCart = styled('div')(({ theme }) => ({
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+const MiniCart = styled("div")(({ theme }) => ({
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
     width: sideNavWidth,
 }))
 
-const CartBox = styled('div')(() => ({
-    padding: '4px',
-    paddingLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
+const CartBox = styled("div")(() => ({
+    padding: "4px",
+    paddingLeft: "16px",
+    display: "flex",
+    alignItems: "center",
     boxShadow: themeShadows[6],
     height: topBarHeight,
-    '& h5': {
+    "& h5": {
         marginTop: 0,
         marginBottom: 0,
-        marginLeft: '16px',
-        fontWeight: '500',
+        marginLeft: "16px",
+        fontWeight: "500",
     },
 }))
 
-const ProductBox = styled('div')(() => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: '8px 8px',
-    transition: 'background 300ms ease',
-    '&:hover': {
-        background: 'rgba(0,0,0,0.01)',
+const ProductBox = styled("div")(() => ({
+    display: "flex",
+    alignItems: "center",
+    padding: "8px 8px",
+    transition: "background 300ms ease",
+    "&:hover": {
+        background: "rgba(0,0,0,0.01)",
     },
 }))
 
-const IMG = styled('img')(() => ({
+const IMG = styled("img")(() => ({
     width: 48,
 }))
 
-const ProductDetails = styled('div')(() => ({
-    marginRight: '8',
-    textAlign: 'center',
+const ProductDetails = styled("div")(() => ({
+    marginRight: "8",
+    textAlign: "center",
     flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    '& h6': {
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        display: 'block',
+    display: "flex",
+    flexDirection: "column",
+    "& h6": {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        display: "block",
         width: 120,
-        marginBottom: '4px',
+        marginBottom: "4px",
     },
 }))
 
@@ -107,7 +107,7 @@ function ShoppingCart({ container }) {
 
     const handleCheckoutClick = () => {
         if (totalCost > 0) {
-            navigate('/ecommerce/checkout')
+            navigate("/ecommerce/checkout")
             setPanelOpen(false)
         }
     }
@@ -136,7 +136,7 @@ function ShoppingCart({ container }) {
                 <Drawer
                     container={container}
                     variant="temporary"
-                    anchor={'right'}
+                    anchor={"right"}
                     open={panelOpen}
                     onClose={handleDrawerToggle}
                     ModalProps={{
@@ -169,7 +169,7 @@ function ShoppingCart({ container }) {
                                                 )
                                             }
                                         >
-                                            <Icon sx={{ cursor: 'pinter' }}>
+                                            <Icon sx={{ cursor: "pinter" }}>
                                                 keyboard_arrow_up
                                             </Icon>
                                         </StyledIconButton>
@@ -186,7 +186,12 @@ function ShoppingCart({ container }) {
                                                 )
                                             }
                                         >
-                                            <Icon id={!(product.amount - 1) && 'disable'}>
+                                            <Icon
+                                                id={
+                                                    !(product.amount - 1) &&
+                                                    "disable"
+                                                }
+                                            >
                                                 keyboard_arrow_down
                                             </Icon>
                                         </StyledIconButton>
@@ -221,7 +226,7 @@ function ShoppingCart({ container }) {
                         </Box>
 
                         <Button
-                            sx={{ width: '100%', borderRadius: 0 }}
+                            sx={{ width: "100%", borderRadius: 0 }}
                             variant="contained"
                             color="primary"
                             onClick={handleCheckoutClick}
