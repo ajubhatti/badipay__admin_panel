@@ -18,10 +18,11 @@ const ApiListing = () => {
     const [apiListData, setApiListData] = useState([])
 
     const GetActionFormat = (cell, row) => (
-        <div>
+        <div className="d-flex">
             <button
                 type="button"
-                className="btn btn-outline-primary btn-sm ts-buttom m-1"
+                className="btn btn-sm m-1"
+                title="Edit"
                 size="sm"
                 onClick={() => handleEdit(cell, row)}
             >
@@ -29,7 +30,8 @@ const ApiListing = () => {
             </button>
             <button
                 type="button"
-                className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
+                className="btn text-danger btn-sm ml-2 m-1"
+                title="Delete"
                 size="sm"
                 onClick={() => handleDelete(cell, row)}
             >
@@ -37,7 +39,8 @@ const ApiListing = () => {
             </button>
             <button
                 type="button"
-                className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+                className="btn text-primary btn-sm ml-2 m-1"
+                title="Preview"
                 size="sm"
                 onClick={() => handleView(cell, row)}
             >
@@ -108,20 +111,23 @@ const ApiListing = () => {
     console.log("loading", loading)
 
     return (
-        <div className="container w-100">
-            <div className="mb-3 justify-content-between d-flex">
-                <div className="">
-                    <Form.Label>Api List</Form.Label>
-                </div>
-                <div>
+        <div className="container-fluid w-100 mt-3">
+            <div className="p-3 box">
+
+            <div className="mb-2 justify-content-between align-item-center d-flex">
+                
+                    <h4 className="m-0 justify-content-between align-item-center d-flex">Api list</h4>
+                
                     <Button
                         variant="primary"
                         type="button"
+                        className="btn-sm"
                         onClick={() => addNewApi()}
                     >
-                        <AiOutlinePlus />
+                    Add Data 
+                        {/* <AiOutlinePlus /> */}
                     </Button>
-                </div>
+                
             </div>
             <ReactBootstrapTable
                 loading={loading}
@@ -129,6 +135,7 @@ const ApiListing = () => {
                 columns={columns}
                 rowEvents={rowEvents}
             />
+            </div>
         </div>
     )
 }

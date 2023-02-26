@@ -42,6 +42,28 @@ export const getRechargeList = (data) => async (dispatch) => {
   }
 }
 
+export const updateRecharge = (id, data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        await rechargesService.updateRecharge(id, data).then((res) => {
+            dispatch(getRechargeList())
+        })
+    } catch (err) {
+        dispatch(setLoading(false))
+    }
+}
+
+export const createRecharge = (data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        await rechargesService.addRecharge(data).then((res) => {
+            dispatch(getRechargeList())
+        })
+    } catch (err) {
+        dispatch(setLoading(false))
+    }
+}
+
 export const getTransactionsList = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
@@ -57,40 +79,48 @@ export const getTransactionsList = (data) => async (dispatch) => {
 }
 
 export const getTransactionsById = (data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await transactionsService.getTransactionById(data).then((res) => {
-      if (res?.data) {
-        dispatch(fetchTransactionById(res?.data))
+    try {
+        dispatch(setLoading(true))
+        await transactionsService.getTransactionById(data).then((res) => {
+            if (res?.data) {
+                dispatch(fetchTransactionById(res?.data))
+                dispatch(setLoading(false))
+            }
+        })
+    } catch (err) {
         dispatch(setLoading(false))
-      }
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
+    }
 }
 
-export const updateApis = (id, data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await rechargesService.updateApi(id, data).then((res) => {
-      dispatch(getRechargeList())
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
+export const updateTransactions = (id, data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        console.log({ id, data })
+        return await transactionsService
+            .updateTransaction(id, data)
+            .then((res) => {
+                return res
+            })
+    } catch (err) {
+        dispatch(setLoading(false))
+    }
 }
 
-export const createApi = (data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await rechargesService.addApi(data).then((res) => {
-      dispatch(getRechargeList())
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
+export const createTransactions = (data) => async (dispatch) => {
+    try {
+        dispatch(setLoading(true))
+        await transactionsService.addTransaction(data).then((res) => {
+            dispatch(getRechargeList())
+        })
+    } catch (err) {
+        dispatch(setLoading(false))
+    }
 }
+
+export const setLoading = (data) => ({
+  type: SET_RECHARGE_LOADING,
+  payload: data,
+})
 
 export const fetchRechargeList = (data) => ({
   type: FETCH_RECHARGES,
@@ -112,10 +142,7 @@ export const fetchTransactionById = (data) => ({
   payload: data,
 })
 
-export const setLoading = (data) => ({
-  type: SET_RECHARGE_LOADING,
-  payload: data,
-})
+
 
 // ================== new =====================
 export const setPageTransactions = (data) => ({

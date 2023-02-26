@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom"
 import { Box, styled, useTheme } from "@mui/system"
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator"
 import { Paragraph, Span } from "app/components/Typography"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { handleLogin } from "app/redux/actions/loginActions"
 
 const FlexBox = styled(Box)(() => ({
@@ -58,6 +58,8 @@ const JwtLogin = () => {
         password: "",
         remember: false,
     })
+
+    const { loading } = useSelector((state) => state.user)
 
     const dispatch = useDispatch()
 
@@ -159,27 +161,18 @@ const JwtLogin = () => {
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            // disabled={loading}
+                                            disabled={loading}
                                             type="submit"
                                         >
                                             Sign in
                                         </Button>
-                                        {/* {loading && (
+                                        {loading && (
                                             <StyledProgress
                                                 size={24}
                                                 className="buttonProgress"
                                             />
-                                        )} */}
+                                        )}
                                     </Box>
-                                    <Span sx={{ mr: 1, ml: "20px" }}>or</Span>
-                                    <Button
-                                        sx={{ textTransform: "capitalize" }}
-                                        onClick={() =>
-                                            navigate("/session/signup")
-                                        }
-                                    >
-                                        Sign up
-                                    </Button>
                                 </FlexBox>
                                 <Button
                                     sx={{ color: textPrimary }}

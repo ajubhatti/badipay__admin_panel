@@ -19,6 +19,8 @@ import {
 } from "@mui/material"
 import { topBarHeight } from "app/utils/constant"
 import Cookies from "app/helpers/cookies"
+import { IS_AUTH } from "app/redux/actions/loginActions"
+import { useDispatch, useSelector } from "react-redux"
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -90,6 +92,11 @@ const Layout1Topbar = () => {
     const { settings, updateSettings } = useSettings()
     const isMdScreen = useMediaQuery(theme.breakpoints.down("md"))
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const { isAuth } = useSelector((state) => state.user)
+
+    console.log(isAuth)
 
     const updateSidebarMode = (sidebarSettings) => {
         updateSettings({
@@ -118,6 +125,7 @@ const Layout1Topbar = () => {
 
     const logout = () => {
         Cookies.clear()
+        dispatch({ type: IS_AUTH, payload: false })
         navigate("/session/signin")
     }
 

@@ -26,13 +26,14 @@ const App = () => {
                 pauseOnHover
                 limit={3}
             />
-            <Provider store={Store}>
-                <SettingsProvider>
-                    <MatxTheme>
-                        <AuthProvider>{all_pages}</AuthProvider>
-                    </MatxTheme>
-                </SettingsProvider>
-            </Provider>
+
+            <SettingsProvider>
+                <MatxTheme>
+                    {/* <AuthProvider> */}
+                    {all_pages}
+                    {/* </AuthProvider> */}
+                </MatxTheme>
+            </SettingsProvider>
         </>
     )
 }

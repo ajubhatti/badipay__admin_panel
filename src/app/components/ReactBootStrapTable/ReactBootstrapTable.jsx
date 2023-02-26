@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import BootstrapTable from "react-bootstrap-table-next"
+import "./table.css"
 
 const ReactBootstrapTable = (props) => {
     const [tableData, setTableData] = useState([])
@@ -8,12 +9,15 @@ const ReactBootstrapTable = (props) => {
     }, [props])
 
     return (
-        <div>
+        <div className="table-main">
             <BootstrapTable
                 keyField="_id"
+                className="table-responsive"
                 data={tableData}
                 columns={props.columns}
                 rowEvents={props.rowEvents}
+                striped
+                hover
                 noDataIndication={
                     <NoDataIndication loading={props?.loading || false} />
                 }

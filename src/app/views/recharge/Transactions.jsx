@@ -365,7 +365,7 @@ const Transactions = () => {
                             type="button"
                             className="btn btn-outline-primary btn-sm ts-buttom m-1"
                             size="sm"
-                            onClick={() => handleEdit(cell, row)}
+                            onClick={() => handleEdit(row)}
                         >
                             <AiOutlineEdit style={{ color: "green" }} />
                         </button>
@@ -406,19 +406,21 @@ const Transactions = () => {
         setIsShowDiscountModal(false)
     }
 
-    //  const handleEdit = (info) => {
-    //    let tmpInfo = []
-    //    tmpInfo._id = info?._id
-    //    tmpInfo.discountData = info?.discountData
-    //    setdDiscountInfo(info)
-    //    setIsDiscountEdit(true)
-    //    setIsShowDiscountModal(true)
-    //  }
-
-    const handleEdit = (cell, row) => {
-        console.log("edit ---", row)
-        // navigate("/api-setting/api/add/" + row._id)
+    const handleEdit = (info) => {
+        let tmpInfo = []
+        tmpInfo._id = info?._id
+        tmpInfo.discountData = info?.discountData
+        setdDiscountInfo(info)
+        setIsDiscountEdit(true)
+        setIsShowDiscountModal(true)
     }
+
+    // const handleEdit = (cell, row) => {
+    //     console.log("edit ---", row)
+    //     handleDiscountClose(true)
+    //     setModalData(row)
+    //     // navigate("/api-setting/api/add/" + row._id)
+    // }
 
     useEffect(() => {
         // dispatch(getTransactionsList())
@@ -427,8 +429,12 @@ const Transactions = () => {
     }, [dispatch])
 
     useEffect(() => {
+        getTransactionList()
+    }, [payloadData])
+
+    const getTransactionList = () => {
         dispatch(getTransactionsList(payloadData))
-    }, [payloadData, dispatch])
+    }
 
     useEffect(() => {
         if (transactionData) {
@@ -499,6 +505,9 @@ const Transactions = () => {
                                         }
                                         onCloseDiscountModal={
                                             handleDiscountClose
+                                        }
+                                        fetchTransactionList={
+                                            getTransactionList
                                         }
                                         // onSaveDiscountModal={handleSaveDiscountModal}
                                         // selectedServiceIndex={selectedServiceIndex}

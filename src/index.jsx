@@ -1,20 +1,24 @@
-import React from 'react'
-import App from './app/App'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import 'perfect-scrollbar/css/perfect-scrollbar.css'
-import * as serviceWorker from './serviceWorker'
-import { StyledEngineProvider } from '@mui/styled-engine'
-import { CssBaseline } from '@mui/material'
+import React from "react"
+import App from "./app/App"
+import ReactDOM from "react-dom"
+import { BrowserRouter } from "react-router-dom"
+import "perfect-scrollbar/css/perfect-scrollbar.css"
+import * as serviceWorker from "./serviceWorker"
+import { StyledEngineProvider } from "@mui/styled-engine"
+import { CssBaseline } from "@mui/material"
+import { Provider } from "react-redux"
+import { Store } from "app/redux/Store"
 
 ReactDOM.render(
     <StyledEngineProvider injectFirst>
         <BrowserRouter>
             <CssBaseline />
-            <App />
+            <Provider store={Store}>
+                <App />
+            </Provider>
         </BrowserRouter>
     </StyledEngineProvider>,
-    document.getElementById('root')
+    document.getElementById("root")
 )
 
 // for IE-11 support un-comment cssVars() and it's import in this file

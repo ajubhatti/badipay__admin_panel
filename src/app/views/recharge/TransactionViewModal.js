@@ -2,189 +2,197 @@ import { useEffect } from "react"
 import { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import * as bankServices from "app/services/bank.service"
+import { statusOfApi } from "app/constants/constant"
+import { updateTransactions } from "./store/action"
+import { transactionsService } from "app/services/transactions.service"
 
-const defaultBankAccountInfo = {
-  accountName: "",
-  accountNo: "",
-  accountDetail: "",
-  bankId: "",
-  ifscCode: "",
-}
+// const defaultDiscountInfo = {
+//     accountName: "",
+//     accountNo: "",
+//     accountDetail: "",
+//     bankId: "",
+//     ifscCode: "",
+// }
 
 const TransactionViewModal = (props) => {
-  const [bankAccountInfo, setBankAccountInfo] = useState(defaultBankAccountInfo)
-  const [saveLoading, setSaveLoading] = useState(false)
-  const [banks, setBanks] = useState([])
+    console.log({ props })
+    const [discountInfo, setDiscountInfo] = useState({})
+    const [saveLoading, setSaveLoading] = useState(false)
 
-  const getAllBanks = async () => {
-    await bankServices.bankService.getAllBank().then((res) => {
-      let bank = []
-      bank = res?.data
-        .filter((bank) => {
-          return bank.isActive
-        })
-        .map(function (bank) {
-          return { _id: bank._id, bankName: bank.bankName }
-        })
-      bank.unshift({ _id: 0, bankName: "Select Bank" })
-      setBanks(bank)
-    })
-  }
+    useEffect(() => {
+        setDiscountInfo(props.discountInfo)
+    }, [props.discountInfo])
 
-  useEffect(() => {
-    getAllBanks()
-  }, [])
-
-  useEffect(() => {
-    setBankAccountInfo(props.bankAccountInfo)
-  }, [props.bankAccountInfo])
-
-  const handleClose = () => {
-    props.onCloseBankAccountModal()
-  }
-
-  const handleSaveAndClose = () => {
-    setSaveLoading(true)
-    if (props.isBankAccountEdit) {
-      bankServices.bankAccountService
-        .updateBankAccount(props.bankAccountInfo._id, bankAccountInfo)
-        .then((res) => {
-          if (res.status == "200") {
-            props.onCloseBankAccountModal(true)
-          }
-        })
-    } else {
-      bankServices.bankAccountService
-        .addBankAccount(bankAccountInfo)
-        .then((res) => {
-          if (res.status == "200") {
-            props.onCloseBankAccountModal(true)
-          }
-        })
+    const handleClose = () => {
+        props.onCloseDiscountModal()
     }
-  }
 
-  const handleChange = (e) => {
-    const name = e.target.name
-    const value = e.target.value
-    setBankAccountInfo((prev) => ({ ...prev, [name]: value }))
-  }
+    const handleSaveAndClose = async () => {
+        setSaveLoading(true)
+        if (props.isDiscountEdit) {
+            console.log(props?.discountInfo?._id, discountInfo)
 
-  return (
-    <Modal
-      show={props.isShowBankAccountModal}
-      onHide={handleClose}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          {props.isBankAccountEdit ? "Edit" : "Add"} Bank Account
-        </Modal.Title>
-      </Modal.Header>
+            await transactionsService
+                .updateTransaction(props?.discountInfo?._id, discountInfo)
+                .then((res) => {
+                    props.onCloseDiscountModal(true)
+                    props.fetchTransactionList()
+                })
 
-      <Modal.Body>
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label" htmlFor="accountName">
-            Account Holder Name
-          </label>
-          <div className="col-sm-10">
-            <input
-              type="text"
-              name="accountName"
-              onChange={handleChange}
-              value={bankAccountInfo?.accountName}
-              className="form-control"
-            />
-          </div>
-        </div>
-        <div className="mt-3 form-group row">
-          <label className="col-sm-2 col-form-label" htmlFor="accountNo">
-            Account Number
-          </label>
-          <div className="col-sm-10">
-            <input
-              type="text"
-              name="accountNo"
-              onChange={handleChange}
-              value={bankAccountInfo?.accountNo}
-              className="form-control"
-            />
-          </div>
-        </div>
-        <div className="mt-3 form-group row">
-          <label className="col-sm-2 col-form-label" htmlFor="accountDetail">
-            Account Detail
-          </label>
-          <div className="col-sm-10">
-            <input
-              type="text"
-              name="accountDetail"
-              onChange={handleChange}
-              value={bankAccountInfo?.accountDetail}
-              className="form-control"
-            />
-          </div>
-        </div>
-        <div className="mt-3 form-group row">
-          <label className="col-sm-2 col-form-label" htmlFor="bankId">
-            Bank
-          </label>
-          <div className="col-sm-10">
-            <select
-              className="form-control"
-              name="bankId"
-              onChange={handleChange}
-              id="bankId"
-              required={true}
-              value={bankAccountInfo?.bankId}
-            >
-              {banks.map((bank) => {
-                return (
-                  <option key={bank._id} value={bank._id}>
-                    {bank.bankName}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
-        </div>
-        <div className="mt-3 form-group row">
-          <label className="col-sm-2 col-form-label" htmlFor="ifscCode">
-            IFSC Code
-          </label>
-          <div className="col-sm-10">
-            <input
-              type="text"
-              name="ifscCode"
-              onChange={handleChange}
-              value={bankAccountInfo?.ifscCode}
-              className="form-control"
-            />
-          </div>
-        </div>
-      </Modal.Body>
+            // updateTransactions(props.discountInfo._id, discountInfo).then(
+            //     (res) => {
+            //         console.log({ res })
+            //         // if (res.status === "200") {
+            //         props.onCloseDiscountModal(true)
+            //         // }
+            //     }
+            // )
+        } else {
+            // bankServices.bankAccountService
+            //     .addBankAccount(discountInfo)
+            //     .then((res) => {
+            //         if (res.status === "200") {
+            //             props.onCloseDiscountModal(true)
+            //         }
+            //     })
+        }
+        setSaveLoading(false)
+    }
 
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button
-          variant="primary"
-          disabled={
-            saveLoading ||
-            !bankAccountInfo?.ifscCode ||
-            !bankAccountInfo?.bankId ||
-            !bankAccountInfo?.accountName ||
-            !bankAccountInfo?.accountNo
-          }
-          onClick={handleSaveAndClose}
+    const handleChange = (e) => {
+        const name = e.target.name
+        const value = e.target.value
+        setDiscountInfo((prev) => ({ ...prev, [name]: value }))
+    }
+
+    // console.log({ discountInfo })
+
+    return (
+        <Modal
+            show={props.isShowDiscountModal}
+            onHide={handleClose}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
         >
-          {saveLoading ? "Loading…" : "Save changes"}
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    {props.isDiscountEdit ? "Edit" : "Add"} Transaction
+                </Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+                <div className="form-group row">
+                    <label
+                        className="col-sm-2 col-form-label"
+                        htmlFor="rechargeAmount"
+                    >
+                        Recharge Amount
+                    </label>
+                    <div className="col-sm-10">
+                        <input
+                            disabled
+                            type="text"
+                            name="rechargeAmount"
+                            onChange={handleChange}
+                            value={discountInfo?.rechargeAmount}
+                            className="form-control"
+                        />
+                    </div>
+                </div>
+                <div className="mt-3 form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="remark">
+                        remark
+                    </label>
+                    <div className="col-sm-10">
+                        <input
+                            type="text"
+                            name="remark"
+                            onChange={handleChange}
+                            value={discountInfo?.remark}
+                            className="form-control"
+                        />
+                    </div>
+                </div>
+                {/* <div className="mt-3 form-group row">
+                    <label
+                        className="col-sm-2 col-form-label"
+                        htmlFor="accountDetail"
+                    >
+                        Account Detail
+                    </label>
+                    <div className="col-sm-10">
+                        <input
+                            type="text"
+                            name="accountDetail"
+                            onChange={handleChange}
+                            value={discountInfo?.accountDetail}
+                            className="form-control"
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-3 form-group row">
+                    <label
+                        className="col-sm-2 col-form-label"
+                        htmlFor="ifscCode"
+                    >
+                        IFSC Code
+                    </label>
+                    <div className="col-sm-10">
+                        <input
+                            type="text"
+                            name="ifscCode"
+                            onChange={handleChange}
+                            value={discountInfo?.ifscCode}
+                            className="form-control"
+                        />
+                    </div>
+                </div> */}
+                <div className="mt-3 form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="status">
+                        Status
+                    </label>
+                    <div className="col-sm-10">
+                        <select
+                            className="form-control"
+                            name="status"
+                            onChange={handleChange}
+                            id="status"
+                            required={true}
+                            value={discountInfo?.status}
+                        >
+                            {statusOfApi.map((stts) => {
+                                return (
+                                    <option key={stts._id} value={stts._id}>
+                                        {stts.name}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </div>
+                </div>
+            </Modal.Body>
+
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button
+                    variant="primary"
+                    // disabled={
+                    //     saveLoading ||
+                    //     !discountInfo?.ifscCode ||
+                    //     !discountInfo?.bankId ||
+                    //     !discountInfo?.accountName ||
+                    //     !discountInfo?.accountNo
+                    // }
+                    onClick={handleSaveAndClose}
+                >
+                    {saveLoading ? "Loading…" : "Save changes"}
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
 }
 
 export default TransactionViewModal
