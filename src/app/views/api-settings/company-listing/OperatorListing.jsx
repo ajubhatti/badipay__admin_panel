@@ -1,16 +1,16 @@
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import React, { useEffect, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
+import React, { useEffect, useState } from "react"
+import { Button, Form } from "react-bootstrap"
 import {
     AiOutlineEdit,
     AiFillDelete,
     AiFillEye,
     AiOutlinePlus,
-} from 'react-icons/ai'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { getApiList } from '../apis/store/action'
-import { getCompanies } from './store/action'
+} from "react-icons/ai"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { getApiList } from "../apis/store/action"
+import { getCompanies } from "./store/action"
 
 const OperatorListing = () => {
     const dispatch = useDispatch()
@@ -26,7 +26,7 @@ const OperatorListing = () => {
                 size="sm"
                 onClick={() => handleEdit(cell, row)}
             >
-                <AiOutlineEdit style={{ color: 'green' }} />
+                <AiOutlineEdit style={{ color: "green" }} />
             </button>
             <button
                 type="button"
@@ -48,15 +48,15 @@ const OperatorListing = () => {
     )
 
     const handleDelete = (cell, row) => {
-        console.log('object delete:>> ', { cell, row })
+        console.log("object delete:>> ", { cell, row })
     }
 
     const handleView = (cell, row) => {
-        console.log('object view:>> ', { cell, row })
+        console.log("object view:>> ", { cell, row })
     }
 
     const handleEdit = (cell, row) => {
-        navigate('/api-setting/company/add/' + row._id)
+        navigate("/api-setting/company/add/" + row._id)
     }
 
     const GetIsActiveSwitch = (cell, row) => (
@@ -93,40 +93,40 @@ const OperatorListing = () => {
 
     const columns = [
         {
-            dataField: 'companyName',
-            text: 'Company Name',
+            dataField: "companyName",
+            text: "Company Name",
         },
         {
-            dataField: 'companyDetail',
-            text: 'Company Detail',
+            dataField: "companyDetail",
+            text: "Company Detail",
         },
         {
-            dataField: 'isActive',
-            text: 'Is Active',
+            dataField: "isActive",
+            text: "Is Active",
             formatter: GetIsActiveSwitch,
         },
         {
-            dataField: 'isVisible',
-            text: 'Is Visible',
+            dataField: "isVisible",
+            text: "Is Visible",
             formatter: GetIsVisibleSwitch,
         },
         {
-            dataField: 'minAmount',
-            text: 'Min Amount',
+            dataField: "minAmount",
+            text: "Min Amount",
         },
         {
-            dataField: 'maxAmount',
-            text: 'Max Amount',
+            dataField: "maxAmount",
+            text: "Max Amount",
         },
         {
-            dataField: 'created',
-            text: 'Created At',
+            dataField: "created",
+            text: "Created At",
         },
         {
-            text: 'Action',
-            dataField: '',
+            text: "Action",
+            dataField: "",
             formatter: GetActionFormat,
-            classes: 'p-1',
+            classes: "p-1",
         },
     ]
 
@@ -146,14 +146,14 @@ const OperatorListing = () => {
     }
 
     const addNewOperator = () => {
-        navigate('/api-setting/company/add')
+        navigate("/api-setting/company/add")
     }
 
     return (
         <div className="container w-100">
             <div className="mb-3 justify-content-between d-flex">
                 <div className="">
-                    <Form.Label>Operator List</Form.Label>
+                    <Form.Label>Company List</Form.Label>
                 </div>
                 <div>
                     <Button

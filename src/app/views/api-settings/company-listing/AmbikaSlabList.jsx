@@ -110,7 +110,7 @@ const AmbikaSlabList = () => {
     return (
         <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
             <CardHeader>
-                <Title>Operator List</Title>
+                <Title>Slab List</Title>
                 <Fab
                     size="small"
                     color="secondary"

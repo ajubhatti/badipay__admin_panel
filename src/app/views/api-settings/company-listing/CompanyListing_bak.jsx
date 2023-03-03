@@ -10,74 +10,74 @@ import {
     Card,
     Fab,
     Switch,
-} from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Box, styled } from '@mui/system'
+} from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { Box, styled } from "@mui/system"
 
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchCompanySuccess, getCompanies } from '../store/action'
-import { getApiList } from '../apis/store/action'
+import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchCompanySuccess, getCompanies } from "../store/action"
+import { getApiList } from "../apis/store/action"
 
-const CardHeader = styled('div')(() => ({
-    paddingLeft: '24px',
-    paddingRight: '24px',
-    marginBottom: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+const CardHeader = styled("div")(() => ({
+    paddingLeft: "24px",
+    paddingRight: "24px",
+    marginBottom: "12px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
 }))
 
-const Title = styled('span')(() => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    textTransform: 'capitalize',
+const Title = styled("span")(() => ({
+    fontSize: "1rem",
+    fontWeight: "500",
+    textTransform: "capitalize",
 }))
 
 const UserTable = styled(Table)(() => ({
     minWidth: 400,
-    whiteSpace: 'pre',
-    '& small': {
+    whiteSpace: "pre",
+    "& small": {
         height: 15,
         width: 50,
         borderRadius: 500,
         boxShadow:
-            '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
+            "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
     },
-    '& td': {
-        borderBottom: 'none',
+    "& td": {
+        borderBottom: "none",
     },
-    '& td:first-of-type': {
-        paddingLeft: '16px !important',
+    "& td:first-of-type": {
+        paddingLeft: "16px !important",
     },
 }))
 
-const Small = styled('small')(({ bgcolor }) => ({
+const Small = styled("small")(({ bgcolor }) => ({
     height: 15,
     width: 50,
-    color: '#fff',
-    padding: '2px 8px',
-    borderRadius: '4px',
-    overflow: 'hidden',
+    color: "#fff",
+    padding: "2px 8px",
+    borderRadius: "4px",
+    overflow: "hidden",
     background: bgcolor,
-    boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
+    boxShadow: "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
 }))
 
 const StyledTable = styled(Table)(({ theme }) => ({
-    whiteSpace: 'pre',
-    '& thead': {
-        '& tr': {
-            '& th': {
+    whiteSpace: "pre",
+    "& thead": {
+        "& tr": {
+            "& th": {
                 paddingLeft: 0,
                 paddingRight: 0,
             },
         },
     },
-    '& tbody': {
-        '& tr': {
-            '& td': {
+    "& tbody": {
+        "& tr": {
+            "& td": {
                 paddingLeft: 0,
-                textTransform: 'capitalize',
+                textTransform: "capitalize",
             },
         },
     },
@@ -91,7 +91,7 @@ const CompanyListing = () => {
     const [page, setPage] = useState(0)
     const [companies, setCompanies] = useState([])
     const [modelOpen, setModelOpen] = useState(false)
-    const [modelTitle, setmodelTitle] = useState('New Operator')
+    const [modelTitle, setmodelTitle] = useState("New Operator")
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -123,11 +123,11 @@ const CompanyListing = () => {
     }
 
     const editUser = (data) => {
-        navigate('/api-setting/company/add/' + data._id)
+        navigate("/api-setting/company/add/" + data._id)
     }
 
     return (
-        <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
+        <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
             <CardHeader>
                 <Title>Operator List</Title>
                 <Fab
@@ -136,13 +136,13 @@ const CompanyListing = () => {
                     aria-label="Add"
                     className="button"
                     onClick={() => {
-                        navigate('/api-setting/company/add')
+                        navigate("/api-setting/company/add")
                     }}
                 >
                     <Icon>add</Icon>
                 </Fab>
             </CardHeader>
-            <Box width="100%" overflow="auto" sx={{ pt: '20px', mb: 3, ml: 3 }}>
+            <Box width="100%" overflow="auto" sx={{ pt: "20px", mb: 3, ml: 3 }}>
                 <StyledTable>
                     <TableHead>
                         <TableRow>
@@ -176,7 +176,7 @@ const CompanyListing = () => {
                                             onChange={handleVisibleChange(
                                                 subscriber,
                                                 index,
-                                                'isActive'
+                                                "isActive"
                                             )}
                                             value={subscriber.isActive}
                                         />
@@ -188,7 +188,7 @@ const CompanyListing = () => {
                                             onChange={handleVisibleChange(
                                                 subscriber,
                                                 index,
-                                                'isVisible'
+                                                "isVisible"
                                             )}
                                             value={subscriber.isVisible}
                                         />
@@ -212,13 +212,13 @@ const CompanyListing = () => {
                                             <Icon
                                                 color={`${
                                                     subscriber.isActive
-                                                        ? 'error'
-                                                        : 'primary'
+                                                        ? "error"
+                                                        : "primary"
                                                 }`}
                                             >
                                                 {subscriber.isActive
-                                                    ? 'close'
-                                                    : 'check'}
+                                                    ? "close"
+                                                    : "check"}
                                             </Icon>
                                         </IconButton>
                                         <IconButton
@@ -246,10 +246,10 @@ const CompanyListing = () => {
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
-                        'aria-label': 'Previous Page',
+                        "aria-label": "Previous Page",
                     }}
                     nextIconButtonProps={{
-                        'aria-label': 'Next Page',
+                        "aria-label": "Next Page",
                     }}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
