@@ -121,6 +121,11 @@ export const navigations = [
         icon: "account_box",
         badge: {},
         children: [
+            // {
+            //     name: "Add User",
+            //     path: "/user/register",
+            //     iconText: "STT",
+            // },
             {
                 name: "recharges",
                 path: "/user/recharges",

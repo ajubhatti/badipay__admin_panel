@@ -9,6 +9,7 @@ import paginationFactory, {
 // import CommonButton from "components/Common/Button/index";
 import up from "../../assets/images/up.svg"
 import down from "../../assets/images/down.svg"
+import "../../assets/css/main.css"
 
 const CardWrapper = ({ children }) => {
     return (
@@ -48,25 +49,25 @@ const CustomBootstrapTable = ({
         ...col,
         ...(col.hasOwnProperty("sort")
             ? {
-                  sortCaret: (order) => {
-                      return (
-                          <span className="sort-arrows cursor-pointer">
-                              {!!order ? (
-                                  order === "desc" ? (
-                                      <img src={down} alt="down" />
-                                  ) : (
-                                      <img src={up} alt="up" />
-                                  )
-                              ) : (
-                                  <>
-                                      <img src={up} alt="up" />
-                                      <img src={down} alt="down" />
-                                  </>
-                              )}
-                          </span>
-                      )
-                  },
-              }
+                sortCaret: (order) => {
+                    return (
+                        <span className="sort-arrows cursor-pointer">
+                            {!!order ? (
+                                order === "desc" ? (
+                                    <img src={down} alt="down" />
+                                ) : (
+                                    <img src={up} alt="up" />
+                                )
+                            ) : (
+                                <>
+                                    <img src={up} alt="up" />
+                                    <img src={down} alt="down" />
+                                </>
+                            )}
+                        </span>
+                    )
+                },
+            }
             : {}),
     }))
 
@@ -88,12 +89,10 @@ const CustomBootstrapTable = ({
                             selectRow={selectRow}
                             hover
                             defaultSorted={defaultSorted}
-                            classes={`table align-middle table-nowrap table-check ${
-                                bordered ? "table-bordered" : ""
-                            }`}
-                            headerWrapperClasses={`${
-                                light ? "table-light" : ""
-                            }`}
+                            classes={`table align-middle table-nowrap table-check ${bordered ? "table-bordered" : ""
+                                }`}
+                            headerWrapperClasses={`${light ? "table-light" : ""
+                                }`}
                             noDataIndication={() => (
                                 <NoDataIndiCation loading={loading} />
                             )}
@@ -196,75 +195,75 @@ const options = (pageOptions) => {
 
 const withPagination =
     (Table) =>
-    ({ pageOptions, ...rest }) => {
-        const handleNextPage = ({ page, onPageChange }) => {
-            onPageChange(page + 1)
-        }
+        ({ pageOptions, ...rest }) => {
+            const handleNextPage = ({ page, onPageChange }) => {
+                onPageChange(page + 1)
+            }
 
-        const handlePrevPage = ({ page, onPageChange }) => {
-            onPageChange(page - 1)
-        }
+            const handlePrevPage = ({ page, onPageChange }) => {
+                onPageChange(page - 1)
+            }
 
-        return (
-            <PaginationProvider
-                pagination={paginationFactory(options(pageOptions))}
-            >
-                {({ paginationProps, paginationTableProps }) => (
-                    <Table {...rest} {...paginationTableProps}>
-                        <div className="d-flex mt-2">
-                            <div className="d-flex align-items-center">
-                                <span className="me-2 d-none d-md-block ">
-                                    Records Per Page:{" "}
-                                </span>
-                                <SizePerPageDropdownStandalone
-                                    {...paginationProps}
-                                />
-                            </div>
-                            <div className="ms-auto pagination d-flex align-items-center">
-                                <span className="me-2 d-flex align-items-center">
-                                    <span className="d-none d-md-block me-2">
-                                        Showing results{" "}
+            return (
+                <PaginationProvider
+                    pagination={paginationFactory(options(pageOptions))}
+                >
+                    {({ paginationProps, paginationTableProps }) => (
+                        <Table {...rest} {...paginationTableProps}>
+                            <div className="d-flex mt-2">
+                                <div className="d-flex align-items-center pagePerSize">
+                                    <span className="me-2 d-none d-md-block ">
+                                        Records Per Page:{" "}
                                     </span>
-                                    {(paginationProps.page - 1) *
-                                        paginationProps.sizePerPage +
-                                        1}{" "}
-                                    -{" "}
-                                    {paginationProps.page *
-                                        paginationProps.sizePerPage <=
-                                    paginationProps.totalSize
-                                        ? paginationProps.page *
-                                          paginationProps.sizePerPage
-                                        : paginationProps.totalSize}
-                                </span>
-                                <button
-                                    className="btn-prev"
-                                    disabled={paginationProps.page === 1}
-                                    onClick={() =>
-                                        handlePrevPage(paginationProps)
-                                    }
-                                >
-                                    &lt;
-                                </button>
-                                <button
-                                    className="btn-next"
-                                    onClick={() =>
-                                        handleNextPage(paginationProps)
-                                    }
-                                    disabled={
-                                        paginationProps.page *
+                                    <SizePerPageDropdownStandalone
+                                        {...paginationProps}
+                                    />
+                                </div>
+                                <div className="ms-auto pagination d-flex align-items-center">
+                                    <span className="me-2 d-flex align-items-center">
+                                        <span className="d-none d-md-block me-2">
+                                            Showing results{" "}
+                                        </span>
+                                        {(paginationProps.page - 1) *
+                                            paginationProps.sizePerPage +
+                                            1}{" "}
+                                        -{" "}
+                                        {paginationProps.page *
+                                            paginationProps.sizePerPage <=
+                                            paginationProps.totalSize
+                                            ? paginationProps.page *
+                                            paginationProps.sizePerPage
+                                            : paginationProps.totalSize}
+                                    </span>
+                                    <button
+                                        className="btn btn-dark me-2 btn-sm"
+                                        disabled={paginationProps.page === 1}
+                                        onClick={() =>
+                                            handlePrevPage(paginationProps)
+                                        }
+                                    >
+                                        &lt;
+                                    </button>
+                                    <button
+                                        className="btn btn-dark btn-sm"
+                                        onClick={() =>
+                                            handleNextPage(paginationProps)
+                                        }
+                                        disabled={
+                                            paginationProps.page *
                                             paginationProps.sizePerPage >=
-                                        paginationProps.totalSize
-                                    }
-                                >
-                                    &gt;
-                                </button>
+                                            paginationProps.totalSize
+                                        }
+                                    >
+                                        &gt;
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </Table>
-                )}
-            </PaginationProvider>
-        )
-    }
+                        </Table>
+                    )}
+                </PaginationProvider>
+            )
+        }
 
 const PaginationTable = withPagination(CustomBootstrapTable)
 

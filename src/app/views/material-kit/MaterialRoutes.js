@@ -47,6 +47,9 @@ const AddUpdateApis = Loadable(
 const DiscountOnRecharge = Loadable(
     lazy(() => import("../recharge/discount/DiscountOnRecharge"))
 )
+const UserRegister = Loadable(
+    lazy(() => import("../../components/User/Register"))
+)
 const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
 const StateList = Loadable(lazy(() => import("../utilities/StateList")))
 const AppTable = Loadable(lazy(() => import("./tables/AppTable")))
@@ -218,6 +221,10 @@ const materialRoutes = [
     {
         path: "/utility/state",
         element: <StateList />,
+    },
+    {
+        path: "/user/register",
+        element: <UserRegister />,
     },
 ]
 

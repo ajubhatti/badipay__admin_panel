@@ -227,8 +227,8 @@ const Transactions = () => {
                         {row?.rechargeData?.OPRID
                             ? row?.rechargeData?.OPRID
                             : row?.rechargeData?.opid
-                            ? row?.rechargeData?.opid
-                            : "-"}
+                                ? row?.rechargeData?.opid
+                                : "-"}
                     </div>
                 ),
             },
