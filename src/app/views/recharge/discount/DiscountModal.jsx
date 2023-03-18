@@ -1,16 +1,18 @@
-import { companyService } from 'app/services/company.service'
-import { useEffect, useState } from 'react'
-import { Button, Modal } from 'react-bootstrap'
-import CustomLoader from 'app/components/CustomLoader/CustomLoader'
+import { companyService } from "app/services/company.service"
+import { useEffect, useState } from "react"
+import { Button, Modal } from "react-bootstrap"
+import CustomLoader from "app/components/CustomLoader/CustomLoader"
 
 const defaultDiscountInfo = {
-    operatorId: '',
-    amount: '',
-    discountLimit: '',
-    type: '',
-    referalAmount: '',
-    referalDiscountLimit: '',
-    referalType: '',
+    operatorId: "",
+    userDiscount: 0,
+    userDiscountType: "number",
+    userDiscountLimit: 0,
+    referalDiscount: 0,
+    referalDiscountType: "number",
+    referalDiscountLimit: 0,
+    adminDiscount: 0,
+    adminDiscountType: "number",
 }
 
 const DiscountModal = (props) => {
@@ -25,7 +27,7 @@ const DiscountModal = (props) => {
                 return company.providerType == props.selectedServiceIndex
             })
 
-            companies.unshift({ _id: 0, companyName: 'Select Operator' })
+            companies.unshift({ _id: 0, companyName: "Select Operator" })
 
             setCompanies(companies)
             setIsShowLoader(false)
@@ -73,7 +75,7 @@ const DiscountModal = (props) => {
             >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {props.isDiscountEdit ? 'Edit' : 'Add'} Discount
+                        {props.isDiscountEdit ? "Edit" : "Add"} Discount
                     </Modal.Title>
                 </Modal.Header>
 
@@ -112,16 +114,16 @@ const DiscountModal = (props) => {
                     <div className="mt-3 form-group row">
                         <label
                             className="col-sm-2 col-form-label"
-                            htmlFor="amount"
+                            htmlFor="adminDiscount"
                         >
-                            Amount
+                            Admin Discount
                         </label>
                         <div className="col-sm-10">
                             <input
                                 type="number"
-                                name="amount"
+                                name="adminDiscount"
                                 onChange={handleChange}
-                                value={discountInfo?.amount}
+                                value={discountInfo?.adminDiscount}
                                 className="form-control"
                             />
                         </div>
@@ -129,33 +131,54 @@ const DiscountModal = (props) => {
                     <div className="mt-3 form-group row">
                         <label
                             className="col-sm-2 col-form-label"
-                            htmlFor="discountLimit"
+                            htmlFor="adminDiscountType"
                         >
-                            Limit
-                        </label>
-                        <div className="col-sm-10">
-                            <input
-                                type="number"
-                                name="discountLimit"
-                                onChange={handleChange}
-                                value={discountInfo?.discountLimit}
-                                className="form-control"
-                            />
-                        </div>
-                    </div>
-                    <div className="mt-3 form-group row">
-                        <label
-                            className="col-sm-2 col-form-label"
-                            htmlFor="type"
-                        >
-                            Type
+                            Admin Discount Type
                         </label>
                         <div className="col-sm-10">
                             <select
-                                name="type"
+                                name="adminDiscountType"
                                 onChange={handleChange}
                                 className="form-control"
-                                id="type"
+                                id="adminDiscountType"
+                            >
+                                <option value="number">Number</option>
+                                <option value="percentage">Percentage</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* ========= */}
+                    <div className="mt-3 form-group row">
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="userDiscount"
+                        >
+                            User Discount
+                        </label>
+                        <div className="col-sm-10">
+                            <input
+                                type="number"
+                                name="userDiscount"
+                                onChange={handleChange}
+                                value={discountInfo?.userDiscount}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-3 form-group row">
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="userDiscountType"
+                        >
+                            User Discount Type
+                        </label>
+                        <div className="col-sm-10">
+                            <select
+                                name="userDiscountType"
+                                onChange={handleChange}
+                                className="form-control"
+                                id="userDiscountType"
                             >
                                 <option value="number">Number</option>
                                 <option value="percentage">Percentage</option>
@@ -165,18 +188,56 @@ const DiscountModal = (props) => {
                     <div className="mt-3 form-group row">
                         <label
                             className="col-sm-2 col-form-label"
-                            htmlFor="referalAmount"
+                            htmlFor="userDiscountLimit"
+                        >
+                            Limit
+                        </label>
+                        <div className="col-sm-10">
+                            <input
+                                type="number"
+                                name="userDiscountLimit"
+                                onChange={handleChange}
+                                value={discountInfo?.userDiscountLimit}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mt-3 form-group row">
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="referalDiscount"
                         >
                             Referal Amount
                         </label>
                         <div className="col-sm-10">
                             <input
                                 type="number"
-                                name="referalAmount"
+                                name="referalDiscount"
                                 onChange={handleChange}
-                                value={discountInfo?.referalAmount}
+                                value={discountInfo?.referalDiscount}
                                 className="form-control"
                             />
+                        </div>
+                    </div>
+                    <div className="mt-3 form-group row">
+                        <label
+                            className="col-sm-2 col-form-label"
+                            htmlFor="referalDiscountType"
+                        >
+                            Referal Type
+                        </label>
+                        <div className="col-sm-10">
+                            <select
+                                name="referalDiscountType"
+                                value={discountInfo?.referalDiscountType}
+                                onChange={handleChange}
+                                className="form-control"
+                                id="referalDiscountType"
+                            >
+                                <option value="number">Number</option>
+                                <option value="percentage">Percentage</option>
+                            </select>
                         </div>
                     </div>
                     <div className="mt-3 form-group row">
@@ -196,26 +257,6 @@ const DiscountModal = (props) => {
                             />
                         </div>
                     </div>
-                    <div className="mt-3 form-group row">
-                        <label
-                            className="col-sm-2 col-form-label"
-                            htmlFor="referalType"
-                        >
-                            Referal Type
-                        </label>
-                        <div className="col-sm-10">
-                            <select
-                                name="referalType"
-                                value={discountInfo?.referalType}
-                                onChange={handleChange}
-                                className="form-control"
-                                id="referalType"
-                            >
-                                <option value="number">Number</option>
-                                <option value="percentage">Percentage</option>
-                            </select>
-                        </div>
-                    </div>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -224,23 +265,24 @@ const DiscountModal = (props) => {
                     </Button>
                     {console.log(
                         discountInfo,
-                        discountInfo?.amount,
-                        discountInfo?.discountLimit,
-                        discountInfo?.type,
-                        discountInfo?.referalAmount,
+                        discountInfo?.userDiscount,
+                        discountInfo?.userDiscountLimit,
+                        discountInfo?.userDiscountType,
+                        discountInfo?.referalDiscount,
                         discountInfo?.referalDiscountLimit,
-                        discountInfo?.referalType,
+                        discountInfo?.referalDiscountType,
                         props.discountModalSave
                     )}
                     <Button
                         variant="primary"
                         disabled={
-                            !discountInfo?.amount ||
-                            !discountInfo?.discountLimit ||
-                            !discountInfo?.type ||
-                            !discountInfo?.referalAmount ||
+                            !discountInfo?.userDiscount ||
+                            !discountInfo?.userDiscountLimit ||
+                            !discountInfo?.userDiscountType ||
+                            !discountInfo?.referalDiscount ||
                             !discountInfo?.referalDiscountLimit ||
-                            !discountInfo?.referalType
+                            !discountInfo?.referalDiscountType ||
+                            !discountInfo?.adminDiscount
                             // props.discountModalSave
                         }
                         onClick={handleSaveDiscountModal}

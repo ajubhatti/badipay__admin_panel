@@ -19,6 +19,7 @@ export const accountService = {
     getAll,
     getById,
     create,
+    fetchState,
     update,
     delete: _delete,
     user: userSubject.asObservable(),
@@ -81,7 +82,6 @@ function resetPassword({ token, password, confirmPassword }) {
 }
 
 async function getAll(payload) {
-    console.log('payload --', `${baseUrl}/getAll`, payload)
     return await fetchWrapper.post(`${baseUrl}/getAll`, payload)
 }
 
@@ -92,6 +92,11 @@ function getById(id) {
 function create(params) {
     return fetchWrapper.post(baseUrl, params)
 }
+
+function fetchState() {
+    return fetchWrapper.get(`${process.env.REACT_APP_BASE_URL}/state`)
+}
+
 
 async function update(id, params) {
     return await fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {

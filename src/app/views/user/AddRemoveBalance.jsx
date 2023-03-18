@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import { accountService } from 'app/services/account.service'
-import { walletServices } from '../../../services/wallet.service'
+import React, { useState, useEffect } from "react"
+import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import { accountService } from "app/services/account.service"
+import { walletServices } from "../../services/wallet.service"
 
 const AddRemoveBalance = (props) => {
     const [open, setOpen] = useState(false)
 
-    const [userName, setUserName] = useState('')
-    const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState('')
+    const [userName, setUserName] = useState("")
+    const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
     const [balance, setBalance] = useState(0)
     const [amount, setAmount] = useState(0)
     const [confirmAmount, setConfirmAmount] = useState(0)
-    const [remarks, setRemarks] = useState('')
-    const [password, setPassword] = useState('')
+    const [remarks, setRemarks] = useState("")
+    const [password, setPassword] = useState("")
 
     useEffect(() => {
         setOpen(props.open)
@@ -37,14 +37,15 @@ const AddRemoveBalance = (props) => {
         props.setOpen(false)
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (type) => {
         let payload = {
-            userId: props.userData.id,
-            type: props.type,
+            userId: props.userData._id,
+            type: type,
             amount: amount,
             remarks: remarks,
             password: password,
         }
+        console.log({ props, payload })
         await walletServices.updateBalance(payload).then((res) => {
             handleClose()
             props.getAllusers()
@@ -67,6 +68,7 @@ const AddRemoveBalance = (props) => {
                         label="Name"
                         type="text"
                         fullWidth
+                        disabled
                         defaultValue={props.userData.userName}
                         onChange={(e) => setUserName(e.target.value)}
                     />
@@ -77,6 +79,7 @@ const AddRemoveBalance = (props) => {
                         label="Phone no."
                         type="text"
                         fullWidth
+                        disabled
                         defaultValue={props.userData.phoneNumber}
                         onChange={(e) => setPhone(e.target.value)}
                     />
@@ -87,14 +90,15 @@ const AddRemoveBalance = (props) => {
                         label="current amount"
                         type="text"
                         fullWidth
-                        defaultValue={props.userData.balance}
+                        disabled
+                        defaultValue={props?.userData?.walletBalance}
                         onChange={(e) => setBalance(e.target.value)}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
                         id="addAmount"
-                        label="add amount"
+                        label="amount"
                         type="text"
                         fullWidth
                         onChange={(e) => setAmount(e.target.value)}
@@ -135,8 +139,14 @@ const AddRemoveBalance = (props) => {
                     >
                         Cancel
                     </Button>
-                    <Button onClick={() => handleSubmit()} color="primary">
-                        Save
+                    <Button onClick={() => handleSubmit("add")} color="primary">
+                        Add
+                    </Button>
+                    <Button
+                        onClick={() => handleSubmit("remove")}
+                        color="primary"
+                    >
+                        Remove
                     </Button>
                 </DialogActions>
             </Dialog>

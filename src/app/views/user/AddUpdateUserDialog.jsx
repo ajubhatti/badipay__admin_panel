@@ -1,206 +1,234 @@
-import React, { useState, useEffect } from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import FormHelperText from '@mui/material/FormHelperText';
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import { accountService } from 'app/services/account.service'
-import moment from 'moment'
-import { useFormik } from 'formik'
+import React, { useState, useEffect } from "react"
+import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField"
+import FormHelperText from "@mui/material/FormHelperText"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import { accountService } from "app/services/account.service"
+import { useFormik } from "formik"
 import * as yup from "yup"
+import { MenuItem, Select } from "@mui/material"
 
 const initialValues = {
-    user_name: "",
-    phone_no: "",
-    email_address: "",
-    state: "",
-    district: "",
+    userName: "",
+    phoneNumber: "",
+    email: "",
+    stateId: "",
     city: "",
-    pin_code: "",
-    date: "",
-    balance: "",
-    pan_card: "",
-    password: ""
+    pincode: "",
+    walletBalance: "",
+    password: "",
+    referralId: "",
 }
 const validationSchema = yup.object({
-    user_name: yup.string().trim().required("Please enter the user name"),
-    phone_no: yup.number().required("Please enter the phone number")
-        .min(9, "Phone number must be 10 digits").max(11, "Phone number must be 10 digits"),
-    email_address: yup.string().trim().required("Please enter the email").email("email is not proper"),
-    state: yup.string().trim().required("Please enter the state"),
-    district: yup.string().trim().required("Please enter the district"),
+    userName: yup.string().trim().required("Please enter the user name"),
+    phoneNumber: yup.number().required("Please enter the phone number"),
+    email: yup
+        .string()
+        .trim()
+        .required("Please enter the email")
+        .email("email is not proper"),
+    stateId: yup.string().trim().required("Please enter the state"),
     city: yup.string().trim().required("Please enter the city"),
-    pin_code: yup.string().trim().required("Please enter the pin code"),
-    date: yup.string().trim().required("Please enter the date"),
-    balance: yup.string().trim().required("Please enter the balance"),
-    pan_card: yup.string().trim().required("Please enter the pan card"),
-    password: yup.string().trim().required("Please enter the password")
+    pincode: yup.string().trim().required("Please enter the pin code"),
+    password: yup.string().trim().required("Please enter the password"),
 })
 
-
-
 const AddUpdateUserDialog = (props) => {
-    const [open, setOpen] = useState(false)
+    const [state, setState] = useState(null)
 
     const onSubmit = async (values) => {
-        console.log(values);
-        // let obj = props.userData
-        // obj.userName = userName
-        // obj.phoneNumber = phone
-        // obj.email = email
-        let id = props.userData.id
-        if (!id) {
-            await accountService.create(values).then((res) => {
+        console.log({ values })
+
+        if (!!props?.open?.data) {
+            let id = props?.open?.data?._id
+
+            await accountService.update(id, values).then((res) => {
                 handleClose()
                 props.getAllusers()
             })
         } else {
-            await accountService.update(id, values).then((res) => {
+            delete values.walletBalance
+            await accountService.create(values).then((res) => {
                 handleClose()
                 props.getAllusers()
             })
         }
     }
 
+    useEffect(() => {
+        const fetchState = async () => {
+            const res = await accountService.fetchState()
+            setState(res?.data)
+        }
+        fetchState()
+    }, [])
 
-    const { values, errors, handleBlur, handleChange, touched, handleSubmit } = useFormik({
+    const {
+        values,
+        errors,
+        handleBlur,
+        handleChange,
+        touched,
+        handleSubmit,
+        resetForm,
+    } = useFormik({
         initialValues,
         validationSchema,
-        onSubmit
+        onSubmit,
     })
 
-    useEffect(() => {
-        setOpen(props.open)
-
-        // setUserName(props.userData.userName)
-        // setEmail(props.userData.email)
-        // setPhone(props.userData.phoneNumber)
-    }, [props.open])
-
     function handleClose() {
-        props.setOpen(false)
+        props.setOpen({
+            is_open: false,
+            is_form_view_profile: false,
+            data: null,
+        })
     }
 
-    // const handleSubmit = async () => {
-    //     let obj = props.userData
-    //     obj.userName = userName
-    //     obj.phoneNumber = phone
-    //     obj.email = email
-    //     let id = props.userData.id
-    //     if (!id) {
-    //         await accountService.create(obj).then((res) => {
-    //             handleClose()
-    //             props.getAllusers()
-    //         })
-    //     } else {
-    //         await accountService.update(id, obj).then((res) => {
-    //             handleClose()
-    //             props.getAllusers()
-    //         })
-    //     }
-    // }
+    useEffect(() => {
+        if (!!props?.open?.data) {
+            const { data } = props.open
+            resetForm({
+                values: {
+                    userName: data?.userName,
+                    phoneNumber: data?.phoneNumber,
+                    email: data?.email,
+                    stateId: data?.state,
+                    city: data?.city,
+                    pincode: data?.pincode,
+                    walletBalance: data?.walletBalance,
+                    password: data?.passwordHash,
+                },
+            })
+        } else {
+            resetForm({
+                values: {
+                    userName: "",
+                    phoneNumber: "",
+                    email: "",
+                    stateId: "",
+                    city: "",
+                    pincode: "",
+                    walletBalance: "",
+                    password: "",
+                },
+            })
+        }
+    }, [props.open, props?.userData, resetForm])
 
     return (
         <div>
             <Dialog
-                open={open}
+                open={props?.open?.is_open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
                 <form onSubmit={handleSubmit}>
-                    <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
+                    <DialogTitle id="form-dialog-title">
+                        {props.title}
+                    </DialogTitle>
                     <DialogContent>
                         <TextField
                             margin="dense"
-                            id="user_name"
-                            name="user_name"
-                            label="User name"
+                            id="referralId"
+                            name="referralId"
+                            label="Referral"
                             type="text"
-                            error={errors?.user_name && touched?.user_name}
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.referralId && touched?.referralId}
                             fullWidth
-                            defaultValue={values?.user_name}
+                            defaultValue={values?.referralId}
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.user_name && touched?.user_name &&
-                            <FormHelperText error>{errors?.user_name}</FormHelperText>
-                        }
+                        <TextField
+                            margin="dense"
+                            id="userName"
+                            name="userName"
+                            label="User name"
+                            type="text"
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.userName && touched?.userName}
+                            fullWidth
+                            defaultValue={values?.userName}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        />
+                        {errors?.userName && touched?.userName && (
+                            <FormHelperText error>
+                                {errors?.userName}
+                            </FormHelperText>
+                        )}
                         <TextField
                             margin="dense"
                             id="phone"
                             label="Phone no."
-                            name="phone_no"
+                            name="phoneNumber"
                             type="number"
-                            error={errors?.phone_no && touched?.phone_no}
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.phoneNumber && touched?.phoneNumber}
                             fullWidth
-                            defaultValue={values?.phone_no}
+                            defaultValue={values?.phoneNumber}
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.phone_no && touched?.phone_no &&
-                            <FormHelperText error>{errors?.phone_no}</FormHelperText>
-                        }
+                        {errors?.phoneNumber && touched?.phoneNumber && (
+                            <FormHelperText error>
+                                {errors?.phoneNumber}
+                            </FormHelperText>
+                        )}
 
                         <TextField
                             margin="dense"
                             id="name"
                             label="Email Address"
-                            name="email_address"
+                            name="email"
                             type="email"
-                            error={errors?.email_address && touched?.email_address}
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.email && touched?.email}
                             fullWidth
-                            defaultValue={values?.email_address}
+                            defaultValue={values?.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.email_address && touched?.email_address &&
-                            <FormHelperText error>{errors?.email_address}</FormHelperText>
-                        }
-
-                        <TextField
+                        {errors?.email && touched?.email && (
+                            <FormHelperText error>
+                                {errors?.email}
+                            </FormHelperText>
+                        )}
+                        <Select
+                            className="mt-2 mb-2"
                             margin="dense"
-                            id="state"
-                            label="state"
-                            name="state"
-                            error={errors?.state && touched?.state}
-                            type="text"
+                            id="stateId"
+                            label="stateId"
                             fullWidth
-                            defaultValue={values?.state}
+                            name="stateId"
+                            value={values?.stateId}
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.stateId && touched?.stateId}
                             onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {
-                            errors?.state && touched?.state &&
-                            <FormHelperText error>{errors?.state}</FormHelperText>
-                        }
-
-                        <TextField
-                            margin="dense"
-                            id="district"
-                            name="district"
-                            label="District"
-                            error={errors?.district && touched?.district}
-                            type="text"
-                            fullWidth
-                            defaultValue={values?.district}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {
-                            errors?.district && touched?.district &&
-                            <FormHelperText error>{errors?.district}</FormHelperText>
-                        }
+                        >
+                            {state?.map((item, i) => (
+                                <MenuItem key={i} value={item?._id}>
+                                    {item?.stateName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        {errors?.stateId && touched?.stateId && (
+                            <FormHelperText error>
+                                {errors?.stateId}
+                            </FormHelperText>
+                        )}
 
                         <TextField
                             margin="dense"
                             id="city"
                             label="city"
                             name="city"
+                            disabled={!!props?.open?.is_form_view_profile}
                             error={errors?.city && touched?.city}
                             type="text"
                             fullWidth
@@ -208,85 +236,61 @@ const AddUpdateUserDialog = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.city && touched?.city &&
-                            <FormHelperText error>{errors?.city}</FormHelperText>
-                        }
+                        {errors?.city && touched?.city && (
+                            <FormHelperText error>
+                                {errors?.city}
+                            </FormHelperText>
+                        )}
 
                         <TextField
                             margin="dense"
-                            id="pin_code"
-                            name="pin_code"
+                            id="pincode"
+                            name="pincode"
                             label="pin code"
-                            error={errors?.pin_code && touched?.pin_code}
+                            disabled={!!props?.open?.is_form_view_profile}
+                            error={errors?.pincode && touched?.pincode}
                             type="text"
                             fullWidth
-                            defaultValue={values?.pin_code}
+                            defaultValue={values?.pincode}
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.pin_code && touched?.pin_code &&
-                            <FormHelperText error>{errors?.pin_code}</FormHelperText>
-                        }
+                        {errors?.pincode && touched?.pincode && (
+                            <FormHelperText error>
+                                {errors?.pincode}
+                            </FormHelperText>
+                        )}
 
-                        <TextField
-                            margin="dense"
-                            id="date"
-                            name="date"
-                            label="date"
-                            type="text"
-                            error={errors?.date && touched?.date}
-                            fullWidth
-                            defaultValue={moment(values?.date).format(
-                                'YYYY-MM-DD'
-                            )}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {
-                            errors?.date && touched?.date &&
-                            <FormHelperText error>{errors?.date}</FormHelperText>
-                        }
-
-                        <TextField
-                            margin="dense"
-                            id="balance"
-                            name="balance"
-                            label="balance"
-                            type="text"
-                            error={errors?.balance && touched?.balance}
-                            fullWidth
-                            defaultValue={values?.balance}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {
-                            errors?.balance && touched?.balance &&
-                            <FormHelperText error>{errors?.balance}</FormHelperText>
-                        }
-
-                        <TextField
-                            margin="dense"
-                            id="pan_card"
-                            name="pan_card"
-                            label="pan card no"
-                            error={errors?.pan_card && touched?.pan_card}
-                            type="text"
-                            fullWidth
-                            defaultValue={values?.pan_card}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {
-                            errors?.pan_card && touched?.pan_card &&
-                            <FormHelperText error>{errors?.pan_card}</FormHelperText>
-                        }
+                        {props?.open?.data?._id && (
+                            <TextField
+                                margin="dense"
+                                id="walletBalance"
+                                name="walletBalance"
+                                label="Wallet Balance"
+                                type="text"
+                                // disabled={!!props?.open?.is_form_view_profile}
+                                error={
+                                    errors?.walletBalance &&
+                                    touched?.walletBalance
+                                }
+                                fullWidth
+                                disabled
+                                defaultValue={values?.walletBalance}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
+                        )}
+                        {errors?.walletBalance && touched?.walletBalance && (
+                            <FormHelperText error>
+                                {errors?.walletBalance}
+                            </FormHelperText>
+                        )}
 
                         <TextField
                             margin="dense"
                             id="password"
                             label="password"
+                            disabled={!!props?.open?.is_form_view_profile}
                             error={errors?.password && touched?.password}
                             name="password"
                             type="text"
@@ -295,10 +299,11 @@ const AddUpdateUserDialog = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
-                        {
-                            errors?.password && touched?.password &&
-                            <FormHelperText error>{errors?.password}</FormHelperText>
-                        }
+                        {errors?.password && touched?.password && (
+                            <FormHelperText error>
+                                {errors?.password}
+                            </FormHelperText>
+                        )}
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -308,15 +313,18 @@ const AddUpdateUserDialog = (props) => {
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type='submit'
-                            // onClick={() => handleSubmit()}
-                            color="primary">
-                            Save
-                        </Button>
+                        {!!!props?.open?.is_form_view_profile && (
+                            <Button
+                                variant="outlined"
+                                type="submit"
+                                // onClick={() => handleSubmit()}
+                                color="primary"
+                            >
+                                {!!props?.open?.data ? "Edit" : "Save"}
+                            </Button>
+                        )}
                     </DialogActions>
                 </form>
-
             </Dialog>
         </div>
     )

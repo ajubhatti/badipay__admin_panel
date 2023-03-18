@@ -33,7 +33,6 @@ const DiscountOnRecharge = () => {
 
     const { palette } = useTheme()
     const bgPrimary = palette.primary.main
-    const bgError = palette.error.main
 
     const columns = [
         {
@@ -51,28 +50,36 @@ const DiscountOnRecharge = () => {
             text: "Company Name",
         },
         {
-            dataField: "discountData.amount",
-            text: "Discount Amount",
+            dataField: "discountData.adminDiscount",
+            text: "Admin Discount",
         },
         {
-            dataField: "discountData.type",
+            dataField: "discountData.adminDiscountType",
             text: "Discount Type",
         },
         {
-            dataField: "discountData.discountLimit",
+            dataField: "discountData.userDiscount",
+            text: "User Discount",
+        },
+        {
+            dataField: "discountData.userDiscountLimit",
             text: "Discount Limit",
         },
         {
-            dataField: "discountData.referalAmount",
-            text: "Referal Discount Amount",
+            dataField: "discountData.userDiscountType",
+            text: "Discount Type",
         },
         {
-            dataField: "discountData.referalType",
-            text: "Referal Discount Type",
+            dataField: "discountData.referalDiscount",
+            text: "Referal Discount",
         },
         {
             dataField: "discountData.referalDiscountLimit",
-            text: "Referal Discount Limit",
+            text: "Discount Limit",
+        },
+        {
+            dataField: "discountData.referalDiscountType",
+            text: "Discount Type",
         },
         {
             text: "Action",
@@ -193,7 +200,7 @@ const DiscountOnRecharge = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        if (name == "selectedProviderIndex") {
+        if (name === "selectedProviderIndex") {
             setSelectedProviderIndex(value)
         } else {
             setSelectedServiceIndex(value)
@@ -201,7 +208,7 @@ const DiscountOnRecharge = () => {
     }
 
     const handleFilter = () => {
-        if (selectedProviderIndex != "" && selectedServiceIndex != "") {
+        if (selectedProviderIndex !== "" && selectedServiceIndex !== "") {
             getAllDiscounts({
                 apiId: selectedProviderIndex,
                 serviceId: selectedServiceIndex,
@@ -240,6 +247,9 @@ const DiscountOnRecharge = () => {
 
             <div className="container-fluid">
                 <div className="row">
+                    <div className="col-lg-12">
+                        <h2 className="main-heading">Discount List</h2>
+                    </div>
                     <div className="col-lg-12">
                         <div className="card rounded-0 mb-4">
                             <div className="card-header">
