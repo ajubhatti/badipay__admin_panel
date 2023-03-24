@@ -50,6 +50,7 @@ const DiscountOnRecharge = Loadable(
 const UserRegister = Loadable(
     lazy(() => import("../../components/User/Register"))
 )
+const CashBackList = Loadable(lazy(() => import("../reports/CashBackList")))
 const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
 const StateList = Loadable(lazy(() => import("../utilities/StateList")))
 const AppTable = Loadable(lazy(() => import("./tables/AppTable")))
@@ -225,6 +226,10 @@ const materialRoutes = [
     {
         path: "/user/register",
         element: <UserRegister />,
+    },
+    {
+        path: "/reports/cashback",
+        element: <CashBackList />,
     },
 ]
 

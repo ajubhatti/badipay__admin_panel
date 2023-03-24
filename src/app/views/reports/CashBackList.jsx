@@ -1,29 +1,41 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  getTransactionsList,
-  setPageTransactions,
-  setSizePerPageTransactions,
-  setSortFieldOfTransactions,
-  setSortOrderOfTransactions,
+  getCashBackList,
+  setPageCashBack,
+  setSizePerPageCashBack,
+  setSortFieldOfCashBack,
+  setSortOrderOfCashBack,
 } from "./store/action"
-import {
-  AiOutlineEdit,
-  AiFillDelete,
-  AiFillEye,
-  AiOutlinePlus,
-} from "react-icons/ai"
+import { AiOutlineEdit, AiFillDelete, AiFillEye } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
 import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { Button } from "react-bootstrap"
-import TransactionViewModal from "./TransactionViewModal"
+import CashBackViewModal from "./CashBackViewModal"
+import CustomDateRangePicker from "./CustomDateRangePicker"
 
-const Transactions = () => {
-  const navigate = useNavigate()
+import { ExportToCsv } from "export-to-csv"
+import { toast } from "react-toastify"
+import ReportsCard from "./ReportsCard"
+import ReportStatCards from "./ReportStatCards"
+
+const options = {
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  showTitle: true,
+  title: "Activities",
+  useTextFile: false,
+  useBom: true,
+  useKeysAsHeaders: true,
+}
+
+const csvExporter = new ExportToCsv(options)
+
+const CashBackList = () => {
   const dispatch = useDispatch()
 
   const {
@@ -34,13 +46,15 @@ const Transactions = () => {
     search,
     sortField,
     sortOrder,
-    transactionData,
-    transactionList,
-  } = useSelector((state) => state.recharge)
+    cashBackData,
+    cashBackList,
+  } = useSelector((state) => state.reports)
+
+  const [exportLoading, setExportLoading] = useState(false)
 
   const { stateList } = useSelector((state) => state.utilities)
   const { companyList } = useSelector((state) => state.company)
-  const [transactionListData, setTransactionListData] = useState([])
+  const [transactionListData, setCashBackListData] = useState([])
 
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
@@ -99,6 +113,47 @@ const Transactions = () => {
     }))
   }
 
+  const handleCSV = () => {
+    try {
+      setExportLoading(true)
+      const payload = {
+        ...payloadData,
+        limits: totalSize,
+      }
+      dispatch(
+        getCashBackList(payload, (status) => {
+          if (status) {
+            const exportData = status?.data?.map((item) => {
+              return {
+                date:
+                  moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
+                Payment_type: item?.type || "-",
+                Transaction_Id: item?.transactionId || "-",
+                Slip_No: !!item?.slipNo ? item?.slipNo : "-",
+                Remark: item?.remark || "-",
+                Customer_No: !!item?.customerNo ? item?.customerNo : "-",
+                Balance: item?.userBalance || "-",
+                Request_Amount: item?.requestAmount || "-",
+                Recharge_Amount: item?.rechargeAmount || "-",
+                Cashback_Amount: !!item.cashBackAmount
+                  ? item?.cashBackAmount
+                  : "-",
+                Final_Balance: item?.userFinalBalance || "-",
+                Amount: item?.amount || "-",
+                status: item?.status || "-",
+              }
+            })
+            setExportLoading(false)
+            csvExporter.generateCsv(exportData)
+          }
+        })
+      )
+    } catch (err) {
+      setExportLoading(false)
+      toast.err("something want's wrong!!")
+    }
+  }
+
   const GetActionFormat = (cell, row) => (
     <div>
       <button
@@ -114,40 +169,6 @@ const Transactions = () => {
 
   const GetTime = (cell, row) =>
     moment(row?.created).format("DD-MM-YYYY HH:mm:ss")
-
-  // const columns = [
-  //   {
-  //     dataField: "userdetail.email",
-  //     text: "User",
-  //   },
-  //   {
-  //     dataField: "amount",
-  //     text: "Amount",
-  //   },
-  //   {
-  //     dataField: "status",
-  //     text: "Status",
-  //   },
-  //   {
-  //     dataField: "type",
-  //     text: "Type",
-  //   },
-  //   {
-  //     dataField: "transactionId",
-  //     text: "Transaction Id",
-  //   },
-  //   {
-  //     dataField: "created",
-  //     text: "Created At",
-  //     formatter: GetTime,
-  //   },
-  //   {
-  //     text: "Action",
-  //     dataField: "",
-  //     formatter: GetActionFormat,
-  //     classes: "p-1",
-  //   },
-  // ]
 
   const columns = useMemo(
     () => [
@@ -211,7 +232,11 @@ const Transactions = () => {
         dataField: "transactionId",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{row?.transactionId ? row?.transactionId : "-"}</div>
+          <div>
+            {row?.transactionData?.transactionId
+              ? row?.transactionData?.transactionId
+              : "-"}
+          </div>
         ),
       },
       {
@@ -220,10 +245,10 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.OPRID
-              ? row?.rechargeData?.OPRID
-              : row?.rechargeData?.opid
-              ? row?.rechargeData?.opid
+            {row?.transactionData?.rechargeData?.OPRID
+              ? row?.transactionData?.rechargeData?.OPRID
+              : row?.transactionData?.rechargeData?.opid
+              ? row?.transactionData?.rechargeData?.opid
               : "-"}
           </div>
         ),
@@ -234,8 +259,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.rechargeOperator?.companyName
-              ? row?.rechargeData?.rechargeOperator?.companyName
+            {row?.transactionData?.rechargeData?.rechargeOperator?.companyName
+              ? row?.transactionData?.rechargeData?.rechargeOperator
+                  ?.companyName
               : "-"}
           </div>
         ),
@@ -246,8 +272,8 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.rechargeApi?.apiName
-              ? row?.rechargeData?.rechargeApi?.apiName
+            {row?.transactionData?.rechargeData?.rechargeApi?.apiName
+              ? row?.transactionData?.rechargeData?.rechargeApi?.apiName
               : "-"}
           </div>
         ),
@@ -259,7 +285,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.customerNo ? row?.customerNo : "-"}
+            {row?.transactionData?.customerNo
+              ? row?.transactionData?.customerNo
+              : "-"}
           </div>
         ),
       },
@@ -270,7 +298,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userBalance ? row?.userBalance : "-"}
+            {row?.transactionData?.userBalance
+              ? row?.transactionData?.userBalance
+              : "-"}
           </div>
         ),
       },
@@ -280,7 +310,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.requestAmount ? row?.requestAmount : "-"}
+            {row?.transactionData?.requestAmount
+              ? row?.transactionData?.requestAmount
+              : "-"}
           </div>
         ),
       },
@@ -290,7 +322,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.cashBackAmount ? row?.cashBackAmount : "-"}
+            {row?.transactionData?.cashBackAmount
+              ? row?.transactionData?.cashBackAmount
+              : "-"}
           </div>
         ),
       },
@@ -300,7 +334,9 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeAmount ? row?.rechargeAmount : "-"}
+            {row?.transactionData?.rechargeAmount
+              ? row?.transactionData?.rechargeAmount
+              : "-"}
           </div>
         ),
       },
@@ -310,77 +346,88 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userFinalBalance ? row?.userFinalBalance : "-"}
+            {row?.transactionData?.userFinalBalance
+              ? row?.transactionData?.userFinalBalance
+              : "-"}
           </div>
         ),
       },
+      {
+        text: "cashBack Receive",
+        dataField: "cashBackReceive",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">
+            {row?.cashBackReceive ? row?.cashBackReceive : "-"}
+          </div>
+        ),
+      },
+      {
+        text: "user CashBack",
+        dataField: "userCashBack",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">
+            {row?.userCashBack ? row?.userCashBack : "-"}
+          </div>
+        ),
+      },
+      {
+        text: "referral CashBack",
+        dataField: "referralCashBack",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">{row?.referralCashBack}</div>
+        ),
+      },
+      {
+        text: "net CashBack",
+        dataField: "netCashBack",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">
+            {row?.netCashBack ? row?.netCashBack : "-"}
+          </div>
+        ),
+      },
+
       {
         text: "remark",
         dataField: "remark",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
-            <span>{!!row?.remark ? row?.remark : "-"}</span>
+            <span>
+              {!!row?.transactionData?.remark
+                ? row?.transactionData?.remark
+                : "-"}
+            </span>
           </div>
         ),
       },
-
       {
         text: "status",
         dataField: "status",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
             className={`align-middle text-${
-              row?.status === "success"
+              row?.transactionData?.status === "success"
                 ? "success"
-                : row?.status === "pending"
+                : row?.transactionData?.status === "pending"
                 ? "warning"
                 : "danger"
             }`}
           >
             <span
               className={`text-capitalize text-white p-1 rounded bg-${
-                row?.status === "success"
+                row?.transactionData?.status === "success"
                   ? "success"
-                  : row?.status === "pending"
+                  : row?.transactionData?.status === "pending"
                   ? "warning"
                   : "danger"
               }`}
             >
-              {row?.status}
+              {row?.transactionData?.status}
             </span>
-          </div>
-        ),
-      },
-      {
-        text: "Action",
-        dataField: "edit",
-        sort: false,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="d-flex">
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm ts-buttom m-1"
-              size="sm"
-              onClick={() => handleEdit(row)}
-            >
-              <AiOutlineEdit style={{ color: "green" }} />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={() => handleDelete(cell, row)}
-            >
-              <AiFillDelete />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={() => handleView(cell, row)}
-            >
-              <AiFillEye />
-            </button>
           </div>
         ),
       },
@@ -419,55 +466,54 @@ const Transactions = () => {
   // }
 
   useEffect(() => {
-    // dispatch(getTransactionsList())
     dispatch(getStateList())
     dispatch(getCompanies())
   }, [dispatch])
 
   useEffect(() => {
-    getTransactionList()
+    getCashBackListData()
   }, [payloadData])
 
-  const getTransactionList = () => {
-    dispatch(getTransactionsList(payloadData))
+  const getCashBackListData = () => {
+    dispatch(getCashBackList(payloadData))
   }
 
   useEffect(() => {
-    if (transactionData) {
-      setTransactionListData(transactionData?.transactions)
+    if (cashBackData) {
+      setCashBackListData(cashBackData?.transactions)
     }
-  }, [transactionData, stateList, companyList])
-
-  const viewDetail = () => {
-    navigate("/api-setting/api/add")
-  }
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
-  }
+  }, [cashBackData, stateList, companyList])
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
     switch (type) {
       case "sort":
-        dispatch(setSortFieldOfTransactions(sortField))
-        dispatch(setSortOrderOfTransactions(sortOrder.toUpperCase()))
+        dispatch(setSortFieldOfCashBack(sortField))
+        dispatch(setSortOrderOfCashBack(sortOrder.toUpperCase()))
         break
       case "pagination":
-        dispatch(setPageTransactions(page))
-        dispatch(setSizePerPageTransactions(sizePerPage))
+        dispatch(setPageCashBack(page))
+        dispatch(setSizePerPageCashBack(sizePerPage))
         break
       default:
         break
     }
   }
 
+  const handleSearch = (e) => {
+    setSearchString(e.target.value.trim())
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="main-heading">Transactions List</h2>
+          <ReportStatCards />
+          <ReportsCard />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-lg-12">
+          <h2 className="main-heading">Cashback List</h2>
         </div>
       </div>
 
@@ -479,23 +525,65 @@ const Transactions = () => {
                 <CustomTable
                   showAddButton={false}
                   pageOptions={pageOptions}
-                  keyField="transaction_id"
-                  data={transactionList}
+                  keyField="_id"
+                  data={cashBackList}
                   columns={columns}
                   showSearch={false}
                   onTableChange={onTableChange}
                   withPagination={true}
                   loading={loading}
                   withCard={false}
-                ></CustomTable>
+                >
+                  <div className="position-relative">
+                    <div className="d-flex justify-content-between">
+                      <div className="d-flex">
+                        <div className="me-2">
+                          <label>Search</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="search"
+                            onChange={handleSearch}
+                          />
+                        </div>
+
+                        <CustomDateRangePicker
+                          rangeDate={dateRangeValue}
+                          setRangeDate={setDateRangeValue}
+                        />
+
+                        <div className="me-2 d-flex align-items-end">
+                          <button
+                            className={`btn btn-secondary ${
+                              exportLoading ? "disabled" : ""
+                            }`}
+                            onClick={handleFilterData}
+                          >
+                            Find
+                          </button>
+                        </div>
+                      </div>
+                      <div className="me-2 d-flex align-items-end">
+                        <button
+                          className={`btn btn-secondary ${
+                            exportLoading ? "disabled" : ""
+                          }`}
+                          onClick={handleCSV}
+                        >
+                          {exportLoading ? "Exporting.." : "Export CSV"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </CustomTable>
 
                 {isShowDiscountModal && (
-                  <TransactionViewModal
+                  <CashBackViewModal
                     discountInfo={discountInfo}
                     isDiscountEdit={isDiscountEdit}
                     isShowDiscountModal={isShowDiscountModal}
                     onCloseDiscountModal={handleDiscountClose}
-                    fetchTransactionList={getTransactionList}
+                    fetchCashBackList={getCashBackListData}
                     // onSaveDiscountModal={handleSaveDiscountModal}
                     // selectedServiceIndex={selectedServiceIndex}
                     // discountModalSave={discountModalSave}
@@ -510,4 +598,4 @@ const Transactions = () => {
   )
 }
 
-export default Transactions
+export default CashBackList

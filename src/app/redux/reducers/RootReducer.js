@@ -11,6 +11,7 @@ import rechargeReducer from "app/views/recharge/store/reducer"
 import utilityReducer from "app/views/utilities/store/reducer"
 import walletReducer from "app/views/wallet/store/reducer"
 import SPSlabReducer from "app/views/api-settings/slab-config/store/reducer"
+import reportsReducer from "app/views/reports/store/reducer"
 import LoginReducers from "./loginReducer"
 
 const RootReducer = combineReducers({
@@ -23,6 +24,7 @@ const RootReducer = combineReducers({
     servicesList: servicesListReducer,
     operator: operatorSwitchReducer,
     recharge: rechargeReducer,
+    reports: reportsReducer,
     utilities: utilityReducer,
     wallet: walletReducer,
     SPSlab: SPSlabReducer,

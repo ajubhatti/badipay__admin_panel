@@ -1,17 +1,4 @@
-.table-main .react-bootstrap-table{
-    overflow: auto;
-}
-
-.table-main thead{
-    background-color: #222a45f5;
-    color: white;
-}
-
-.box{
-        box-shadow: 2px 2px 10px #cbc7c7;
-}
-
-.table{
+.table {
     background-color: rgb(255, 255, 255);
     color: rgb(52, 49, 76);
     transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
