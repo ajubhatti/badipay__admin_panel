@@ -64,7 +64,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
           }}
           startDate={rangeDate.start}
           endDate={rangeDate.end}
-          // maxDate={rangeDate.end}
+        // maxDate={rangeDate.end}
         />
       </div>
       <div className="me-2">

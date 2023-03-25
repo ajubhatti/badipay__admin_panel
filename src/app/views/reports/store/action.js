@@ -11,12 +11,13 @@ import {
     SET_SORT_ORDER_CASHBACK,
 } from "./actionTypes"
 
-export const getCashBackList = (data) => async (dispatch) => {
+export const getCashBackList = (data, cb) => async (dispatch) => {
     try {
         dispatch(setLoading(true))
         await cashBackService.getAllCashBacks(data).then((res) => {
             if (res?.data) {
                 dispatch(fetchCashBackList(res?.data))
+                cb(res?.data)
                 dispatch(setLoading(false))
             }
         })

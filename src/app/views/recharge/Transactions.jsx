@@ -19,9 +19,8 @@ import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { Button } from "react-bootstrap"
 import TransactionViewModal from "./TransactionViewModal"
-
+import { useCallback } from "react"
 const Transactions = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -31,9 +30,6 @@ const Transactions = () => {
     page,
     sizePerPage,
     totalSize,
-    search,
-    sortField,
-    sortOrder,
     transactionData,
     transactionList,
   } = useSelector((state) => state.recharge)
@@ -42,11 +38,6 @@ const Transactions = () => {
   const { companyList } = useSelector((state) => state.company)
   const [transactionListData, setTransactionListData] = useState([])
 
-  const [searchString, setSearchString] = useState("")
-  const [dateRangeValue, setDateRangeValue] = useState({
-    start: null,
-    end: null,
-  })
 
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
@@ -62,6 +53,7 @@ const Transactions = () => {
     startDate: "", //"10-15-2022",
     endDate: "",
   })
+
 
   const pageOptions = useMemo(
     () => ({
@@ -85,69 +77,6 @@ const Transactions = () => {
       search: "",
     }))
   }, [sizePerPage, page])
-
-  const handleFilterData = () => {
-    setPayloadData((prev) => ({
-      ...prev,
-      search: searchString,
-      startDate: dateRangeValue.start
-        ? moment(dateRangeValue.start).format("MM-DD-YYYY")
-        : "",
-      endDate: dateRangeValue.end
-        ? moment(dateRangeValue.end).format("MM-DD-YYYY")
-        : "",
-    }))
-  }
-
-  const GetActionFormat = (cell, row) => (
-    <div>
-      <button
-        type="button"
-        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-        size="sm"
-        onClick={() => handleView(cell, row)}
-      >
-        <AiFillEye />
-      </button>
-    </div>
-  )
-
-  const GetTime = (cell, row) =>
-    moment(row?.created).format("DD-MM-YYYY HH:mm:ss")
-
-  // const columns = [
-  //   {
-  //     dataField: "userdetail.email",
-  //     text: "User",
-  //   },
-  //   {
-  //     dataField: "amount",
-  //     text: "Amount",
-  //   },
-  //   {
-  //     dataField: "status",
-  //     text: "Status",
-  //   },
-  //   {
-  //     dataField: "type",
-  //     text: "Type",
-  //   },
-  //   {
-  //     dataField: "transactionId",
-  //     text: "Transaction Id",
-  //   },
-  //   {
-  //     dataField: "created",
-  //     text: "Created At",
-  //     formatter: GetTime,
-  //   },
-  //   {
-  //     text: "Action",
-  //     dataField: "",
-  //     formatter: GetActionFormat,
-  //     classes: "p-1",
-  //   },
-  // ]
 
   const columns = useMemo(
     () => [
@@ -223,8 +152,8 @@ const Transactions = () => {
             {row?.rechargeData?.OPRID
               ? row?.rechargeData?.OPRID
               : row?.rechargeData?.opid
-              ? row?.rechargeData?.opid
-              : "-"}
+                ? row?.rechargeData?.opid
+                : "-"}
           </div>
         ),
       },
@@ -329,22 +258,20 @@ const Transactions = () => {
         dataField: "status",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
-            className={`align-middle text-${
-              row?.status === "success"
-                ? "success"
-                : row?.status === "pending"
+            className={`align-middle text-${row?.status === "success"
+              ? "success"
+              : row?.status === "pending"
                 ? "warning"
                 : "danger"
-            }`}
+              }`}
           >
             <span
-              className={`text-capitalize text-white p-1 rounded bg-${
-                row?.status === "success"
-                  ? "success"
-                  : row?.status === "pending"
+              className={`text-capitalize text-white p-1 rounded bg-${row?.status === "success"
+                ? "success"
+                : row?.status === "pending"
                   ? "warning"
                   : "danger"
-              }`}
+                }`}
             >
               {row?.status}
             </span>
@@ -411,42 +338,25 @@ const Transactions = () => {
     setIsShowDiscountModal(true)
   }
 
-  // const handleEdit = (cell, row) => {
-  //     console.log("edit ---", row)
-  //     handleDiscountClose(true)
-  //     setModalData(row)
-  //     // navigate("/api-setting/api/add/" + row._id)
-  // }
-
   useEffect(() => {
     // dispatch(getTransactionsList())
     dispatch(getStateList())
     dispatch(getCompanies())
   }, [dispatch])
 
+
+  const getTransactionList = useCallback(() => {
+    dispatch(getTransactionsList(payloadData))
+  }, [dispatch, payloadData])
   useEffect(() => {
     getTransactionList()
-  }, [payloadData])
-
-  const getTransactionList = () => {
-    dispatch(getTransactionsList(payloadData))
-  }
+  }, [getTransactionList])
 
   useEffect(() => {
     if (transactionData) {
       setTransactionListData(transactionData?.transactions)
     }
   }, [transactionData, stateList, companyList])
-
-  const viewDetail = () => {
-    navigate("/api-setting/api/add")
-  }
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
-  }
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
     switch (type) {
@@ -496,9 +406,9 @@ const Transactions = () => {
                     isShowDiscountModal={isShowDiscountModal}
                     onCloseDiscountModal={handleDiscountClose}
                     fetchTransactionList={getTransactionList}
-                    // onSaveDiscountModal={handleSaveDiscountModal}
-                    // selectedServiceIndex={selectedServiceIndex}
-                    // discountModalSave={discountModalSave}
+                  // onSaveDiscountModal={handleSaveDiscountModal}
+                  // selectedServiceIndex={selectedServiceIndex}
+                  // discountModalSave={discountModalSave}
                   />
                 )}
               </div>

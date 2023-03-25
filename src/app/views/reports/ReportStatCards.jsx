@@ -37,71 +37,75 @@ const Heading = styled("h6")(({ theme }) => ({
   color: theme.palette.primary.main,
 }))
 
-const ReportStatCards = () => {
+const ReportStatCards = ({ cardData }) => {
+
+  console.log("cardData", cardData);
   return (
     <Grid container spacing={3} sx={{ mb: "24px" }}>
-      <Grid item xs={12} md={3}>
-        <StyledCard elevation={3}>
-          <ContentBox>
-            <Icon className="icon">group</Icon>
-            <Box ml="12px">
-              <Small>New Leads</Small>
-              <Heading>3050</Heading>
-            </Box>
-          </ContentBox>
-          <Tooltip title="View Details" placement="top">
-            <IconButton>
-              <Icon>arrow_right_alt</Icon>
-            </IconButton>
-          </Tooltip>
-        </StyledCard>
-      </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={6} lg={3}>
         <StyledCard elevation={3}>
           <ContentBox>
             <Icon className="icon">attach_money</Icon>
             <Box ml="12px">
-              <Small sx={{ lineHeight: 1 }}>This week Sales</Small>
-              <Heading>$80,500</Heading>
+              <Small>Receive CashBack</Small>
+              <Heading>{cardData?.cashBackReceive || 0}</Heading>
             </Box>
           </ContentBox>
-          <Tooltip title="View Details" placement="top">
-            <IconButton>
-              <Icon>arrow_right_alt</Icon>
-            </IconButton>
-          </Tooltip>
         </StyledCard>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={6} lg={3}>
         <StyledCard elevation={3}>
           <ContentBox>
-            <Icon className="icon">store</Icon>
+            <Icon className="icon">attach_money</Icon>
             <Box ml="12px">
-              <Small>Inventory Status</Small>
-              <Heading>8.5% Stock</Heading>
+              <Small sx={{ lineHeight: 1 }}>Net cashback</Small>
+              <Heading>{cardData?.netCashBack || 0}</Heading>
             </Box>
           </ContentBox>
-          <Tooltip title="View Details" placement="top">
-            <IconButton>
-              <Icon>arrow_right_alt</Icon>
-            </IconButton>
-          </Tooltip>
         </StyledCard>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={6} lg={3}>
         <StyledCard elevation={3}>
           <ContentBox>
-            <Icon className="icon">shopping_cart</Icon>
+            <Icon className="icon">attach_money</Icon>
             <Box ml="12px">
-              <Small>Orders to deliver</Small>
-              <Heading>305 Orders</Heading>
+              <Small>Recharge Amount</Small>
+              <Heading>{cardData?.rechargeAmount || 0}</Heading>
             </Box>
           </ContentBox>
-          <Tooltip title="View Details" placement="top">
-            <IconButton>
-              <Icon>arrow_right_alt</Icon>
-            </IconButton>
-          </Tooltip>
+        </StyledCard>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <StyledCard elevation={3}>
+          <ContentBox>
+            <Icon className="icon">attach_money</Icon>
+            <Box ml="12px">
+              <Small>Referral cashback</Small>
+              <Heading>{cardData?.referralCashBack || 0}</Heading>
+            </Box>
+          </ContentBox>
+        </StyledCard>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <StyledCard elevation={3}>
+          <ContentBox>
+            <Icon className="icon">attach_money</Icon>
+            <Box ml="12px">
+              <Small>Request Amount</Small>
+              <Heading>{cardData?.requestAmount || 0}</Heading>
+            </Box>
+          </ContentBox>
+        </StyledCard>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <StyledCard elevation={3}>
+          <ContentBox>
+            <Icon className="icon">attach_money</Icon>
+            <Box ml="12px">
+              <Small>User cashback</Small>
+              <Heading>{cardData?.userCashBack || 0}</Heading>
+            </Box>
+          </ContentBox>
         </StyledCard>
       </Grid>
     </Grid>
