@@ -21,6 +21,8 @@ import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
 import TransactionViewModal from "./TransactionViewModal"
 import { useCallback } from "react"
+import CustomDateRangePicker from "../reports/CustomDateRangePicker"
+import { discountServices } from "app/services/discount.service"
 const Transactions = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -34,14 +36,22 @@ const Transactions = () => {
     transactionList,
   } = useSelector((state) => state.recharge)
 
+  const [dateRangeValue, setDateRangeValue] = useState({
+    start: null,
+    end: null,
+  })
+
   const { stateList } = useSelector((state) => state.utilities)
   const { companyList } = useSelector((state) => state.company)
   const [transactionListData, setTransactionListData] = useState([])
 
+  const [providers, setProviders] = useState([])
+  const [services, setServices] = useState([])
 
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
+  const [filter, setFilter] = useState({ provider: "", services: "" })
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
@@ -52,8 +62,9 @@ const Transactions = () => {
     search: "",
     startDate: "", //"10-15-2022",
     endDate: "",
+    provider: "",
+    services: "",
   })
-
 
   const pageOptions = useMemo(
     () => ({
@@ -67,8 +78,39 @@ const Transactions = () => {
   )
 
   useEffect(() => {
+    const getAllProviders = async () => {
+      await discountServices.getAllApisAndServices().then((res) => {
+        let provider = []
+        provider = res?.apisResponse?.data?.data?.data
+          .filter((provider) => {
+            return provider.isActive
+          })
+          .map(function (provider) {
+            return { value: provider._id, label: provider.apiName }
+          })
+        provider.unshift({ value: 0, label: "Select Provider" })
+        setProviders(provider)
+
+        let service = []
+        service = res?.serviceResponse?.data?.data
+          .filter((service) => {
+            return service.isActive
+          })
+          .map(function (service) {
+            return { value: service._id, label: service.serviceName }
+          })
+        service.unshift({ value: 0, label: "Select Service" })
+        setServices(service)
+      })
+    }
+    getAllProviders()
+  }, [])
+
+  useEffect(() => {
     setPayloadData((previousData) => ({
       ...previousData,
+      startDate: "",
+      endDate: "",
       page: page,
       limits: sizePerPage,
       sortBy: "created",
@@ -81,28 +123,19 @@ const Transactions = () => {
   const columns = useMemo(
     () => [
       {
-        text: "No.",
+        text: "No",
         dataField: "no",
-        headerStyle: (colum, colIndex) => ({
-          width: "10%",
-          textAlign: "center",
-        }),
-
-        // headerStyle: { width: "50px" },
-        style: { height: "30px" },
+        sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {sizePerPage * (page - 1) + rowIndex + 1}
           </div>
         ),
-        sort: true,
       },
       {
         text: "Date",
         dataField: "created",
         sort: true,
-        headerStyle: { width: "50px" },
-        style: { height: "30px" },
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
@@ -115,8 +148,7 @@ const Transactions = () => {
         text: "User Name",
         dataField: "userDetail.userName",
         sort: true,
-        headerStyle: { width: "50px" },
-        style: { height: "30px" },
+
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
             {row?.userDetail?.userName ? row?.userDetail?.userName : "-"}
@@ -127,20 +159,27 @@ const Transactions = () => {
         text: "Phone Number",
         dataField: "phoneNumber",
         sort: true,
-        headerStyle: { width: "50px" },
-        style: { height: "30px" },
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
             {row?.userDetail?.phoneNumber ? row?.userDetail?.phoneNumber : "-"}
           </div>
         ),
       },
+
       {
         text: "Transaction Id",
         dataField: "transactionId",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div>{row?.transactionId ? row?.transactionId : "-"}</div>
+        ),
+      },
+      {
+        text: "service type",
+        dataField: "serviceTypeName",
+        sort: false,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div>{row?.serviceTypeName ? row?.serviceTypeName : "-"}</div>
         ),
       },
       {
@@ -152,8 +191,8 @@ const Transactions = () => {
             {row?.rechargeData?.OPRID
               ? row?.rechargeData?.OPRID
               : row?.rechargeData?.opid
-                ? row?.rechargeData?.opid
-                : "-"}
+              ? row?.rechargeData?.opid
+              : "-"}
           </div>
         ),
       },
@@ -252,26 +291,27 @@ const Transactions = () => {
           </div>
         ),
       },
-
       {
         text: "status",
         dataField: "status",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
-            className={`align-middle text-${row?.status === "success"
-              ? "success"
-              : row?.status === "pending"
-                ? "warning"
-                : "danger"
-              }`}
-          >
-            <span
-              className={`text-capitalize text-white p-1 rounded bg-${row?.status === "success"
+            className={`align-middle text-${
+              row?.status === "success"
                 ? "success"
                 : row?.status === "pending"
+                ? "warning"
+                : "danger"
+            }`}
+          >
+            <span
+              className={`text-capitalize text-white p-1 rounded bg-${
+                row?.status === "success"
+                  ? "success"
+                  : row?.status === "pending"
                   ? "warning"
                   : "danger"
-                }`}
+              }`}
             >
               {row?.status}
             </span>
@@ -315,13 +355,9 @@ const Transactions = () => {
     [page, sizePerPage]
   )
 
-  const handleDelete = (cell, row) => {
-    console.log("object delete:>> ", { cell, row })
-  }
+  const handleDelete = (cell, row) => {}
 
-  const handleView = (cell, row) => {
-    console.log("object view:>> ", { cell, row })
-  }
+  const handleView = (cell, row) => {}
 
   const handleDiscountClose = () => {
     setdDiscountInfo([])
@@ -339,15 +375,15 @@ const Transactions = () => {
   }
 
   useEffect(() => {
-    // dispatch(getTransactionsList())
     dispatch(getStateList())
     dispatch(getCompanies())
   }, [dispatch])
 
-
   const getTransactionList = useCallback(() => {
+    console.log({ payloadData })
     dispatch(getTransactionsList(payloadData))
   }, [dispatch, payloadData])
+
   useEffect(() => {
     getTransactionList()
   }, [getTransactionList])
@@ -359,6 +395,7 @@ const Transactions = () => {
   }, [transactionData, stateList, companyList])
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
+    console.log(type, { page, sizePerPage, sortField, sortOrder })
     switch (type) {
       case "sort":
         dispatch(setSortFieldOfTransactions(sortField))
@@ -373,6 +410,40 @@ const Transactions = () => {
     }
   }
 
+  const handleChange = (e) => {
+    const { value, name } = e.target
+    if (name === "provider") {
+      setFilter((prev) => ({
+        ...prev,
+        provider: value,
+      }))
+    } else {
+      setFilter((prev) => ({
+        ...prev,
+        services: value,
+      }))
+    }
+  }
+
+  const handleFilterData = () => {
+    console.log(
+      dateRangeValue,
+      moment(dateRangeValue?.start).format("MM-DD-yyyy")
+    )
+    setPayloadData((prev) => ({
+      ...prev,
+      page: 1,
+      startDate: dateRangeValue?.start
+        ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
+        : "", //"10-15-2022",
+      endDate: dateRangeValue?.end
+        ? moment(dateRangeValue?.end).format("MM-DD-yyyy")
+        : "",
+      provider: filter?.provider || "",
+      services: filter?.services || "",
+    }))
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
@@ -385,6 +456,56 @@ const Transactions = () => {
         <div className="card mb-4">
           <div className="card-body">
             <div className="row">
+              <div className="col-md-12 d-flex">
+                <div className="col-md-6 d-flex ">
+                  <div className="d-flex align-items-end me-2">
+                    <select
+                      name="provider"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="provider"
+                    >
+                      {providers.map((provider) => {
+                        return (
+                          <option key={provider.value} value={provider.value}>
+                            {provider.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                  <div className="d-flex align-items-end me-2">
+                    <select
+                      name="services"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="services"
+                    >
+                      {services.map((service) => {
+                        return (
+                          <option key={service.value} value={service.value}>
+                            {service.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-6 d-flex justify-content-end">
+                  <CustomDateRangePicker
+                    rangeDate={dateRangeValue}
+                    setRangeDate={setDateRangeValue}
+                  />
+                  <div className="d-flex align-items-end">
+                    <button
+                      className={`btn btn-secondary }`}
+                      onClick={handleFilterData}
+                    >
+                      Find
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className="col-md-12">
                 <CustomTable
                   showAddButton={false}
@@ -406,9 +527,9 @@ const Transactions = () => {
                     isShowDiscountModal={isShowDiscountModal}
                     onCloseDiscountModal={handleDiscountClose}
                     fetchTransactionList={getTransactionList}
-                  // onSaveDiscountModal={handleSaveDiscountModal}
-                  // selectedServiceIndex={selectedServiceIndex}
-                  // discountModalSave={discountModalSave}
+                    // onSaveDiscountModal={handleSaveDiscountModal}
+                    // selectedServiceIndex={selectedServiceIndex}
+                    // discountModalSave={discountModalSave}
                   />
                 )}
               </div>

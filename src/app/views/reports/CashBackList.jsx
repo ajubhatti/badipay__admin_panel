@@ -7,7 +7,6 @@ import {
   setSortFieldOfCashBack,
   setSortOrderOfCashBack,
 } from "./store/action"
-import { AiOutlineEdit, AiFillDelete, AiFillEye } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
 import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
@@ -15,12 +14,12 @@ import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
 import CashBackViewModal from "./CashBackViewModal"
 import CustomDateRangePicker from "./CustomDateRangePicker"
-
 import { ExportToCsv } from "export-to-csv"
 import { toast } from "react-toastify"
-import ReportsCard from "./ReportsCard"
 import ReportStatCards from "./ReportStatCards"
-import { fetchWrapper } from "app/helpers/fetch-wrapper"
+import { discountServices } from "app/services/discount.service"
+import { cashBackService } from "app/services/cashback.service"
+import ReportsCard from "./ReportsCard"
 
 const options = {
   fieldSeparator: ",",
@@ -63,38 +62,28 @@ const CashBackList = () => {
     end: null,
   })
 
+  const [filter, setFilter] = useState({ provider: "", services: "" })
+
+  const [providers, setProviders] = useState([])
+  const [services, setServices] = useState([])
+
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
   const [cardData, setCardData] = useState(null)
-
-  const url = `${process.env.REACT_APP_BASE_URL}`
-
-  useEffect(() => {
-    const getTotal = async () => {
-      try {
-        const res = await fetchWrapper.get(`${url}/adminloyalty`)
-
-        if (!!res) {
-          setCardData(res?.data[0])
-        }
-      } catch (err) {
-        toast.error("something want's wrong")
-        console.log(err);
-      }
-    }
-    getTotal()
-  }, [url])
+  const [reportData, setReportData] = useState(null)
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 20,
     sortBy: "created",
-    orderBy: "desc",
+    orderBy: "DESC",
     skip: 0,
     search: "",
     startDate: "", //"10-15-2022",
     endDate: "",
+    provider: filter?.provider || "",
+    services: filter?.services || "",
   })
 
   const pageOptions = useMemo(
@@ -109,20 +98,62 @@ const CashBackList = () => {
   )
 
   useEffect(() => {
+    const getTotal = async () => {
+      try {
+        await cashBackService.adminloyalty().then((res) => {
+          if (!!res) {
+            setCardData(res?.data[0])
+          }
+        })
+      } catch (err) {
+        toast.error("something want's wrong")
+      }
+    }
+    getTotal()
+  }, [])
+
+  useEffect(() => {
+    const cashBackReports = async () => {
+      try {
+        await cashBackService.getCashBackReports(payloadData).then((res) => {
+          console.log({ res })
+          if (!!res) {
+            setReportData(res?.data)
+          }
+        })
+      } catch (err) {
+        console.error({ err })
+      }
+    }
+    cashBackReports()
+  }, [payloadData])
+
+  useEffect(() => {
     setPayloadData((previousData) => ({
       ...previousData,
       page: page,
       limits: sizePerPage,
-      sortBy: "created",
-      orderBy: "desc",
+      sortBy: sortField,
+      orderBy: sortOrder,
       skip: 0,
-      search: "",
+      search: search,
+      startDate: dateRangeValue.start
+        ? moment(dateRangeValue.start).format("MM-DD-YYYY")
+        : "",
+      endDate: dateRangeValue.end
+        ? moment(dateRangeValue.end).format("MM-DD-YYYY")
+        : "",
+      provider: filter?.provider || "",
+      services: filter?.services || "",
     }))
-  }, [sizePerPage, page])
+  }, [sizePerPage, page, sortOrder, sortField, search])
 
   const handleFilterData = () => {
     setPayloadData((prev) => ({
       ...prev,
+      page: 1,
+      provider: filter?.provider || "",
+      services: filter?.services || "",
       search: searchString,
       startDate: dateRangeValue.start
         ? moment(dateRangeValue.start).format("MM-DD-YYYY")
@@ -141,7 +172,7 @@ const CashBackList = () => {
         limits: totalSize,
       }
       dispatch(
-        getCashBackList(payload, status => {
+        getCashBackList(payload, (status) => {
           if (status) {
             console.log(status?.data)
             const exportData = status?.data?.map((item) => {
@@ -151,12 +182,17 @@ const CashBackList = () => {
                 name: item?.userDetail?.userName || "-",
                 phoneNumber: item?.userDetail?.phoneNumber || "-",
                 transactionNumber: item?.transactionData?.transactionId || "",
-                operatorId: item?.transactionData?.rechargeData?.OPRID || item?.transactionData?.rechargeData?.opid || "-",
-                operatorName: item?.transactionData?.rechargeData?.rechargeOperator?.companyName
+                operatorId:
+                  item?.transactionData?.rechargeData?.OPRID ||
+                  item?.transactionData?.rechargeData?.opid ||
+                  "-",
+                operatorName: item?.transactionData?.rechargeData
+                  ?.rechargeOperator?.companyName
                   ? item?.transactionData?.rechargeData?.rechargeOperator
-                    ?.companyName
+                      ?.companyName
                   : "-",
-                apiName: item?.transactionData?.rechargeData?.rechargeApi?.apiName
+                apiName: item?.transactionData?.rechargeData?.rechargeApi
+                  ?.apiName
                   ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
                   : "-",
                 customerNumber: item?.transactionData?.customerNo
@@ -168,22 +204,25 @@ const CashBackList = () => {
                 requestAmount: item?.transactionData?.requestAmount
                   ? item?.transactionData?.requestAmount
                   : "-",
-                cashBackAmount:
-                  item?.transactionData?.cashBackAmount
-                    ? item?.transactionData?.cashBackAmount
-                    : "-",
-                rechargeAmount:
-                  item?.transactionData?.rechargeAmount
-                    ? item?.transactionData?.rechargeAmount
-                    : "-",
+                cashBackAmount: item?.transactionData?.cashBackAmount
+                  ? item?.transactionData?.cashBackAmount
+                  : "-",
+                rechargeAmount: item?.transactionData?.rechargeAmount
+                  ? item?.transactionData?.rechargeAmount
+                  : "-",
                 userFinalBalance: item?.transactionData?.userFinalBalance
                   ? item?.transactionData?.userFinalBalance
                   : "-",
-                cashBackReceive: item?.cashBackReceive ? item?.cashBackReceive : "-",
-                userCashBack: item?.userCashBack ? item?.userCashBack : "-", referralCashBack: item?.referralCashBack, netCashBack: item?.netCashBack ? item?.netCashBack : "-",
+                cashBackReceive: item?.cashBackReceive
+                  ? item?.cashBackReceive
+                  : "-",
+                userCashBack: item?.userCashBack ? item?.userCashBack : "-",
+                referralCashBack: item?.referralCashBack,
+                netCashBack: item?.netCashBack ? item?.netCashBack : "-",
                 remark: !!item?.transactionData?.remark
                   ? item?.transactionData?.remark
-                  : "-", status: item?.transactionData?.status
+                  : "-",
+                status: item?.transactionData?.status,
               }
             })
             setExportLoading(false)
@@ -202,7 +241,7 @@ const CashBackList = () => {
       {
         text: "No.",
         dataField: "no",
-        headerStyle: (colum, colIndex) => ({
+        headerStyle: (column, colIndex) => ({
           width: "10%",
           textAlign: "center",
         }),
@@ -225,7 +264,7 @@ const CashBackList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY hh:mm:ss a")
+              ? moment(row?.created).format("DD/MM/YYYY HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -275,8 +314,8 @@ const CashBackList = () => {
             {row?.transactionData?.rechargeData?.OPRID
               ? row?.transactionData?.rechargeData?.OPRID
               : row?.transactionData?.rechargeData?.opid
-                ? row?.transactionData?.rechargeData?.opid
-                : "-"}
+              ? row?.transactionData?.rechargeData?.opid
+              : "-"}
           </div>
         ),
       },
@@ -288,7 +327,7 @@ const CashBackList = () => {
           <div className="align-middle ">
             {row?.transactionData?.rechargeData?.rechargeOperator?.companyName
               ? row?.transactionData?.rechargeData?.rechargeOperator
-                ?.companyName
+                  ?.companyName
               : "-"}
           </div>
         ),
@@ -436,20 +475,22 @@ const CashBackList = () => {
         dataField: "status",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
-            className={`align-middle text-${row?.transactionData?.status === "success"
-              ? "success"
-              : row?.transactionData?.status === "pending"
-                ? "warning"
-                : "danger"
-              }`}
-          >
-            <span
-              className={`text-capitalize text-white p-1 rounded bg-${row?.transactionData?.status === "success"
+            className={`align-middle text-${
+              row?.transactionData?.status === "success"
                 ? "success"
                 : row?.transactionData?.status === "pending"
+                ? "warning"
+                : "danger"
+            }`}
+          >
+            <span
+              className={`text-capitalize text-white p-1 rounded bg-${
+                row?.transactionData?.status === "success"
+                  ? "success"
+                  : row?.transactionData?.status === "pending"
                   ? "warning"
                   : "danger"
-                }`}
+              }`}
             >
               {row?.transactionData?.status}
             </span>
@@ -486,6 +527,7 @@ const CashBackList = () => {
   }, [cashBackData, stateList, companyList])
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
+    console.log({ type, page, sizePerPage, sortField, sortOrder })
     switch (type) {
       case "sort":
         dispatch(setSortFieldOfCashBack(sortField))
@@ -504,20 +546,64 @@ const CashBackList = () => {
     setSearchString(e.target.value.trim())
   }
 
+  useEffect(() => {
+    const getAllProviders = async () => {
+      await discountServices.getAllApisAndServices().then((res) => {
+        let provider = []
+        provider = res?.apisResponse?.data?.data?.data
+          .filter((provider) => {
+            return provider.isActive
+          })
+          .map(function (provider) {
+            return { value: provider._id, label: provider.apiName }
+          })
+        provider.unshift({ value: 0, label: "Select Provider" })
+        setProviders(provider)
+
+        let service = []
+        service = res?.serviceResponse?.data?.data
+          .filter((service) => {
+            return service.isActive
+          })
+          .map(function (service) {
+            return { value: service._id, label: service.serviceName }
+          })
+        service.unshift({ value: 0, label: "Select Service" })
+        setServices(service)
+      })
+    }
+    getAllProviders()
+  }, [])
+
+  const handleChange = (e) => {
+    const { value, name } = e.target
+    if (name === "provider") {
+      setFilter((prev) => ({
+        ...prev,
+        provider: value,
+      }))
+    } else {
+      setFilter((prev) => ({
+        ...prev,
+        services: value,
+      }))
+    }
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <ReportStatCards cardData={cardData} />
-          <ReportsCard />
+          {/* <ReportStatCards cardData={cardData} /> */}
+          <ReportsCard cardData={reportData} />
         </div>
       </div>
+
       <div className="row">
         <div className="col-lg-12">
           <h2 className="main-heading">Cashback List</h2>
         </div>
       </div>
-
       <div className="col-lg-12">
         <div className="card mb-4">
           <div className="card-body">
@@ -538,8 +624,46 @@ const CashBackList = () => {
                   <div className="position-relative">
                     <div className="d-flex justify-content-between">
                       <div className="d-flex">
+                        <div className="d-flex align-items-end me-2">
+                          <select
+                            name="provider"
+                            onChange={handleChange}
+                            className="form-control"
+                            id="provider"
+                          >
+                            {providers.map((provider) => {
+                              return (
+                                <option
+                                  key={provider.value}
+                                  value={provider.value}
+                                >
+                                  {provider.label}
+                                </option>
+                              )
+                            })}
+                          </select>
+                        </div>
+                        <div className="d-flex align-items-end me-2">
+                          <select
+                            name="services"
+                            onChange={handleChange}
+                            className="form-control"
+                            id="services"
+                          >
+                            {services.map((service) => {
+                              return (
+                                <option
+                                  key={service.value}
+                                  value={service.value}
+                                >
+                                  {service.label}
+                                </option>
+                              )
+                            })}
+                          </select>
+                        </div>
                         <div className="me-2">
-                          <label>Search</label>
+                          {/* <label>Search</label> */}
                           <input
                             type="text"
                             className="form-control"
@@ -555,8 +679,9 @@ const CashBackList = () => {
 
                         <div className="me-2 d-flex align-items-end">
                           <button
-                            className={`btn btn-secondary ${exportLoading ? "disabled" : ""
-                              }`}
+                            className={`btn btn-primary ${
+                              exportLoading ? "disabled" : ""
+                            }`}
                             onClick={handleFilterData}
                           >
                             Find
@@ -565,11 +690,12 @@ const CashBackList = () => {
                       </div>
                       <div className="me-2 d-flex align-items-end">
                         <button
-                          className={`btn btn-secondary ${exportLoading ? "disabled" : ""
-                            }`}
+                          className={`btn btn-secondary ${
+                            exportLoading ? "disabled" : ""
+                          }`}
                           onClick={handleCSV}
                         >
-                          {exportLoading ? "Exporting.." : "Export CSV"}
+                          {exportLoading ? "Exporting.." : "Export"}
                         </button>
                       </div>
                     </div>
@@ -583,9 +709,9 @@ const CashBackList = () => {
                     isShowDiscountModal={isShowDiscountModal}
                     onCloseDiscountModal={handleDiscountClose}
                     fetchCashBackList={getCashBackListData}
-                  // onSaveDiscountModal={handleSaveDiscountModal}
-                  // selectedServiceIndex={selectedServiceIndex}
-                  // discountModalSave={discountModalSave}
+                    // onSaveDiscountModal={handleSaveDiscountModal}
+                    // selectedServiceIndex={selectedServiceIndex}
+                    // discountModalSave={discountModalSave}
                   />
                 )}
               </div>

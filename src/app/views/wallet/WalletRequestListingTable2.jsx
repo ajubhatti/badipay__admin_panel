@@ -11,7 +11,7 @@ import moment from "moment"
 import TextField from "@mui/material/TextField"
 import { walletServices } from "../../services/wallet.service"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchWalletList } from "./store/action"
+import { fetchWalletListing } from "./store/action"
 import { toast } from "react-toastify"
 import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
 import {
@@ -93,7 +93,7 @@ const WalletRequestListingTable2 = () => {
       payload.endDate = endDate
     }
 
-    dispatch(fetchWalletList(payload))
+    dispatch(fetchWalletListing(payload))
   }
 
   const editWallet = (data) => {
@@ -398,6 +398,10 @@ const WalletRequestListingTable2 = () => {
     },
   }
 
+  const getWalletData = (data) => {
+    return data?.filter((item) => item?.statusOfWalletRequest === "approve")
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
@@ -413,7 +417,10 @@ const WalletRequestListingTable2 = () => {
           </Select>
 
           {downloadType == "csv" ? (
-            <CSVLink filename={"user data.csv"} data={walletList}>
+            <CSVLink
+              filename={"user data.csv"}
+              data={getWalletData(walletList)}
+            >
               <Fab
                 size="small"
                 color="secondary"

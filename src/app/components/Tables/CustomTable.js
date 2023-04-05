@@ -10,6 +10,7 @@ import paginationFactory, {
 import up from "../../assets/images/up.svg"
 import down from "../../assets/images/down.svg"
 import "../../assets/css/main.css"
+import "./table.css"
 
 const CardWrapper = ({ children }) => {
   return (
@@ -27,7 +28,7 @@ const NoDataIndiCation = ({ loading }) => {
   return loading ? (
     <span>Please Wait While Data Is Loading...</span>
   ) : (
-    <span>No Data Available!</span>
+    <span>Data Not Available!</span>
   )
 }
 
@@ -54,14 +55,14 @@ const CustomBootstrapTable = ({
               <span className="sort-arrows cursor-pointer">
                 {!!order ? (
                   order === "desc" ? (
-                    <img src={down} alt="down" />
+                    <img src={down} alt="down" className="custom-arrow" />
                   ) : (
-                    <img src={up} alt="up" />
+                    <img src={up} alt="up" className="custom-arrow" />
                   )
                 ) : (
                   <>
-                    <img src={up} alt="up" />
-                    <img src={down} alt="down" />
+                    <img src={up} alt="up" className="custom-arrow" />
+                    <img src={down} alt="down" className="custom-arrow" />
                   </>
                 )}
               </span>
@@ -70,6 +71,9 @@ const CustomBootstrapTable = ({
         }
       : {}),
   }))
+
+  const headerStyle = { backgroundColor: "#c8e6c9" }
+  const rowStyle = { backgroundColor: "#c8e6c9" }
 
   return (
     <React.Fragment>
@@ -95,6 +99,10 @@ const CustomBootstrapTable = ({
               headerWrapperClasses={`${light ? "table-light" : ""}`}
               noDataIndication={() => <NoDataIndiCation loading={loading} />}
               loading={loading}
+              // headerStyle={headerStyle}
+              // rowStyle={rowStyle}
+              headerClasses={"custom-header-class"}
+              rowClasses={"custom-row-class"}
             />
           </div>
         </div>

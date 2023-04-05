@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import moment from "moment";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import React, { useEffect } from "react"
+import moment from "moment"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   // const [dateRangeValue, setDateRangeValueValues] = useState({
@@ -10,80 +10,80 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   // });
 
   useEffect(() => {
-    console.log({ rangeDate });
+    console.log({ rangeDate })
     // setDateRangeValueValues(rangeDate);
-  }, [rangeDate]);
+  }, [rangeDate])
 
   const getStartDate = (newValue, range) => {
     if (newValue && range) {
-      const start = moment(newValue);
-      const end = moment(range && range.end);
+      const start = moment(newValue)
+      const end = moment(range && range.end)
 
       if (end) {
         if (start.isAfter(end)) {
-          return end.toDate();
+          return end.toDate()
         }
       }
 
-      return start.toDate();
+      return start.toDate()
     }
-  };
+  }
 
   const getEndDate = (newValue, range) => {
     if (newValue && range) {
-      const start = moment(range && range.start);
-      const end = moment(newValue);
+      const start = moment(range && range.start)
+      const end = moment(newValue)
 
       if (end.isSameOrAfter(start)) {
-        return end.toDate();
+        return end.toDate()
       }
 
-      return range && range.end;
+      return range && range.end
     }
-  };
+  }
 
   return (
     <div className="d-flex">
       <div className="me-2">
-        <label>Start Date</label>
+        {/* <label>Start Date</label> */}
         <DatePicker
           name="startDate"
-          isClearable
+          isClearable={rangeDate.start ? true : false}
           autoComplete="off"
           label=""
           type="text"
-          className="form-control"
-          placeholderText="Start Date"
+          className="form-control custom-date-piker"
+          placeholderText="Select Start Date"
           selectsStart
           selected={rangeDate.start}
           onChange={(date) => {
             setRangeDate((prevState) => ({
               ...prevState,
               start: getStartDate(date, prevState),
-            }));
+            }))
           }}
           startDate={rangeDate.start}
           endDate={rangeDate.end}
-        // maxDate={rangeDate.end}
+          // maxDate={rangeDate.end}
         />
       </div>
       <div className="me-2">
-        <label>End Date</label>
+        {/* <label>End Date</label> */}
         <DatePicker
           name="endDate"
-          isClearable
+          isClearable={rangeDate.end ? true : false}
           autoComplete="off"
           label=""
           type="text"
-          className="form-control"
-          placeholderText="End Date"
+          className="form-control custom-date-piker"
+          placeholderText="Select End Date"
           selectsEnd
           selected={rangeDate.end}
           onChange={(date) => {
             setRangeDate((prevState) => ({
               ...prevState,
               end: getEndDate(date, prevState),
-            }));
+            }))
           }}
           startDate={rangeDate.start}
           endDate={rangeDate.end}
@@ -91,7 +91,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CustomDateRangePicker;
+export default CustomDateRangePicker

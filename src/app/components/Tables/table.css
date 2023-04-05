@@ -8,7 +8,19 @@
 }
 
 .box{
-        box-shadow: 2px 2px 10px #cbc7c7;
+    box-shadow: 2px 2px 10px #cbc7c7;
+}
+
+.custom-row-class {
+    font-size: 90%;
+}
+
+.custom-header-class {
+    font-size: 90%;
+}
+
+.custom-arrow {
+    /* height:20%; */
 }
 
 .table{
