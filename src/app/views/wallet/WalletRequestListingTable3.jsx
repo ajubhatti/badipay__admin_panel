@@ -1,50 +1,51 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { styled, useTheme } from "@mui/system"
-import { Card, Icon, Table, MenuItem, Select, Fab } from "@mui/material"
 import { accountService } from "../../services/account.service"
 import AddUpdateUserDialog from "../user/AddUpdateUserDialog"
-import { CSVLink } from "react-csv"
 import { jsPDF } from "jspdf"
 import "jspdf-autotable"
-import DateRangePick from "../material-kit/dates/DateRangePick"
 import moment from "moment"
-import TextField from "@mui/material/TextField"
 import { walletServices } from "../../services/wallet.service"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  fetchWalletListing,
+  getAllWalletList,
+  getWalletList,
   setPageWallet,
   setSizePerPageWallet,
   setSortFieldOfWallet,
   setSortOrderOfWallet,
 } from "./store/action"
 import { toast } from "react-toastify"
-import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
 import ApproveRejectDialog from "./ApproveRejectDialog"
 import { Button } from "react-bootstrap"
 import ApprovalDialog from "./ApprovalDialog"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { AiFillDelete, AiFillEye, AiOutlineEdit } from "react-icons/ai"
+import {
+  AiOutlineDownload,
+  AiOutlineLoading,
+  AiOutlineSearch,
+} from "react-icons/ai"
+import CustomDateRangePicker from "../reports/CustomDateRangePicker"
+import { ExportToCsv } from "export-to-csv"
+import { useParams } from "react-router-dom"
 
-const CardHeader = styled("div")(() => ({
-  paddingLeft: "24px",
-  paddingRight: "24px",
-  marginBottom: "12px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-}))
+const options = {
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  showTitle: true,
+  title: "Activities",
+  useTextFile: false,
+  useBom: true,
+  useKeysAsHeaders: true,
+}
 
-const Title = styled("span")(() => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  textTransform: "capitalize",
-}))
+const csvExporter = new ExportToCsv(options)
 
 const WalletRequestListingTable3 = () => {
-  const { palette } = useTheme()
   const dispatch = useDispatch()
+  const { reportType } = useParams()
 
   const {
     walletList,
@@ -59,14 +60,8 @@ const WalletRequestListingTable3 = () => {
     walletLists,
   } = useSelector((state) => state.wallet)
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
-  // const [page, setPage] = React.useState(0)
   const [open, setOpen] = useState(false)
   const [userData, setUserData] = useState({})
-  const [downloadType, setDownloadType] = useState("csv")
-  const [userType, setUserType] = useState("user")
-  const [selectedDates, setSelectedDates] = useState([])
-  const [searchText, setSearchText] = useState("")
   const [modalShow, setModalShow] = useState(false)
   const [modalData, setModalData] = useState({})
   const [type, setType] = useState("reject")
@@ -75,122 +70,15 @@ const WalletRequestListingTable3 = () => {
   const [show, setShow] = useState(false)
   const [idForChange, setIdForChange] = useState("")
 
-  console.log({ walletList })
+  const [searchString, setSearchString] = useState("")
+  const [dateRangeValue, setDateRangeValue] = useState({
+    start: null,
+    end: null,
+  })
 
-  useEffect(() => {
-    getAllWalletRequest()
-  }, [userType, selectedDates, searchText])
+  const [filter, setFilter] = useState({ provider: "", services: "" })
 
-  const handleChangePage = (event, newPage) => {
-    // setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value)
-    // setPage(0)
-  }
-
-  const getAllWalletRequest = async () => {
-    let startDate = moment(selectedDates[0]).format("YYYY-MM-DD")
-    let endDate = moment(selectedDates[1]).format("YYYY-MM-DD")
-
-    let payload = {
-      // role: userType,
-    }
-    if (searchText !== "") {
-      payload.searchText = searchText
-    }
-    if (selectedDates.length > 0) {
-      payload.startDate = startDate
-      payload.endDate = endDate
-    }
-
-    dispatch(fetchWalletListing(payload))
-  }
-
-  const editWallet = (data) => {
-    setUserData(data)
-    setOpen(true)
-  }
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const changeStatus = (data) => {
-    data.isActive = !data.isActive
-    delete data.email
-    delete data.role
-    handleUpdate(data.id, data)
-  }
-
-  const handleUpdate = (id, data) => {
-    accountService.update(id, data).then((res) => {
-      getAllWalletRequest()
-    })
-  }
-
-  const exportPDF = () => {
-    const unit = "pt"
-    const size = "A4" // Use A1, A2, A3 or A4
-    const orientation = "portrait" // portrait or landscape
-
-    const marginLeft = 40
-    const doc = new jsPDF(orientation, unit, size)
-
-    doc.setFontSize(15)
-
-    const title = "User Report"
-    const headers = [
-      [
-        "user Name",
-        "phone",
-        "email",
-        "location",
-        "balance",
-        "status",
-        "created at",
-      ],
-    ]
-
-    const data = walletList.map((elt) => [
-      elt.userName,
-      elt.phoneNumber,
-      elt.email,
-      elt.location,
-      elt.balance,
-      elt.isActive,
-      elt.createdAt,
-    ])
-
-    let content = {
-      startY: 50,
-      head: headers,
-      body: data,
-      theme: "grid",
-    }
-
-    doc.text(title, marginLeft, 40)
-    doc.autoTable(content)
-    doc.save("report.pdf")
-  }
-
-  const handleChange = (event) => {
-    event.persist()
-    setSearchText(event.target.value)
-  }
-
-  const handleUpdateStatus = async (id, data) => {
-    setShow(true)
-    console.log("data :>> ", data)
-    // setModalShow(true)
-    setType(data)
-    setModalData({ id, data })
-  }
+  const [exportLoading, setExportLoading] = useState(false)
 
   const handleChangeStatus = (id) => {
     setShow(true)
@@ -212,7 +100,7 @@ const WalletRequestListingTable3 = () => {
         toast.success("Status updated successfully")
         setModalShow(false)
       }
-      getAllWalletRequest()
+      getWalletListData()
     })
   }
 
@@ -239,33 +127,24 @@ const WalletRequestListingTable3 = () => {
         setShow(false)
       }
       setLoad(false)
-      getAllWalletRequest()
+      getWalletListData()
     })
-  }
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
-  }
-
-  const getWalletData = (data) => {
-    return data?.filter((item) => item?.statusOfWalletRequest === "approve")
   }
 
   // ==========================================
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
-    limits: 20,
+    limits: 25,
     sortBy: "created",
-    orderBy: "desc",
+    orderBy: "DESC",
     skip: 0,
     search: "",
     startDate: "", //"10-15-2022",
     endDate: "",
     provider: "",
     services: "",
+    status: reportType ? "approve" : "",
   })
 
   useEffect(() => {
@@ -276,11 +155,19 @@ const WalletRequestListingTable3 = () => {
       page: page,
       limits: sizePerPage,
       sortBy: "created",
-      orderBy: "desc",
+      orderBy: "DESC",
       skip: 0,
       search: "",
     }))
   }, [sizePerPage, page])
+
+  useEffect(() => {
+    getWalletListData()
+  }, [payloadData])
+
+  const getWalletListData = () => {
+    dispatch(getWalletList(payloadData))
+  }
 
   const columns = useMemo(
     () => [
@@ -340,200 +227,152 @@ const WalletRequestListingTable3 = () => {
         ),
       },
       {
-        text: "Transaction Id",
-        dataField: "transactionId",
+        text: "Slip No",
+        dataField: "slipNo",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{row?.transactionId ? row?.transactionId : "-"}</div>
-        ),
-      },
-      {
-        text: "Operator Id",
-        dataField: "operatorId",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.rechargeData?.OPRID
-              ? row?.rechargeData?.OPRID
-              : row?.rechargeData?.opid
-              ? row?.rechargeData?.opid
-              : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "Operator Name",
-        dataField: "operatorName",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.rechargeData?.rechargeOperator?.companyName
-              ? row?.rechargeData?.rechargeOperator?.companyName
-              : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "Api Name",
-        dataField: "apiName",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.rechargeData?.rechargeApi?.apiName
-              ? row?.rechargeData?.rechargeApi?.apiName
-              : "-"}
-          </div>
+          <div>{row?.slipNo ? row?.slipNo : "-"}</div>
         ),
       },
 
       {
-        text: "Customer No",
-        dataField: "customerNo",
-        sort: true,
+        text: "Deposit Bank",
+        dataField: "bankData.bankdetails.bankName",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.customerNo ? row?.customerNo : "-"}
-          </div>
-        ),
-      },
-
-      {
-        text: "Balance",
-        dataField: "userBalance",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.userBalance ? row?.userBalance : "-"}
+          <div>
+            {row?.bankData?.bankdetails?.bankName
+              ? row?.bankData?.bankdetails?.bankName
+              : "-"}
           </div>
         ),
       },
       {
-        text: "Request Amount",
+        text: "Requested Amount",
         dataField: "requestAmount",
-        sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.requestAmount ? row?.requestAmount : "-"}
-          </div>
+          <div>{row?.requestAmount ? row?.requestAmount : "-"}</div>
         ),
       },
       {
-        text: "CashBack Amount",
-        dataField: "cashBackAmount",
-        sort: true,
+        text: "Approve Amount",
+        dataField: "approveAmount",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.cashBackAmount ? row?.cashBackAmount : "-"}
-          </div>
+          <div>{row?.approveAmount ? row?.approveAmount : "-"}</div>
         ),
       },
       {
-        text: "Recharge Amount",
-        dataField: "rechargeAmount",
-        sort: true,
+        text: "Debit Amount",
+        dataField: "debitAmount",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.rechargeAmount ? row?.rechargeAmount : "-"}
-          </div>
+          <div>{row?.debitAmount ? row?.debitAmount : "-"}</div>
         ),
       },
+
       {
-        text: "FinalBalance",
-        dataField: "userFinalBalance",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.userFinalBalance ? row?.userFinalBalance : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "remark",
+        text: "Remarks",
         dataField: "remark",
+        formatters: (cell, row) => <div>{row?.remark ? row?.remark : "-"}</div>,
+      },
+      {
+        text: "Mode",
+        dataField: "paymnetModeData.modeName",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle">
-            <span>{!!row?.remark ? row?.remark : "-"}</span>
+          <div>
+            {row?.paymnetModeData?.modeName
+              ? row?.paymnetModeData?.modeName
+              : "-"}
           </div>
         ),
       },
       {
-        text: "status",
-        dataField: "status",
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div
-            className={`align-middle text-${
-              row?.status === "success"
-                ? "success"
-                : row?.status === "pending"
-                ? "warning"
-                : "danger"
-            }`}
-          >
-            <span
-              className={`text-capitalize text-white p-1 rounded bg-${
-                row?.status === "success"
-                  ? "success"
-                  : row?.status === "pending"
-                  ? "warning"
-                  : "danger"
-              }`}
-            >
-              {row?.status}
-            </span>
+        text: "Approve Date",
+        dataField: "statusChangeDate",
+        formatter: (cell, row) => (
+          <div>
+            {row?.statusChangeDate
+              ? moment(row?.statusChangeDate).format("DD-MM-YYYY HH:mm:ss")
+              : "-"}
           </div>
         ),
       },
       {
-        text: "Action",
-        dataField: "edit",
-        sort: false,
+        text: "Approve By",
+        dataField: "approveBy",
         formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div>{row?.approveBy ? row?.approveBy : "-"}</div>
+        ),
+      },
+
+      {
+        text: "Change Status",
+        classes: "p-1",
+        headerStyle: () => {
+          return { width: "10%" }
+        },
+        formatter: (cell, row) => (
           <div className="d-flex">
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm ts-buttom m-1"
-              size="sm"
-              onClick={() => handleEdit(row)}
-            >
-              <AiOutlineEdit style={{ color: "green" }} />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={() => handleDelete(cell, row)}
-            >
-              <AiFillDelete />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={() => handleView(cell, row)}
-            >
-              <AiFillEye />
-            </button>
+            <div>
+              <Button
+                id="approve"
+                // variant="primary"
+                type="button"
+                size="sm"
+                className={`btn btn-sm ml-2 ts-buttom m-1 btn-${
+                  row?.statusOfWalletRequest === "pending"
+                    ? "warning"
+                    : row?.statusOfWalletRequest === "reject"
+                    ? "danger"
+                    : "success"
+                }`}
+                onClick={() => {
+                  if (row?.statusOfWalletRequest === "pending") {
+                    handleChangeStatus(row?._id)
+                  }
+                }}
+              >
+                {row?.statusOfWalletRequest}
+              </Button>
+            </div>
           </div>
         ),
       },
+
+      // {
+      //   text: "Action",
+      //   dataField: "edit",
+      //   sort: false,
+      //   formatter: (cell, row, rowIndex, formatExtraData) => (
+      //     <div className="d-flex">
+      //       <button
+      //         type="button"
+      //         className="btn btn-outline-primary btn-sm ts-buttom m-1"
+      //         size="sm"
+      //         onClick={() => handleEdit(row)}
+      //       >
+      //         <AiOutlineEdit style={{ color: "green" }} />
+      //       </button>
+      //       <button
+      //         type="button"
+      //         className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
+      //         size="sm"
+      //         onClick={() => handleDelete(cell, row)}
+      //       >
+      //         <AiFillDelete />
+      //       </button>
+      //       <button
+      //         type="button"
+      //         className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+      //         size="sm"
+      //         onClick={() => handleView(cell, row)}
+      //       >
+      //         <AiFillEye />
+      //       </button>
+      //     </div>
+      //   ),
+      // },
     ],
     [page, sizePerPage]
   )
-
-  const handleEdit = (info) => {
-    let tmpInfo = []
-    tmpInfo._id = info?._id
-    tmpInfo.discountData = info?.discountData
-    // setdDiscountInfo(info)
-    // setIsDiscountEdit(true)
-    // setIsShowDiscountModal(true)
-  }
-
-  const handleDelete = (cell, row) => {}
-
-  const handleView = (cell, row) => {
-    console.log("object view:>> ", { cell, row })
-  }
 
   const pageOptions = useMemo(
     () => ({
@@ -561,129 +400,197 @@ const WalletRequestListingTable3 = () => {
     }
   }
 
+  const handleSearch = (e) => {
+    setSearchString(e.target.value.trim())
+  }
+
+  const handleFilterData = () => {
+    setPayloadData((prev) => ({
+      ...prev,
+      page: 1,
+      provider: filter?.provider || "",
+      services: filter?.services || "",
+      search: searchString,
+      startDate: dateRangeValue.start
+        ? moment(dateRangeValue.start).format("MM-DD-YYYY")
+        : "",
+      endDate: dateRangeValue.end
+        ? moment(dateRangeValue.end).format("MM-DD-YYYY")
+        : "",
+    }))
+  }
+
+  const handleCSV = () => {
+    try {
+      setExportLoading(true)
+      const payload = {
+        ...payloadData,
+        limits: totalSize,
+      }
+      dispatch(
+        getAllWalletList(payload, (status) => {
+          if (status) {
+            const exportData = status?.data
+              ?.filter((item) => item.statusOfWalletRequest === "approve")
+              ?.map((item, index) => ({
+                No: index + 1,
+                Date:
+                  moment(item?.created).format("DD/MM/YYYY, hh:mm:ss") || "-",
+                "User Name": item?.userDetail?.userName || "-",
+                "Phone Number": item?.userDetail?.phoneNumber || "-",
+                "Slip No": item?.slipNo || "",
+                "Deposit Bank": item?.bankData?.bankdetails?.bankName || "-",
+                "Request Amount": item?.requestAmount || "-",
+                "Approve Amount": item?.approveAmount || "-",
+                "Debit Amount": item?.debitAmount || "-",
+                Remarks: item?.remark || "-",
+                "Paymnet Mode": item?.paymnetModeData?.modeName || "-",
+                "Approve Date": item?.statusChangeDate || "-",
+                "Approve By": item?.approveBy || "-",
+              }))
+            setExportLoading(false)
+            csvExporter.generateCsv(exportData)
+          }
+        })
+      )
+    } catch (err) {
+      setExportLoading(false)
+      toast.err("something want's wrong!!")
+    }
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
-      <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
-        <CardHeader>
-          <Title>Wallet List</Title>
-          <Select
-            size="small"
-            defaultValue={downloadType}
-            onChange={(e) => setDownloadType(e.target.value)}
-          >
-            <MenuItem value="csv">csv</MenuItem>
-            <MenuItem value="pdf">pdf</MenuItem>
-          </Select>
-
-          {downloadType == "csv" ? (
-            <CSVLink
-              filename={"user data.csv"}
-              data={getWalletData(walletList)}
-            >
-              <Fab
-                size="small"
-                color="secondary"
-                aria-label="Add"
-                className="button"
-              >
-                <Icon>get_app</Icon>
-              </Fab>
-            </CSVLink>
-          ) : (
-            <Fab
-              size="small"
-              color="primary"
-              aria-label="Add"
-              className="button"
-              onClick={() => {
-                exportPDF()
-              }}
-            >
-              <Icon>get_app</Icon>
-            </Fab>
-          )}
-
-          <TextField
-            type="text"
-            name="serchtext"
-            id="standard-basic"
-            onChange={handleChange}
-            value={searchText || ""}
-            label="search text"
-          />
-
-          <DateRangePick setDateValue={(data) => setSelectedDates(data)} />
-          <Select
-            size="small"
-            defaultValue={userType}
-            onChange={(e) => setUserType(e.target.value)}
-          >
-            <MenuItem value="user">user</MenuItem>
-            <MenuItem value="admin">admin</MenuItem>
-          </Select>
-
-          <Fab
-            size="small"
-            color="secondary"
-            aria-label="Add"
-            className="button"
-            onClick={() => {
-              setOpen(true)
-              setUserData({})
-            }}
-          >
-            <Icon>add</Icon>
-          </Fab>
-        </CardHeader>
-
-        <ReactBootstrapTable
-          tableData={walletList}
-          columns={columns}
-          rowEvents={rowEvents}
-        />
-
-        <AddUpdateUserDialog
-          setOpen={setOpen}
-          open={open}
-          userData={userData}
-        />
-
-        <ApproveRejectDialog
-          show={modalShow}
-          onHide={() => setModalShow(false)}
-          message={type}
-          handleSave={(data) => {
-            console.log(data)
-            handleSaveUpdate(data)
-          }}
-        />
-
-        <ApprovalDialog
-          show={show}
-          onHide={() => setShow(false)}
-          message={type}
-          handleSave={(data) => {
-            console.log(data)
-            handleSaveUpdate2(data)
-          }}
-          isLoading={load}
-        />
-      </Card>
-
-      <div className="col-md-12">
-        <CustomTable
-          showAddButton={false}
-          pageOptions={pageOptions}
-          keyField="transaction_id"
-          data={walletLists}
-          columns={columns}
-          showSearch={false}
-          onTableChange={onTableChange}
-          withPagination={true}
-          loading={loading}
-          withCard={false}
-        ></CustomTable>
+      <div className="row">
+        <div className="col-lg-12">
+          <h2 className="main-heading">Wallet List</h2>
+        </div>
       </div>
+
+      <div className="col-lg-12">
+        <div className="card mb-4">
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-12 d-flex">
+                <div className="col-md-6 d-flex ">
+                  {/* <div className="me-2">
+                    <select
+                      name="provider"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="provider"
+                    >
+                      {providers.map((provider) => {
+                        return (
+                          <option key={provider.value} value={provider.value}>
+                            {provider.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                  <div className="me-2">
+                    <select
+                      name="services"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="services"
+                    >
+                      {services.map((service) => {
+                        return (
+                          <option key={service.value} value={service.value}>
+                            {service.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div> */}
+                </div>
+                <div className="col-md-6 d-flex justify-content-end">
+                  <div className="me-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Search"
+                      onChange={handleSearch}
+                    />
+                  </div>
+
+                  <CustomDateRangePicker
+                    rangeDate={dateRangeValue}
+                    setRangeDate={setDateRangeValue}
+                  />
+
+                  <button
+                    className={`btn btn-primary ${
+                      exportLoading ? "disabled" : ""
+                    }`}
+                    type="button"
+                    onClick={handleFilterData}
+                  >
+                    <AiOutlineSearch />
+                  </button>
+
+                  <button
+                    className={`ms-2 btn btn-secondary ${
+                      exportLoading ? "disabled" : ""
+                    }`}
+                    type="button"
+                    onClick={handleCSV}
+                  >
+                    {exportLoading ? (
+                      <div
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                      ></div>
+                    ) : (
+                      <AiOutlineDownload />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="col-md-12">
+                <CustomTable
+                  showAddButton={false}
+                  pageOptions={pageOptions}
+                  keyField="_id"
+                  data={walletLists}
+                  columns={columns}
+                  showSearch={false}
+                  onTableChange={onTableChange}
+                  withPagination={true}
+                  loading={loading}
+                  withCard={false}
+                ></CustomTable>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <AddUpdateUserDialog setOpen={setOpen} open={open} userData={userData} />
+
+      <ApproveRejectDialog
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        message={type}
+        handleSave={(data) => {
+          console.log(data)
+          handleSaveUpdate(data)
+        }}
+      />
+
+      <ApprovalDialog
+        show={show}
+        onHide={() => setShow(false)}
+        message={type}
+        handleSave={(data) => {
+          console.log(data)
+          handleSaveUpdate2(data)
+        }}
+        isLoading={load}
+      />
     </div>
   )
 }

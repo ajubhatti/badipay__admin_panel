@@ -32,6 +32,8 @@ const initialState = {
 const rechargeReducer = (state = initialState, action) => {
   const { type, payload } = action
 
+  console.log({ type, payload })
+
   switch (type) {
     case SET_RECHARGE_LOADING:
       return {
@@ -43,6 +45,8 @@ const rechargeReducer = (state = initialState, action) => {
         ...state,
         rechargesData: payload,
         rechargeList: payload.data,
+        loading: false,
+        totalSize: payload?.total || 0,
       }
     case FETCH_RECHARGES_BY_ID:
       return {
@@ -57,7 +61,6 @@ const rechargeReducer = (state = initialState, action) => {
         transactionList: payload.data,
         loading: false,
         totalSize: payload?.total || 0,
-        walletListData: payload.data,
       }
 
     case FETCH_TRANSACTIONS_BY_ID:

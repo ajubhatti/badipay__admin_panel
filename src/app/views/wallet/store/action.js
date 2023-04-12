@@ -42,11 +42,23 @@ export const setWalletRequestList = (data) => ({
 export const getWalletList = (data, cb) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await walletServices.getAll(data).then((res) => {
+    await walletServices.getWallet(data).then((res) => {
       if (res?.data) {
         dispatch(fetchWalletList(res?.data))
         cb(res?.data)
         dispatch(setLoading(false))
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const getAllWalletList = (data, cb) => async (dispatch) => {
+  try {
+    await walletServices.getWallet(data).then((res) => {
+      if (res?.data) {
+        cb(res?.data)
       }
     })
   } catch (err) {

@@ -36,11 +36,13 @@ const walletReducer = (state = initialState, action) => {
         ...state,
         loading: payload,
       }
+
     case SET_WALLET_LIST:
       return {
         ...state,
         walletList: payload,
       }
+
     // =================================================
     case SET_LOADING:
       return {

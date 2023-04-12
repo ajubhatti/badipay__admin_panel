@@ -77,6 +77,16 @@ export const navigations = [
         path: "/reports/cashback",
         iconText: "CB",
       },
+      {
+        name: "Recharge",
+        path: "/recharge/success",
+        iconText: "RCH",
+      },
+      {
+        name: "Wallet list",
+        path: "/user/wallet-request/success",
+        iconText: "WL",
+      },
     ],
   },
   {
@@ -88,6 +98,11 @@ export const navigations = [
         name: "Wallet list",
         path: "/user/wallet-request",
         iconText: "WL",
+      },
+      {
+        name: "Wallet list2",
+        path: "/user/wallet-request2",
+        iconText: "WL2",
       },
     ],
   },

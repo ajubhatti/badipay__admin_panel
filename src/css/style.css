@@ -35,3 +35,17 @@
     align-items: center;
     justify-content:flex-end;
 }
+
+.btn-sml {
+    height: 4vh;
+}
+
+
+.btn-labeled {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.btn {
+    margin-bottom: 10px;
+}

@@ -252,7 +252,7 @@ const WalletRequestListingTable = () => {
     <div className="container">
       <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
         <CardHeader>
-          <Title>Wallet List</Title>
+          <Title>Wallet List1</Title>
           <Select
             size="small"
             defaultValue={downloadType}

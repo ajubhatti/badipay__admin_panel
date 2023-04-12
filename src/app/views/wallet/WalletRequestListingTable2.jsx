@@ -406,7 +406,7 @@ const WalletRequestListingTable2 = () => {
     <div className="container-fluid w-100 mt-3">
       <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
         <CardHeader>
-          <Title>Wallet List</Title>
+          <Title>Wallet List2</Title>
           <Select
             size="small"
             defaultValue={downloadType}

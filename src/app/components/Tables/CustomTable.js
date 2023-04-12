@@ -54,7 +54,7 @@ const CustomBootstrapTable = ({
             return (
               <span className="sort-arrows cursor-pointer">
                 {!!order ? (
-                  order === "desc" ? (
+                  order === "DESC" ? (
                     <img src={down} alt="down" className="custom-arrow" />
                   ) : (
                     <img src={up} alt="up" className="custom-arrow" />

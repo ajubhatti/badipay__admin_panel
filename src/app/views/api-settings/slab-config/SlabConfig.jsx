@@ -44,7 +44,7 @@ const SlabConfig = () => {
     page: 1,
     limits: 20,
     sortBy: "created",
-    orderBy: "desc",
+    orderBy: "DESC",
     skip: 0,
     search: "",
     startDate: "", //"10-15-2022",

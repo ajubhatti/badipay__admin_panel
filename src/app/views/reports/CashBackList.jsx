@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import {
   getCashBackList,
@@ -16,10 +17,11 @@ import CashBackViewModal from "./CashBackViewModal"
 import CustomDateRangePicker from "./CustomDateRangePicker"
 import { ExportToCsv } from "export-to-csv"
 import { toast } from "react-toastify"
-import ReportStatCards from "./ReportStatCards"
 import { discountServices } from "app/services/discount.service"
 import { cashBackService } from "app/services/cashback.service"
 import ReportsCard from "./ReportsCard"
+import { AiOutlineSearch, AiOutlineDownload } from "react-icons/ai"
+import { CONSTANT_STATUS } from "app/constants/constant"
 
 const options = {
   fieldSeparator: ",",
@@ -36,6 +38,8 @@ const options = {
 const csvExporter = new ExportToCsv(options)
 
 const CashBackList = () => {
+  const { reportType } = useParams()
+  console.log({ reportType })
   const dispatch = useDispatch()
 
   const {
@@ -174,57 +178,59 @@ const CashBackList = () => {
       dispatch(
         getCashBackList(payload, (status) => {
           if (status) {
-            console.log(status?.data)
-            const exportData = status?.data?.map((item) => {
-              return {
-                date:
+            const exportData = status?.data
+              ?.filter(
+                (item) =>
+                  item?.transactionData?.status === CONSTANT_STATUS.SUCCESS
+              )
+              ?.map((item) => ({
+                Date:
                   moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
-                name: item?.userDetail?.userName || "-",
-                phoneNumber: item?.userDetail?.phoneNumber || "-",
-                transactionNumber: item?.transactionData?.transactionId || "",
-                operatorId:
+                "User Name": item?.userDetail?.userName || "-",
+                "Phone Number": item?.userDetail?.phoneNumber || "-",
+                "Transaction No": item?.transactionData?.transactionId || "",
+                "Operator Id":
                   item?.transactionData?.rechargeData?.OPRID ||
                   item?.transactionData?.rechargeData?.opid ||
                   "-",
-                operatorName: item?.transactionData?.rechargeData
+                "Operator Name": item?.transactionData?.rechargeData
                   ?.rechargeOperator?.companyName
                   ? item?.transactionData?.rechargeData?.rechargeOperator
                       ?.companyName
                   : "-",
-                apiName: item?.transactionData?.rechargeData?.rechargeApi
+                "Api Name": item?.transactionData?.rechargeData?.rechargeApi
                   ?.apiName
                   ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
                   : "-",
-                customerNumber: item?.transactionData?.customerNo
+                "Customer Number": item?.transactionData?.customerNo
                   ? item?.transactionData?.customerNo
                   : "-",
-                userBalance: item?.transactionData?.userBalance
+                "User Balance": item?.transactionData?.userBalance
                   ? item?.transactionData?.userBalance
                   : "-",
-                requestAmount: item?.transactionData?.requestAmount
+                "Request Amount": item?.transactionData?.requestAmount
                   ? item?.transactionData?.requestAmount
                   : "-",
-                cashBackAmount: item?.transactionData?.cashBackAmount
+                "CashBack Amount": item?.transactionData?.cashBackAmount
                   ? item?.transactionData?.cashBackAmount
                   : "-",
-                rechargeAmount: item?.transactionData?.rechargeAmount
+                "Recharge Amount": item?.transactionData?.rechargeAmount
                   ? item?.transactionData?.rechargeAmount
                   : "-",
-                userFinalBalance: item?.transactionData?.userFinalBalance
+                "User FinalBalance": item?.transactionData?.userFinalBalance
                   ? item?.transactionData?.userFinalBalance
                   : "-",
-                cashBackReceive: item?.cashBackReceive
+                "CashBack Receive": item?.cashBackReceive
                   ? item?.cashBackReceive
                   : "-",
-                userCashBack: item?.userCashBack ? item?.userCashBack : "-",
-                referralCashBack: item?.referralCashBack,
-                netCashBack: item?.netCashBack ? item?.netCashBack : "-",
-                remark: !!item?.transactionData?.remark
+                "User CashBack": item?.userCashBack ? item?.userCashBack : "-",
+                "Referral CashBack": item?.referralCashBack,
+                "Net CashBack": item?.netCashBack ? item?.netCashBack : "-",
+                Remark: !!item?.transactionData?.remark
                   ? item?.transactionData?.remark
                   : "-",
-                status: item?.transactionData?.status,
-              }
-            })
+                Status: item?.transactionData?.status,
+              }))
             setExportLoading(false)
             csvExporter.generateCsv(exportData)
           }
@@ -476,23 +482,23 @@ const CashBackList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
             className={`align-middle text-${
-              row?.transactionData?.status === "success"
+              row?.status === CONSTANT_STATUS.SUCCESS
                 ? "success"
-                : row?.transactionData?.status === "pending"
+                : row?.status === "pending"
                 ? "warning"
                 : "danger"
             }`}
           >
             <span
               className={`text-capitalize text-white p-1 rounded bg-${
-                row?.transactionData?.status === "success"
+                row?.status === CONSTANT_STATUS.SUCCESS
                   ? "success"
-                  : row?.transactionData?.status === "pending"
+                  : row?.status === "pending"
                   ? "warning"
                   : "danger"
               }`}
             >
-              {row?.transactionData?.status}
+              {row?.status ? row?.status : row?.transactionData?.status}
             </span>
           </div>
         ),
@@ -608,6 +614,85 @@ const CashBackList = () => {
         <div className="card mb-4">
           <div className="card-body">
             <div className="row">
+              <div className="col-md-12 d-flex">
+                <div className="col-md-6 d-flex ">
+                  <div className="me-2">
+                    <select
+                      name="provider"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="provider"
+                    >
+                      {providers.map((provider) => {
+                        return (
+                          <option key={provider.value} value={provider.value}>
+                            {provider.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                  <div className="me-2">
+                    <select
+                      name="services"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="services"
+                    >
+                      {services.map((service) => {
+                        return (
+                          <option key={service.value} value={service.value}>
+                            {service.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-6 d-flex justify-content-end">
+                  <div className="me-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Search"
+                      onChange={handleSearch}
+                    />
+                  </div>
+
+                  <CustomDateRangePicker
+                    rangeDate={dateRangeValue}
+                    setRangeDate={setDateRangeValue}
+                  />
+
+                  <button
+                    className={`btn btn-primary ${
+                      exportLoading ? "disabled" : ""
+                    }`}
+                    type="button"
+                    onClick={handleFilterData}
+                  >
+                    <AiOutlineSearch />
+                  </button>
+
+                  <button
+                    className={`ms-2 btn btn-secondary ${
+                      exportLoading ? "disabled" : ""
+                    }`}
+                    type="button"
+                    onClick={handleCSV}
+                  >
+                    {exportLoading ? (
+                      <div
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                      ></div>
+                    ) : (
+                      <AiOutlineDownload />
+                    )}
+                  </button>
+                </div>
+              </div>
+
               <div className="col-md-12">
                 <CustomTable
                   showAddButton={false}
@@ -620,87 +705,7 @@ const CashBackList = () => {
                   withPagination={true}
                   loading={loading}
                   withCard={false}
-                >
-                  <div className="position-relative">
-                    <div className="d-flex justify-content-between">
-                      <div className="d-flex">
-                        <div className="d-flex align-items-end me-2">
-                          <select
-                            name="provider"
-                            onChange={handleChange}
-                            className="form-control"
-                            id="provider"
-                          >
-                            {providers.map((provider) => {
-                              return (
-                                <option
-                                  key={provider.value}
-                                  value={provider.value}
-                                >
-                                  {provider.label}
-                                </option>
-                              )
-                            })}
-                          </select>
-                        </div>
-                        <div className="d-flex align-items-end me-2">
-                          <select
-                            name="services"
-                            onChange={handleChange}
-                            className="form-control"
-                            id="services"
-                          >
-                            {services.map((service) => {
-                              return (
-                                <option
-                                  key={service.value}
-                                  value={service.value}
-                                >
-                                  {service.label}
-                                </option>
-                              )
-                            })}
-                          </select>
-                        </div>
-                        <div className="me-2">
-                          {/* <label>Search</label> */}
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="search"
-                            onChange={handleSearch}
-                          />
-                        </div>
-
-                        <CustomDateRangePicker
-                          rangeDate={dateRangeValue}
-                          setRangeDate={setDateRangeValue}
-                        />
-
-                        <div className="me-2 d-flex align-items-end">
-                          <button
-                            className={`btn btn-primary ${
-                              exportLoading ? "disabled" : ""
-                            }`}
-                            onClick={handleFilterData}
-                          >
-                            Find
-                          </button>
-                        </div>
-                      </div>
-                      <div className="me-2 d-flex align-items-end">
-                        <button
-                          className={`btn btn-secondary ${
-                            exportLoading ? "disabled" : ""
-                          }`}
-                          onClick={handleCSV}
-                        >
-                          {exportLoading ? "Exporting.." : "Export"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </CustomTable>
+                ></CustomTable>
 
                 {isShowDiscountModal && (
                   <CashBackViewModal

@@ -10,6 +10,7 @@ import { accountService } from "app/services/account.service"
 import { useFormik } from "formik"
 import * as yup from "yup"
 import { MenuItem, Select } from "@mui/material"
+import moment from "moment"
 
 const initialValues = {
   userName: "",
@@ -97,12 +98,13 @@ const AddUpdateUserDialog = (props) => {
           userName: data?.userName,
           phoneNumber: data?.phoneNumber,
           email: data?.email,
-          stateId: data?.state,
+          stateId: data?.stateId,
           city: data?.city,
           pincode: data?.pincode,
           walletBalance: data?.walletBalance,
           password: data?.passwordHash,
           transactionPin: data?.transactionPin,
+          referalName: data?.referedUser?.userName,
         },
       })
     } else {
@@ -122,6 +124,7 @@ const AddUpdateUserDialog = (props) => {
     }
   }, [props.open, props?.userData, resetForm])
 
+  console.log({ values })
   return (
     <div>
       <Dialog
@@ -131,20 +134,23 @@ const AddUpdateUserDialog = (props) => {
       >
         <form onSubmit={handleSubmit}>
           <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
+
           <DialogContent>
-            <TextField
-              margin="dense"
-              id="referralId"
-              name="referralId"
-              label="Referral"
-              type="text"
-              disabled={!!props?.open?.is_form_view_profile}
-              error={errors?.referralId && touched?.referralId}
-              fullWidth
-              defaultValue={values?.referralId}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
+            {props.type !== "edit" && (
+              <TextField
+                margin="dense"
+                id="referralId"
+                name="referralId"
+                label="Referral"
+                type="text"
+                disabled={!!props?.open?.is_form_view_profile}
+                error={errors?.referralId && touched?.referralId}
+                fullWidth
+                defaultValue={props.open?.data?.referedUser?.userName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            )}
             <TextField
               margin="dense"
               id="userName"
@@ -194,6 +200,8 @@ const AddUpdateUserDialog = (props) => {
             {errors?.email && touched?.email && (
               <FormHelperText error>{errors?.email}</FormHelperText>
             )}
+
+            {console.log(values, { state })}
             <Select
               className="mt-2 mb-2"
               margin="dense"
@@ -302,6 +310,12 @@ const AddUpdateUserDialog = (props) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
+                <span>
+                  Created At :{" "}
+                  {moment(props.open?.data?.referedUser?.createdAt).format(
+                    "YYYY-MM-DD hh:mm:ss"
+                  )}
+                </span>
               </>
             )}
           </DialogContent>

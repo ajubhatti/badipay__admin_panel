@@ -2,10 +2,13 @@ import { useEffect } from "react"
 import { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { statusOfApi } from "app/constants/constant"
-import { transactionsService } from "app/services/transactions.service"
+import { updateRecharge } from "./store/action"
+import { useDispatch } from "react-redux"
 
-const TransactionViewModal = (props) => {
+const RechargeViewModal = (props) => {
   console.log({ props })
+  const dispatch = useDispatch()
+
   const [discountInfo, setDiscountInfo] = useState({})
   const [saveLoading, setSaveLoading] = useState(false)
 
@@ -17,17 +20,23 @@ const TransactionViewModal = (props) => {
     props.onCloseDiscountModal()
   }
 
-  const handleSaveAndClose = async () => {
+  const handleSaveAndClose = () => {
     setSaveLoading(true)
     if (props.isDiscountEdit) {
-      console.log(props?.discountInfo?._id, discountInfo)
-
-      await transactionsService
-        .updateTransaction(props?.discountInfo?._id, discountInfo)
-        .then((res) => {
+      let payload = {
+        status: discountInfo?.status,
+        rechargeId: props?.discountInfo?._id,
+      }
+      if (discountInfo?.transactionData?.remark) {
+        payload.remark = discountInfo?.transactionData?.remark
+      }
+      console.log(props?.discountInfo?._id, discountInfo, payload)
+      dispatch(
+        updateRecharge(props?.discountInfo?._id, payload, (result) => {
           props.onCloseDiscountModal(true)
           props.fetchTransactionList()
         })
+      )
     }
     setSaveLoading(false)
   }
@@ -64,7 +73,7 @@ const TransactionViewModal = (props) => {
               type="text"
               name="rechargeAmount"
               onChange={handleChange}
-              value={discountInfo?.rechargeAmount}
+              value={discountInfo?.transactionData?.rechargeAmount}
               className="form-control"
             />
           </div>
@@ -78,7 +87,7 @@ const TransactionViewModal = (props) => {
               type="text"
               name="remark"
               onChange={handleChange}
-              value={discountInfo?.remark}
+              value={discountInfo?.transactionData?.remark}
               className="form-control"
             />
           </div>
@@ -165,4 +174,4 @@ const TransactionViewModal = (props) => {
   )
 }
 
-export default TransactionViewModal
+export default RechargeViewModal
