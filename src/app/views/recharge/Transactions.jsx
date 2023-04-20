@@ -8,15 +8,7 @@ import {
   setSortFieldOfTransactions,
   setSortOrderOfTransactions,
 } from "./store/action"
-import {
-  AiOutlineEdit,
-  AiFillDelete,
-  AiFillEye,
-  AiOutlinePlus,
-  AiOutlineSearch,
-  AiOutlineLoading,
-  AiOutlineDownload,
-} from "react-icons/ai"
+import { AiFillDelete, AiFillEye, AiOutlineSearch } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
 import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
@@ -29,19 +21,15 @@ import { discountServices } from "app/services/discount.service"
 import { toast } from "react-toastify"
 import { ExportToCsv } from "export-to-csv"
 const Transactions = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { loading, page, sizePerPage, totalSize, transactionList } =
     useSelector((state) => state.recharge)
 
   const [dateRangeValue, setDateRangeValue] = useState({
-    start: null,
-    end: null,
+    start: new Date(),
+    end: new Date(),
   })
-
-  const { stateList } = useSelector((state) => state.utilities)
-  const { companyList } = useSelector((state) => state.company)
 
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState([])
@@ -49,7 +37,7 @@ const Transactions = () => {
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
-  const [filter, setFilter] = useState({ provider: "", services: "" })
+  const [filter, setFilter] = useState({ api: "", services: "" })
 
   const [exportLoading, setExportLoading] = useState(false)
   const [searchString, setSearchString] = useState("")
@@ -63,7 +51,7 @@ const Transactions = () => {
     search: "",
     startDate: "", //"10-15-2022",
     endDate: "",
-    provider: "",
+    api: "",
     services: "",
   })
 
@@ -95,16 +83,16 @@ const Transactions = () => {
   useEffect(() => {
     const getAllProviders = async () => {
       await discountServices.getAllApisAndServices().then((res) => {
-        let provider = []
-        provider = res?.apisResponse?.data?.data?.data
-          .filter((provider) => {
-            return provider.isActive
+        let api = []
+        api = res?.apisResponse?.data?.data?.data
+          .filter((api) => {
+            return api.isActive
           })
-          .map(function (provider) {
-            return { value: provider._id, label: provider.apiName }
+          .map(function (api) {
+            return { value: api._id, label: api.apiName }
           })
-        provider.unshift({ value: 0, label: "Select Provider" })
-        setProviders(provider)
+        api.unshift({ value: 0, label: "Select API" })
+        setProviders(api)
 
         let service = []
         service = res?.serviceResponse?.data?.data
@@ -395,7 +383,6 @@ const Transactions = () => {
   }, [dispatch])
 
   const getTransactionList = useCallback(() => {
-    console.log({ payloadData })
     dispatch(getTransactionsList(payloadData))
   }, [dispatch, payloadData])
 
@@ -404,7 +391,6 @@ const Transactions = () => {
   }, [getTransactionList])
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
-    console.log(type, { page, sizePerPage, sortField, sortOrder })
     switch (type) {
       case "sort":
         dispatch(setSortFieldOfTransactions(sortField))
@@ -421,10 +407,10 @@ const Transactions = () => {
 
   const handleChange = (e) => {
     const { value, name } = e.target
-    if (name === "provider") {
+    if (name === "api") {
       setFilter((prev) => ({
         ...prev,
-        provider: value,
+        api: value,
       }))
     } else {
       setFilter((prev) => ({
@@ -439,14 +425,10 @@ const Transactions = () => {
   }
 
   const handleFilterData = () => {
-    console.log(
-      dateRangeValue,
-      moment(dateRangeValue?.start).format("MM-DD-yyyy")
-    )
     setPayloadData((prev) => ({
       ...prev,
       page: 1,
-      provider: filter?.provider || "",
+      api: filter?.api || "",
       services: filter?.services || "",
       search: searchString,
       startDate: dateRangeValue?.start
@@ -468,7 +450,6 @@ const Transactions = () => {
       // dispatch(
       //   getCashBackList(payload, (status) => {
       //     if (status) {
-      //       console.log(status?.data)
       //       const exportData = status?.data?.map((item) => {
       //         return {
       //           date:
@@ -530,6 +511,14 @@ const Transactions = () => {
     }
   }
 
+  const resetValue = () => {
+    setFilter({ api: "", services: "" })
+    setDateRangeValue({
+      start: null,
+      end: null,
+    })
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
@@ -543,18 +532,18 @@ const Transactions = () => {
           <div className="card-body">
             <div className="row">
               <div className="col-md-12 d-flex">
-                <div className="col-md-6 d-flex ">
+                <div className="col-md-6 d-flex">
                   <div className="me-2">
                     <select
-                      name="provider"
+                      name="api"
                       onChange={handleChange}
                       className="form-control"
-                      id="provider"
+                      id="api"
                     >
-                      {providers.map((provider) => {
+                      {providers.map((api) => {
                         return (
-                          <option key={provider.value} value={provider.value}>
-                            {provider.label}
+                          <option key={api.value} value={api.value}>
+                            {api.label}
                           </option>
                         )
                       })}
@@ -597,17 +586,26 @@ const Transactions = () => {
                     <AiOutlineSearch />
                   </button>
 
-                  <button
+                  {/* <button
                     className={`ms-2 btn btn-secondary ${
                       exportLoading ? "disabled" : ""
                     }`}
                     onClick={handleCSV}
                   >
                     {exportLoading ? (
-                      <AiOutlineLoading />
+                      <div
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                      ></div>
                     ) : (
                       <AiOutlineDownload />
                     )}
+                  </button> */}
+                  <button
+                    className={`btn btn-primary ms-2`}
+                    onClick={resetValue}
+                  >
+                    Reset
                   </button>
                 </div>
               </div>

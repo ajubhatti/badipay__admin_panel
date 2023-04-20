@@ -1,188 +1,203 @@
-import React, { useEffect, useState } from 'react'
-import { bankAccountService } from 'app/services/bank.service'
-import CustomLoader from 'app/components/CustomLoader/CustomLoader'
-import { Button } from 'react-bootstrap'
-import { BsPlus } from 'react-icons/bs'
-import ReactBootstrapTable from 'app/components/ReactBootStrapTable/ReactBootstrapTable'
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
-import { useTheme } from '@mui/system'
-import BankAccountModal from './BankAccountModal'
-import ConfirmModal from 'app/components/ConfirmModal/ConfirmModal'
+import React, { useEffect, useMemo, useState } from "react"
+import { bankAccountService } from "app/services/bank.service"
+import CustomLoader from "app/components/CustomLoader/CustomLoader"
+import { AiFillDelete, AiFillEdit, AiOutlinePlus } from "react-icons/ai"
+import BankAccountModal from "./BankAccountModal"
+import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
+import CustomTable from "app/components/Tables/CustomTable"
 
 const BankAccountTable = () => {
-    const [banksAccounts, setBanksAccounts] = useState([])
-    const [isShowLoader, setIsShowLoader] = useState(false);
-    const [statusLoading, setStatusLoading] = useState(false);
-    const [isShowBankAccountModal, setIsShowBankAccountModal] = useState(false)
-    const [bankAccountInfo, setBankAccountInfo] = useState([])
-    const [isBankAccountEdit, setIsBankAccountEdit] = useState(false);
+  const [bankAccountListData, setBankAccountListData] = useState([])
+  const [isShowLoader, setIsShowLoader] = useState(false)
+  const [isShowBankAccountModal, setIsShowBankAccountModal] = useState(false)
+  const [bankAccountInfo, setBankAccountInfo] = useState([])
+  const [isBankAccountEdit, setIsBankAccountEdit] = useState(false)
+  const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
 
-    const [isShowDeleteBankAccountConfirmModal, setIsShowDeleteBankAccountConfirmModal] = useState(false);
+  const getAllbankAccounts = async () => {
+    setIsShowLoader(true)
+    await bankAccountService.getAllBankAccount().then((res) => {
+      setBankAccountListData(res?.data)
+      setIsShowLoader(false)
+    })
+  }
 
-    const { palette } = useTheme()
-    const bgPrimary = palette.primary.main
-    const bgError = palette.error.main
+  const handleAddBankAccount = () => {
+    setIsShowBankAccountModal(true)
+  }
 
-    const getAllbankAccounts = async () => {
-        setIsShowLoader(true);
-        await bankAccountService.getAllBankAccount().then((res) => {
-            setBanksAccounts(res?.data)
-            setIsShowLoader(false);
-        })
-    }
+  const handleEditBankAccount = (bankAccountInfo) => {
+    setBankAccountInfo(bankAccountInfo)
+    setIsShowBankAccountModal(true)
+    setIsBankAccountEdit(true)
+  }
 
-    const handleAddBankAccount = () => {
-        setIsShowBankAccountModal(true);
-    }
+  const handleBankAccountDelete = (bankAccountInfo) => {
+    setIsShowConfirmModal(true)
+    setBankAccountInfo(bankAccountInfo)
+  }
 
-    const handleEditBankAccount = (bankAccountInfo) => {
-        setBankAccountInfo(bankAccountInfo);
-        setIsShowBankAccountModal(true);
-        setIsBankAccountEdit(true);
-    }
-
-    const handleBankAccountDelete = (bankAccountInfo) => {
-        setIsShowDeleteBankAccountConfirmModal(true);
-        setBankAccountInfo(bankAccountInfo);
-    }
-
-    const handleDelete = async() => {
-        await bankAccountService.deleteBankAccount(bankAccountInfo._id).then((res) => {
-            if (res.status == "200") {
-                setIsShowDeleteBankAccountConfirmModal(false);
-                getAllbankAccounts();
-            }
-        })
-    }
-
-    const onCloseDeleteBankAccountConfirmModal = () => {
-        setIsShowDeleteBankAccountConfirmModal(false);
-    }
-
-    const handleBankAccountClose = (isLoadData = false) => {
-        if (isLoadData) {
-            getAllbankAccounts();
+  const handleDelete = async () => {
+    await bankAccountService
+      .deleteBankAccount(bankAccountInfo._id)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsShowConfirmModal(false)
+          getAllbankAccounts()
         }
-        setIsShowBankAccountModal(false);
-        setBankAccountInfo([]);
-        setIsBankAccountEdit(false);
+      })
+  }
+
+  const onCloseDeleteBankAccountConfirmModal = () => {
+    setIsShowConfirmModal(false)
+  }
+
+  const handleBankAccountClose = (isLoadData = false) => {
+    if (isLoadData) {
+      getAllbankAccounts()
     }
+    setIsShowBankAccountModal(false)
+    setBankAccountInfo([])
+    setIsBankAccountEdit(false)
+  }
 
-    useEffect(() => {
-        getAllbankAccounts();
-    }, [])
+  useEffect(() => {
+    getAllbankAccounts()
+  }, [])
 
-    const columns = [
-        {
-            dataField: '_id',
-            text: 'Sr No.',
-            headerStyle: () => {
-                return { width: '5%' }
-            },
-            formatter: (cellContent, row, index) => {
-                return <span>{index + 1}</span>
-            },
+  const columns = useMemo(
+    () => [
+      {
+        dataField: "_id",
+        text: "Sr No.",
+        headerStyle: () => {
+          return { width: "5%" }
         },
-        {
-            dataField: 'accountName',
-            text: 'Name',
+        formatter: (cellContent, row, index) => {
+          return <span>{index + 1}</span>
         },
-        {
-            dataField: 'accountNo',
-            text: 'Acc No.',
-        },
-        {
-            dataField: '',
-            text: 'Bank Name',
-        },
-        {
-            dataField: 'bankName',
-            text: 'Bank Branch',
-        },
-        {
-            dataField: 'ifscCode',
-            text: 'IFSC Code',
-        },
-        {
-            text: 'Action',
-            headerStyle: () => {
-                return { width: '10%' }
-            },
-            formatter: (cell, row) => (
-                <div>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                        size="sm"
-                        onClick={() => handleEditBankAccount(row)}
-                    >
-                        <AiFillEdit />
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
-                        size="sm"
-                        onClick={() => handleBankAccountDelete(row)}
-                    >
-                        <AiFillDelete />
-                    </button>
-                </div>
-            ),
-            classes: 'p-1',
-        },
-    ]
+      },
+      {
+        text: "Name",
+        dataField: "accountName",
+      },
+      {
+        text: "Acc No.",
+        dataField: "accountNo",
+      },
+      {
+        text: "Bank Name",
+        dataField: "bankName",
+      },
+      {
+        text: "Bank Branch",
+        dataField: "bankName",
+      },
+      {
+        text: "IFSC Code",
+        dataField: "ifscCode",
+      },
+      {
+        text: "Account Detail",
+        dataField: "accountDetail",
+      },
+      {
+        text: "Action",
+        formatter: (cell, row) => (
+          <div>
+            <button
+              type="button"
+              className="btn btn-sm"
+              title="Edit"
+              size="sm"
+              onClick={() => handleEditBankAccount(row)}
+            >
+              <AiFillEdit />
+            </button>
+            <button
+              type="button"
+              className="btn text-danger btn-sm"
+              title="Delete"
+              size="sm"
+              onClick={() => handleBankAccountDelete(row)}
+            >
+              <AiFillDelete />
+            </button>
+          </div>
+        ),
+        classes: "p-1",
+      },
+    ],
+    []
+  )
 
-    const rowEvents = {
-        onClick: (e, row, rowIndex) => {
-            // console.log(e, row, rowIndex)
-        },
-    }
-
-    return (
-        <div>
-            { isShowLoader && (
-                <CustomLoader />
-            )}
-            <div className='d-flex justify-content-end m-3'>
-                <Button
-                    variant="info"
-                    type="button"
-                    className="btn btn-sm ml-2 ts-buttom m-1"
-                    size="sm"
-                    bgcolor={bgPrimary}
-                    onClick={handleAddBankAccount}
-                >
-                    <BsPlus />
-                    Add New
-                </Button>
-            </div>
-            <ReactBootstrapTable
-                tableData={banksAccounts}
-                columns={columns}
-                rowEvents={rowEvents}
-            />
-
-            {isShowBankAccountModal && (
-                <BankAccountModal
-                    bankAccountInfo={bankAccountInfo}
-                    isBankAccountEdit={isBankAccountEdit}
-                    isShowBankAccountModal={isShowBankAccountModal}
-                    onCloseBankAccountModal={handleBankAccountClose}
-                >
-                </BankAccountModal>
-            )}
-
-            { isShowDeleteBankAccountConfirmModal && (
-                <ConfirmModal
-                    title="Are you sure ?"
-                    description="Are you sure you want to delete ?"
-                    handleDelete={handleDelete}
-                    isShowConfirmModal={isShowDeleteBankAccountConfirmModal}
-                    onCloseConfirmModal={onCloseDeleteBankAccountConfirmModal}
-                />
-            )}
+  return (
+    <div>
+      <div className="container-fluid w-100 mt-3">
+        {isShowLoader && <CustomLoader />}
+        <div className="row">
+          <div className="col-lg-12 justify-content-between d-flex">
+            <h2 className="main-heading">Bank Account List</h2>
+          </div>
         </div>
-    )
+
+        <div className="col-lg-12">
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex "></div>
+                  <div className="col-md-6 d-flex justify-content-end">
+                    <div className="me-2"></div>
+
+                    <button
+                      className={`ms-2 btn btn-secondary`}
+                      type="button"
+                      onClick={handleAddBankAccount}
+                    >
+                      <AiOutlinePlus />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    keyField="_id"
+                    data={bankAccountListData}
+                    columns={columns}
+                    showSearch={false}
+                    withPagination={false}
+                    loading={isShowLoader}
+                    withCard={false}
+                  ></CustomTable>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {isShowBankAccountModal && (
+          <BankAccountModal
+            bankAccountInfo={bankAccountInfo}
+            isBankAccountEdit={isBankAccountEdit}
+            isShowBankAccountModal={isShowBankAccountModal}
+            onCloseBankAccountModal={handleBankAccountClose}
+          />
+        )}
+
+        {isShowConfirmModal && (
+          <ConfirmModal
+            title="Are you sure ?"
+            description="Are you sure you want to delete ?"
+            handleDelete={handleDelete}
+            isShowConfirmModal={isShowConfirmModal}
+            onCloseConfirmModal={onCloseDeleteBankAccountConfirmModal}
+          />
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default BankAccountTable

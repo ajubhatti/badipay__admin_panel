@@ -55,12 +55,19 @@ const CustomBootstrapTable = ({
               <span className="sort-arrows cursor-pointer">
                 {!!order ? (
                   order === "DESC" ? (
-                    <img src={down} alt="down" className="custom-arrow" />
+                    <>
+                      {" "}
+                      <img src={down} alt="down" className="custom-arrow" />
+                    </>
                   ) : (
-                    <img src={up} alt="up" className="custom-arrow" />
+                    <>
+                      {" "}
+                      <img src={up} alt="up" className="custom-arrow" />
+                    </>
                   )
                 ) : (
                   <>
+                    {" "}
                     <img src={up} alt="up" className="custom-arrow" />
                     <img src={down} alt="down" className="custom-arrow" />
                   </>

@@ -4,9 +4,7 @@ import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { accountService } from "app/services/account.service"
 import { walletServices } from "../../services/wallet.service"
 
 const AddRemoveBalance = (props) => {
@@ -27,11 +25,7 @@ const AddRemoveBalance = (props) => {
     setUserName(props.userData.userName)
     setEmail(props.userData.email)
     setPhone(props.userData.phoneNumber)
-  }, [props.open])
-
-  function handleClickOpen() {
-    props.setOpen(true)
-  }
+  }, [props])
 
   function handleClose() {
     props.setOpen(false)
@@ -45,7 +39,7 @@ const AddRemoveBalance = (props) => {
       remarks: remarks,
       password: password,
     }
-    console.log({ props, payload })
+
     await walletServices.updateBalance(payload).then((res) => {
       handleClose()
       props.getAllusers()

@@ -46,9 +46,7 @@ const ForgotPassword = () => {
     })
   }
 
-  const handleFormSubmit = (event) => {
-    console.log(state)
-  }
+  const handleFormSubmit = (event) => {}
 
   let { email } = state
 

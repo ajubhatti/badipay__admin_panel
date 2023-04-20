@@ -5,7 +5,6 @@ import { statusOfApi } from "app/constants/constant"
 import { transactionsService } from "app/services/transactions.service"
 
 const TransactionViewModal = (props) => {
-  console.log({ props })
   const [discountInfo, setDiscountInfo] = useState({})
   const [saveLoading, setSaveLoading] = useState(false)
 
@@ -20,8 +19,6 @@ const TransactionViewModal = (props) => {
   const handleSaveAndClose = async () => {
     setSaveLoading(true)
     if (props.isDiscountEdit) {
-      console.log(props?.discountInfo?._id, discountInfo)
-
       await transactionsService
         .updateTransaction(props?.discountInfo?._id, discountInfo)
         .then((res) => {
@@ -37,8 +34,6 @@ const TransactionViewModal = (props) => {
     const value = e.target.value
     setDiscountInfo((prev) => ({ ...prev, [name]: value }))
   }
-
-  // console.log({ discountInfo })
 
   return (
     <Modal

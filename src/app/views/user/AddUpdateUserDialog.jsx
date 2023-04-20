@@ -38,7 +38,6 @@ const validationSchema = yup.object({
 })
 
 const AddUpdateUserDialog = (props) => {
-  console.log({ props })
   const [state, setState] = useState(null)
 
   const onSubmit = async (values) => {
@@ -124,7 +123,6 @@ const AddUpdateUserDialog = (props) => {
     }
   }, [props.open, props?.userData, resetForm])
 
-  console.log({ values })
   return (
     <div>
       <Dialog
@@ -201,7 +199,6 @@ const AddUpdateUserDialog = (props) => {
               <FormHelperText error>{errors?.email}</FormHelperText>
             )}
 
-            {console.log(values, { state })}
             <Select
               className="mt-2 mb-2"
               margin="dense"

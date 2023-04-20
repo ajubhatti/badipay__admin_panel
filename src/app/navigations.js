@@ -73,17 +73,17 @@ export const navigations = [
     badge: { color: "black" },
     children: [
       {
-        name: "Cashback",
+        name: "Cashback Report",
         path: "/reports/cashback",
         iconText: "CB",
       },
       {
-        name: "Recharge",
+        name: "Recharge Report",
         path: "/recharge/success",
         iconText: "RCH",
       },
       {
-        name: "Wallet list",
+        name: "Wallet Report",
         path: "/user/wallet-request/success",
         iconText: "WL",
       },
@@ -98,11 +98,6 @@ export const navigations = [
         name: "Wallet list",
         path: "/user/wallet-request",
         iconText: "WL",
-      },
-      {
-        name: "Wallet list2",
-        path: "/user/wallet-request2",
-        iconText: "WL2",
       },
     ],
   },
@@ -123,7 +118,7 @@ export const navigations = [
       },
       {
         name: "company list",
-        path: "/api-setting/company",
+        path: "/api-setting/companyList",
         iconText: "COL",
       },
       {
@@ -154,16 +149,17 @@ export const navigations = [
       //     iconText: "STT",
       // },
       {
-        name: "recharges",
-        path: "/user/recharges",
-        iconText: "URC",
-      },
-      {
         name: "user list",
         path: "/user/list",
         iconText: "UL",
       },
-
+    ],
+  },
+  {
+    name: "Utility",
+    icon: "assignment",
+    badge: "",
+    children: [
       {
         name: "banner list",
         path: "/banner/list",
@@ -174,13 +170,6 @@ export const navigations = [
         path: "/ticker/list",
         iconText: "BL",
       },
-    ],
-  },
-  {
-    name: "Utility",
-    icon: "assignment",
-    badge: "",
-    children: [
       {
         name: "state",
         path: "/utility/state",

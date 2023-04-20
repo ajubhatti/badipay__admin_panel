@@ -73,7 +73,6 @@ const SlabConfig = () => {
   }, [payloadData, dispatch])
 
   useEffect(() => {
-    console.log({ apisList })
     if (apisList && apisList.length > 0) {
       let newApi = apisList.map((api) => ({
         value: api._id,
@@ -358,7 +357,6 @@ const SlabConfig = () => {
               </Button>
             </div>
 
-            {console.log({ slabsList })}
             <div className="card-body">
               <div className="row">
                 <div className="col-md-12">

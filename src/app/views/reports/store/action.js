@@ -42,7 +42,6 @@ export const getCashBackById = (data) => async (dispatch) => {
 export const updateCashBacks = (id, data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    console.log({ id, data })
     return await cashBackService.updateCashBack(id, data).then((res) => {
       return res
     })

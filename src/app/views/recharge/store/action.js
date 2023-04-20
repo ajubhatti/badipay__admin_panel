@@ -57,9 +57,20 @@ export const getRechargeList = (data, cb) => async (dispatch) => {
   }
 }
 
+export const getRechargeListForPrint = (data, cb) => async (dispatch) => {
+  try {
+    await rechargesService.getRecharges(data).then((res) => {
+      if (res?.data) {
+        cb(res?.data)
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
 export const updateRecharge = (id, data, cb) => async (dispatch) => {
   try {
-    console.log({ id, data })
     dispatch(setLoading(true))
     await rechargesService.updateRechargeById(id, data).then((res) => {
       // dispatch(getRechargeList())
@@ -114,7 +125,6 @@ export const getTransactionsById = (data) => async (dispatch) => {
 export const updateTransactions = (id, data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    console.log({ id, data })
     return await transactionsService.updateTransaction(id, data).then((res) => {
       return res
     })

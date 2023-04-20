@@ -9,11 +9,6 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   //   end: null,
   // });
 
-  useEffect(() => {
-    console.log({ rangeDate })
-    // setDateRangeValueValues(rangeDate);
-  }, [rangeDate])
-
   const getStartDate = (newValue, range) => {
     if (newValue && range) {
       const start = moment(newValue)

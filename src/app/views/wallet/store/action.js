@@ -83,7 +83,6 @@ export const getWalletById = (data) => async (dispatch) => {
 export const updateWallets = (id, data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    console.log({ id, data })
     return await walletServices.update(id, data).then((res) => {
       return res
     })

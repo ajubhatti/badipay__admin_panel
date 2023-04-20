@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { styled, useTheme } from "@mui/system"
-import { Card, Icon, Table, MenuItem, Select, Fab } from "@mui/material"
+import { Card, Icon, MenuItem, Select, Fab } from "@mui/material"
 import { accountService } from "../../services/account.service"
 import AddUpdateUserDialog from "../user/AddUpdateUserDialog"
 import { CSVLink } from "react-csv"
@@ -14,12 +14,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { fetchWalletListing } from "./store/action"
 import { toast } from "react-toastify"
 import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
-import {
-  AiFillEdit,
-  AiFillEye,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from "react-icons/ai"
+
 import ApproveRejectDialog from "./ApproveRejectDialog"
 import { Button } from "react-bootstrap"
 import ApprovalDialog from "./ApprovalDialog"
@@ -40,11 +35,7 @@ const Title = styled("span")(() => ({
 }))
 
 const WalletRequestListingTable2 = () => {
-  const { palette } = useTheme()
   const dispatch = useDispatch()
-  const bgError = palette.error.main
-  const bgPrimary = palette.primary.main
-  const bgSecondary = palette.secondary.main
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [page, setPage] = React.useState(0)
@@ -62,8 +53,6 @@ const WalletRequestListingTable2 = () => {
 
   const [show, setShow] = useState(false)
   const [idForChange, setIdForChange] = useState("")
-
-  console.log({ walletList })
 
   useEffect(() => {
     getAllWalletRequest()
@@ -172,14 +161,6 @@ const WalletRequestListingTable2 = () => {
     setSearchText(event.target.value)
   }
 
-  const handleUpdateStatus = async (id, data) => {
-    setShow(true)
-    console.log("data :>> ", data)
-    // setModalShow(true)
-    setType(data)
-    setModalData({ id, data })
-  }
-
   const handleChangeStatus = (id) => {
     setShow(true)
     setIdForChange(id)
@@ -206,7 +187,6 @@ const WalletRequestListingTable2 = () => {
 
   const handleSaveUpdate2 = async (data) => {
     setLoading(true)
-    console.log("data", data)
     let payload = {
       id: idForChange,
       statusOfWalletRequest: data.type,
@@ -218,7 +198,6 @@ const WalletRequestListingTable2 = () => {
     if (data.data.amount && data.type === "approve") {
       payload.amount = data.data.amount
     }
-    console.log({ payload })
 
     await walletServices.updateWalletStatus(payload).then((res) => {
       if (res.status === 200) {
@@ -388,14 +367,10 @@ const WalletRequestListingTable2 = () => {
     // },
   ]
 
-  const handleView = (cell, row) => {
-    console.log("object view:>> ", { cell, row })
-  }
+  const handleView = (cell, row) => {}
 
   const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
+    onClick: (e, row, rowIndex) => {},
   }
 
   const getWalletData = (data) => {
@@ -494,7 +469,6 @@ const WalletRequestListingTable2 = () => {
           onHide={() => setModalShow(false)}
           message={type}
           handleSave={(data) => {
-            console.log(data)
             handleSaveUpdate(data)
           }}
         />
@@ -504,7 +478,6 @@ const WalletRequestListingTable2 = () => {
           onHide={() => setShow(false)}
           message={type}
           handleSave={(data) => {
-            console.log(data)
             handleSaveUpdate2(data)
           }}
           isLoading={loading}

@@ -1,24 +1,30 @@
 import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
 import Transactions from "../recharge/Transactions"
-import WalletRequestListingTable2 from "../wallet/WalletRequestListingTable2"
-import RechargeList2 from "../recharge/RechargeList2"
-import WalletRequestListingTable3 from "../wallet/WalletRequestListingTable3"
+import RechargeList from "../recharge/RechargeList"
+import OperatorList from "../api-settings/company-listing/OperatorList"
+import UserListings from "../user/UserListings"
+import BannerList from "../utilities/Banner/BannerList"
+import TickerList from "../utilities/Ticker/TickerList"
 const BankAccountTable = Loadable(
   lazy(() => import("../bank/bankAccount/BankAccountTable"))
 )
 const UserListingTable = Loadable(
   lazy(() => import("../user/UserListingTable"))
 )
-const BannerListTable = Loadable(lazy(() => import("./tables/BannerListTable")))
-const TickerListTable = Loadable(lazy(() => import("./tables/TickerListTable")))
-const CompanyListing = Loadable(
+const WalletRequestListingTable = Loadable(
+  lazy(() => import("../wallet/WalletRequestListingTable"))
+)
+const TickerListTable = Loadable(
+  lazy(() => import("../utilities/Ticker/TickerListTable"))
+)
+const OperatorListing = Loadable(
   lazy(() => import("../api-settings/company-listing/OperatorListing"))
 )
-const ApiListing = Loadable(
-  lazy(() => import("../api-settings/apis/ApiListing"))
+const ApiListings = Loadable(
+  lazy(() => import("../api-settings/apis/ApiListings"))
 )
-const BankListTable = Loadable(lazy(() => import("../bank/BankListTable")))
+const BankListing = Loadable(lazy(() => import("../bank/BankList/BankListing")))
 const AddUpdateCompany = Loadable(
   lazy(() => import("../api-settings/company-listing/AddUpdateCompany"))
 )
@@ -39,9 +45,6 @@ const OperatorSwitching = Loadable(
 )
 const AddUpdateService = Loadable(
   lazy(() => import("../api-settings/services-listing/AddUpdateService"))
-)
-const AddUpdateApis = Loadable(
-  lazy(() => import("../api-settings/apis/AddUpdateApis"))
 )
 const DiscountOnRecharge = Loadable(
   lazy(() => import("../recharge/discount/DiscountOnRecharge"))
@@ -130,51 +133,48 @@ const materialRoutes = [
 
   {
     path: "/bank/list",
-    element: <BankListTable />,
+    element: <BankListing />,
   },
+
   {
     path: "/bank/account",
     element: <BankAccountTable />,
   },
   {
     path: "/banner/list",
-    element: <BannerListTable />,
+    element: <BannerList />,
   },
   {
     path: "/ticker/list",
-    element: <TickerListTable />,
+    element: <TickerList />,
   },
   {
     path: "/user/wallet-request",
-    element: <WalletRequestListingTable3 />,
+    element: <WalletRequestListingTable />,
   },
   {
     path: "/user/wallet-request/:reportType",
-    element: <WalletRequestListingTable3 />,
-  },
-  {
-    path: "/user/wallet-request2",
-    element: <WalletRequestListingTable2 />,
+    element: <WalletRequestListingTable />,
   },
   {
     path: "/user/list",
     element: <UserListingTable />,
   },
   {
+    path: "/user/lists",
+    element: <UserListings />,
+  },
+  {
     path: "/api-setting/api",
-    element: <ApiListing />,
-  },
-  {
-    path: "/api-setting/api/add",
-    element: <AddUpdateApis />,
-  },
-  {
-    path: "/api-setting/api/add/:id",
-    element: <AddUpdateApis />,
+    element: <ApiListings />,
   },
   {
     path: "/api-setting/company",
-    element: <CompanyListing />,
+    element: <OperatorListing />,
+  },
+  {
+    path: "/api-setting/companyList",
+    element: <OperatorList />,
   },
   {
     path: "/api-setting/operator",
@@ -222,11 +222,11 @@ const materialRoutes = [
   },
   {
     path: "/recharge",
-    element: <RechargeList2 />,
+    element: <RechargeList />,
   },
   {
     path: "/recharge/:reportType",
-    element: <RechargeList2 />,
+    element: <RechargeList />,
   },
   {
     path: "/utility/state",

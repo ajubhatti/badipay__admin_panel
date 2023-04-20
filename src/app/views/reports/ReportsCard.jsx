@@ -1,9 +1,7 @@
 import React from "react"
-
 import "./table.css"
 
 const ReportsCard = ({ cardData }) => {
-  console.log({ cardData })
   return (
     <div className="row mb-4">
       <div className="col-xl-2 col-sm-6 col-12">
@@ -12,7 +10,9 @@ const ReportsCard = ({ cardData }) => {
             <div className="card-body">
               <div className="media d-flex">
                 <div className="media-body text-left">
-                  <h3 className="danger">{cardData?.requestAmount || 0}</h3>
+                  <h3 className="danger">
+                    {cardData?.requestAmount?.toFixed(2) || 0}
+                  </h3>
                   <span>Request Amount</span>
                 </div>
                 <div className="align-self-center">
@@ -30,7 +30,9 @@ const ReportsCard = ({ cardData }) => {
             <div className="card-body">
               <div className="media d-flex">
                 <div className="media-body text-left">
-                  <h3 className="success">{cardData?.rechargeAmount || 0}</h3>
+                  <h3 className="success">
+                    {cardData?.rechargeAmount?.toFixed(2) || 0}
+                  </h3>
                   <span>Recharge Amount</span>
                 </div>
                 <div className="align-self-center">
@@ -48,7 +50,9 @@ const ReportsCard = ({ cardData }) => {
             <div className="card-body">
               <div className="media d-flex">
                 <div className="media-body text-left">
-                  <h3 className="primary">{cardData?.cashBackReceive || 0}</h3>
+                  <h3 className="primary">
+                    {cardData?.cashBackReceive?.toFixed(2) || 0}
+                  </h3>
                   <span>Receive CashBack</span>
                 </div>
                 <div className="align-self-center">
@@ -66,7 +70,9 @@ const ReportsCard = ({ cardData }) => {
             <div className="card-body">
               <div className="media d-flex">
                 <div className="media-body text-left">
-                  <h3 className="danger">{cardData?.userCashBack || 0}</h3>
+                  <h3 className="danger">
+                    {cardData?.userCashBack?.toFixed(2) || 0}
+                  </h3>
                   <span>User Cashback</span>
                 </div>
                 <div className="align-self-center">
@@ -104,7 +110,9 @@ const ReportsCard = ({ cardData }) => {
             <div className="card-body">
               <div className="media d-flex">
                 <div className="media-body text-left">
-                  <h3 className="warning">{cardData?.netCashBack || 0}</h3>
+                  <h3 className="warning">
+                    {cardData?.netCashBack?.toFixed(2) || 0}
+                  </h3>
                   <span>Net cashback</span>
                 </div>
                 <div className="align-self-center">

@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { editService, getServices } from "./store/action"
-import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
-import { AiOutlineEdit, AiFillDelete, AiOutlinePlus } from "react-icons/ai"
-import { Button, Form } from "react-bootstrap"
+import {
+  AiOutlineEdit,
+  AiFillDelete,
+  AiOutlinePlus,
+  AiFillEye,
+} from "react-icons/ai"
+import { Form } from "react-bootstrap"
 import moment from "moment"
+import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
+import CustomTable from "app/components/Tables/CustomTable"
+import AddUpdateServiceModal from "./AddUpdateServiceModal"
 
 const ServiceList = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { serviceList } = useSelector((state) => state.servicesList)
-  const [serviceData, setServicesData] = useState([])
+  const { serviceList, loading } = useSelector((state) => state.servicesList)
+  const [servicesData, setServicesData] = useState([])
+  const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
+  const [type, setType] = useState("Add")
+  const [modalShow, setModalShow] = useState(false)
+  const [serviceListData, setServiceListData] = useState([])
 
   const GetActionFormat = (cell, row) => (
     <>
       <button
         type="button"
-        className="btn btn-outline-primary btn-sm ts-buttom m-1"
+        className="btn btn-sm"
+        title="Edit"
         size="sm"
         onClick={() => handleModelEdit(cell, row)}
       >
@@ -25,11 +35,21 @@ const ServiceList = () => {
       </button>
       <button
         type="button"
-        className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
+        className="btn text-danger btn-sm"
+        title="Delete"
         size="sm"
         onClick={() => handleModelDelete(cell, row)}
       >
         <AiFillDelete />
+      </button>
+      <button
+        type="button"
+        className="btn text-primary btn-sm"
+        title="Preview"
+        size="sm"
+        onClick={() => handleView(cell, row)}
+      >
+        <AiFillEye />
       </button>
     </>
   )
@@ -49,36 +69,53 @@ const ServiceList = () => {
 
   const columns = [
     {
-      dataField: "serviceName",
       text: "service Name",
+      dataField: "serviceName",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.serviceName || "-"}</div>
+      ),
     },
     {
-      dataField: "serviceDetail",
       text: "service Detail",
+      dataField: "serviceDetail",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.serviceDetail || "-"}</div>
+      ),
     },
     {
-      dataField: "title",
       text: "Title",
+      dataField: "title",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.title || "-"}</div>
+      ),
     },
     {
-      dataField: "isActive",
       text: "Is Active",
+      dataField: "isActive",
+      // formatter: (cell, row, rowIndex, formatExtraData) => (
+      //   <div>{row?.isActive ? "Active" : "false"}</div>
+      // ),
       formatter: GetIsActiveSwitch,
     },
     {
-      dataField: "iconImage",
       text: "Icon",
+      dataField: "image",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.Icon || "-"}</div>
+      ),
     },
     {
-      dataField: "created",
       text: "Created At",
-      formatter: GetTime,
+      dataField: "created",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{GetTime(cell, row) || "-"}</div>
+      ),
     },
     {
-      text: "Action",
       dataField: "",
-      formatter: GetActionFormat,
+      text: "Action",
       classes: "p-1",
+      formatter: GetActionFormat,
     },
   ]
 
@@ -95,15 +132,24 @@ const ServiceList = () => {
   }
 
   const handleModelDelete = (cell, row) => {
-    console.log("object delete:>> ", { cell, row })
+    setIsShowConfirmModal(true)
+    setServicesData(row)
   }
 
   const handleModelEdit = (cell, row) => {
-    navigate("/api-setting/service/add/" + row._id)
+    setType("Update")
+    setServicesData(row)
+    setModalShow(true)
+  }
+
+  const handleView = (cell, row) => {
+    setType("View")
+    setServicesData(row)
+    setModalShow(true)
   }
 
   useEffect(() => {
-    setServicesData(serviceList)
+    setServiceListData(serviceList)
   }, [serviceList])
 
   useEffect(() => {
@@ -111,47 +157,81 @@ const ServiceList = () => {
   }, [dispatch])
 
   const addNewService = () => {
-    navigate("/api-setting/service/add")
+    setServicesData({})
+    setModalShow(true)
+    setType("Add")
   }
 
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
+  const handleOk = async () => {
+    // dispatch(
+    //   deleteApis(servicesData._id, () => {
+    //     setIsShowConfirmModal(false)
+    //   })
+    // )
   }
 
   return (
-    <div className="container w-100">
-      <div className="container">
-        <div className="container-fluid w-100 mt-3">
-          <div className="row mt-3">
-            <div className="col-lg-12 justify-content-between d-flex">
-              <h2 className="main-heading">Service List</h2>
-              <div>
-                <Button
-                  variant="primary"
-                  type="button"
-                  onClick={() => addNewService()}
-                >
-                  <AiOutlinePlus />
-                </Button>
-              </div>
-            </div>
+    <div className="container w-100 ">
+      <div className="container-fluid w-100 mt-3">
+        <div className="row">
+          <div className="col-lg-12 justify-content-between d-flex">
+            <h2 className="main-heading">Service List</h2>
           </div>
         </div>
+
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <ReactBootstrapTable
-                  tableData={serviceData}
-                  columns={columns}
-                  rowEvents={rowEvents}
-                />
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex "></div>
+                  <div className="col-md-6 d-flex justify-content-end">
+                    <div className="me-2"></div>
+
+                    <button
+                      className={`ms-2 btn btn-secondary`}
+                      type="button"
+                      onClick={addNewService}
+                    >
+                      <AiOutlinePlus />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    keyField="_id"
+                    data={serviceListData}
+                    columns={columns}
+                    showSearch={false}
+                    withPagination={false}
+                    loading={loading}
+                    withCard={false}
+                  ></CustomTable>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {modalShow && (
+          <AddUpdateServiceModal
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            data={servicesData}
+            type={type}
+          />
+        )}
+
+        {isShowConfirmModal && (
+          <ConfirmModal
+            title="Are you sure ?"
+            description="Are you sure you want to delete ?"
+            handleDelete={handleOk}
+            isShowConfirmModal={isShowConfirmModal}
+            onCloseConfirmModal={setIsShowConfirmModal(false)}
+          />
+        )}
       </div>
     </div>
   )

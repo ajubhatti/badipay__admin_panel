@@ -1,3 +1,9 @@
-export const SET_LOADING = 'SET_LOADING'
-export const FETCH_STATE = 'FETCH_STATE'
-export const FETCH_STATE_BY_ID = 'FETCH_STATE_BY_ID'
+export const SET_LOADING = "SET_LOADING"
+export const FETCH_TICKER = "FETCH_TICKER"
+export const FETCH_TICKER_BY_ID = "FETCH_TICKER_BY_ID"
+
+export const FETCH_BANNER = "FETCH_BANNER"
+export const FETCH__BANNER_BY_ID = "FETCH_BANNER__BY_ID"
+
+export const FETCH_STATE = "FETCH_STATE"
+export const FETCH_STATE_BY_ID = "FETCH_STATE_BY_ID"

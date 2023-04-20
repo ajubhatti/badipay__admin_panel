@@ -39,7 +39,7 @@ const csvExporter = new ExportToCsv(options)
 
 const CashBackList = () => {
   const { reportType } = useParams()
-  console.log({ reportType })
+
   const dispatch = useDispatch()
 
   const {
@@ -50,33 +50,22 @@ const CashBackList = () => {
     search,
     sortField,
     sortOrder,
-    cashBackData,
     cashBackList,
   } = useSelector((state) => state.reports)
 
   const [exportLoading, setExportLoading] = useState(false)
-
-  const { stateList } = useSelector((state) => state.utilities)
-  const { companyList } = useSelector((state) => state.company)
-  const [transactionListData, setCashBackListData] = useState([])
-
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
-    start: null,
-    end: null,
+    start: new Date(),
+    end: new Date(),
   })
-
   const [filter, setFilter] = useState({ provider: "", services: "" })
-
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState([])
-
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
-  const [cardData, setCardData] = useState(null)
   const [reportData, setReportData] = useState(null)
-
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 20,
@@ -90,6 +79,12 @@ const CashBackList = () => {
     services: filter?.services || "",
   })
 
+  const [cashBackListData, setCashBackList] = useState([])
+
+  useEffect(() => {
+    setCashBackList(cashBackList)
+  }, [cashBackList])
+
   const pageOptions = useMemo(
     () => ({
       page,
@@ -102,25 +97,9 @@ const CashBackList = () => {
   )
 
   useEffect(() => {
-    const getTotal = async () => {
-      try {
-        await cashBackService.adminloyalty().then((res) => {
-          if (!!res) {
-            setCardData(res?.data[0])
-          }
-        })
-      } catch (err) {
-        toast.error("something want's wrong")
-      }
-    }
-    getTotal()
-  }, [])
-
-  useEffect(() => {
     const cashBackReports = async () => {
       try {
         await cashBackService.getCashBackReports(payloadData).then((res) => {
-          console.log({ res })
           if (!!res) {
             setReportData(res?.data)
           }
@@ -526,14 +505,7 @@ const CashBackList = () => {
     dispatch(getCashBackList(payloadData))
   }
 
-  useEffect(() => {
-    if (cashBackData) {
-      setCashBackListData(cashBackData?.transactions)
-    }
-  }, [cashBackData, stateList, companyList])
-
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
-    console.log({ type, page, sizePerPage, sortField, sortOrder })
     switch (type) {
       case "sort":
         dispatch(setSortFieldOfCashBack(sortField))
@@ -600,7 +572,6 @@ const CashBackList = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          {/* <ReportStatCards cardData={cardData} /> */}
           <ReportsCard cardData={reportData} />
         </div>
       </div>
@@ -698,7 +669,7 @@ const CashBackList = () => {
                   showAddButton={false}
                   pageOptions={pageOptions}
                   keyField="_id"
-                  data={cashBackList}
+                  data={cashBackListData}
                   columns={columns}
                   showSearch={false}
                   onTableChange={onTableChange}

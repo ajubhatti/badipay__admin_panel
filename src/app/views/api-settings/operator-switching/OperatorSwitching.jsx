@@ -49,7 +49,6 @@ const OperatorSwitching = () => {
   const submitHandler = (e) => {
     let filteredData = companyList.find((x) => x._id === searchData.operator)
 
-    console.log("filteredData", filteredData)
     setSelectedOperatorDataId(filteredData?._id)
     setSelectedOperatorData(filteredData)
     e.preventDefault()
@@ -70,7 +69,6 @@ const OperatorSwitching = () => {
     await companyService
       .updateCompany(selectedOperatorDataId, selectedOperatorData)
       .then((res) => {
-        console.log("updateRes", res)
         setSelectedOperatorData(selectedOperatorData)
       })
   }

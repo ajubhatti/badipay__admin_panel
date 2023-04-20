@@ -78,9 +78,6 @@ const AddUpdateService = (props) => {
       </div>
       <div className="col-lg-12">
         <div className="card mb-4">
-          {/* <div className="card-header">
-                        <h6> Search Filters</h6>
-                    </div> */}
           <div className="card-body">
             <div className="row">
               <div className="col-md-8">

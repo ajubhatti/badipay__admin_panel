@@ -9,7 +9,7 @@ import DiscountModal from "./DiscountModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
 import { discountServices } from "app/services/discount.service"
-import { AiFillDelete, AiFillEdit } from "react-icons/ai"
+import { AiFillDelete, AiFillEdit, AiOutlineSearch } from "react-icons/ai"
 
 const DiscountOnRecharge = () => {
   const [isShowLoader, setIsShowLoader] = useState(false)
@@ -111,9 +111,7 @@ const DiscountOnRecharge = () => {
   ]
 
   const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      // console.log(e, row, rowIndex)
-    },
+    onClick: (e, row, rowIndex) => {},
   }
 
   const getAllProviders = async () => {
@@ -217,7 +215,6 @@ const DiscountOnRecharge = () => {
   }
 
   const handleSaveDiscountModal = async (data) => {
-    console.log({ data })
     setIsShowLoader(true)
     setDiscountModalSave(true)
     data.apiId = selectedProviderIndex
@@ -250,110 +247,108 @@ const DiscountOnRecharge = () => {
           <div className="col-lg-12">
             <h2 className="main-heading">Discount List</h2>
           </div>
-          <div className="col-lg-12">
-            <div className="card mb-4">
-              <div className="card-header">
-                <h6> Search Filters</h6>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="select-operator">
-                      <div className="col-md-4 m-2">
-                        <select
-                          name="selectedProviderIndex"
-                          onChange={handleChange}
-                          className="form-control"
-                          id="selectedProviderIndex"
-                        >
-                          {providers.map((provider) => {
-                            return (
-                              <option
-                                key={provider.value}
-                                value={provider.value}
-                              >
-                                {provider.label}
-                              </option>
-                            )
-                          })}
-                        </select>
-                      </div>
-                      <div className="col-md-4 m-2">
-                        <select
-                          name="selectedServiceIndex"
-                          onChange={handleChange}
-                          className="form-control"
-                          id="selectedServiceIndex"
-                        >
-                          {services.map((service) => {
-                            return (
-                              <option key={service.value} value={service.value}>
-                                {service.label}
-                              </option>
-                            )
-                          })}
-                        </select>
-                      </div>
-                      <Button
-                        className="btn btn-md btn-primary col-md-2"
-                        type="submit"
-                        onClick={handleFilter}
+        </div>
+
+        <div className="col-lg-12">
+          <div className="card mb-4">
+            <div className="card-header">
+              <h6> Search Filters</h6>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex">
+                    <div className="me-2">
+                      <select
+                        name="selectedProviderIndex"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="selectedProviderIndex"
                       >
-                        Search
-                      </Button>
+                        {providers.map((provider) => {
+                          return (
+                            <option key={provider.value} value={provider.value}>
+                              {provider.label}
+                            </option>
+                          )
+                        })}
+                      </select>
                     </div>
+                    <div className="me-2">
+                      <select
+                        name="selectedServiceIndex"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="selectedServiceIndex"
+                      >
+                        {services.map((service) => {
+                          return (
+                            <option key={service.value} value={service.value}>
+                              {service.label}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                    <button
+                      className={`btn btn-primary`}
+                      onClick={handleFilter}
+                    >
+                      <AiOutlineSearch />
+                    </button>
                   </div>
+                  <div className="col-md-6"></div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-lg-12">
-            {isShowDiscountData && (
-              <>
-                <div className="d-flex justify-content-end m-3">
-                  <Button
-                    variant="info"
-                    type="button"
-                    className="btn btn-sm ml-2 ts-buttom m-1"
-                    size="sm"
-                    bgcolor={bgPrimary}
-                    onClick={handleAddDiscount}
-                  >
-                    <BsPlus />
-                    Add New
-                  </Button>
-                </div>
+        </div>
+        <div className="col-lg-12">
+          {isShowDiscountData && (
+            <>
+              <div className="d-flex justify-content-end m-3">
+                <Button
+                  variant="info"
+                  type="button"
+                  className="btn btn-sm ml-2 ts-buttom m-1"
+                  size="sm"
+                  bgcolor={bgPrimary}
+                  onClick={handleAddDiscount}
+                >
+                  <BsPlus />
+                  Add New
+                </Button>
+              </div>
 
-                <ReactBootstrapTable
-                  tableData={discounts}
-                  columns={columns}
-                  rowEvents={rowEvents}
+              <ReactBootstrapTable
+                tableData={discounts}
+                columns={columns}
+                rowEvents={rowEvents}
+              />
+
+              {isShowDiscountModal && (
+                <DiscountModal
+                  discountInfo={discountInfo}
+                  isDiscountEdit={isDiscountEdit}
+                  isShowDiscountModal={isShowDiscountModal}
+                  onCloseDiscountModal={handleDiscountClose}
+                  onSaveDiscountModal={handleSaveDiscountModal}
+                  selectedServiceIndex={selectedServiceIndex}
+                  discountModalSave={discountModalSave}
                 />
+              )}
 
-                {isShowDiscountModal && (
-                  <DiscountModal
-                    discountInfo={discountInfo}
-                    isDiscountEdit={isDiscountEdit}
-                    isShowDiscountModal={isShowDiscountModal}
-                    onCloseDiscountModal={handleDiscountClose}
-                    onSaveDiscountModal={handleSaveDiscountModal}
-                    selectedServiceIndex={selectedServiceIndex}
-                    discountModalSave={discountModalSave}
-                  />
-                )}
-
-                {isShowDeleteDiscountConfirmModal && (
-                  <ConfirmModal
-                    title="Are you sure ?"
-                    description="Are you sure you want to delete ?"
-                    handleDelete={handleDelete}
-                    isShowConfirmModal={isShowDeleteDiscountConfirmModal}
-                    onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
-                  />
-                )}
-              </>
-            )}
-          </div>
+              {isShowDeleteDiscountConfirmModal && (
+                <ConfirmModal
+                  title="Are you sure ?"
+                  description="Are you sure you want to delete ?"
+                  handleDelete={handleDelete}
+                  isShowConfirmModal={isShowDeleteDiscountConfirmModal}
+                  onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

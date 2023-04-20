@@ -32,8 +32,6 @@ const initialState = {
 const rechargeReducer = (state = initialState, action) => {
   const { type, payload } = action
 
-  console.log({ type, payload })
-
   switch (type) {
     case SET_RECHARGE_LOADING:
       return {
