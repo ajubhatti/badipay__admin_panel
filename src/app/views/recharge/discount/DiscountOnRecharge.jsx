@@ -1,15 +1,17 @@
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import React, { useEffect, useState } from "react"
-import { Button } from "react-bootstrap"
-import { BsPlus } from "react-icons/bs"
-
-import { useTheme } from "@mui/system"
-import ReactBootstrapTable from "app/components/ReactBootStrapTable/ReactBootstrapTable"
 import DiscountModal from "./DiscountModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
 import { discountServices } from "app/services/discount.service"
-import { AiFillDelete, AiFillEdit, AiOutlineSearch } from "react-icons/ai"
+import {
+  AiFillDelete,
+  AiFillEdit,
+  AiOutlineEdit,
+  AiOutlinePlus,
+  AiOutlineSearch,
+} from "react-icons/ai"
+import CustomTable from "app/components/Tables/CustomTable"
 
 const DiscountOnRecharge = () => {
   const [isShowLoader, setIsShowLoader] = useState(false)
@@ -30,9 +32,7 @@ const DiscountOnRecharge = () => {
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState([])
   const [isShowDiscountData, setIsShowDiscountData] = useState(false)
-
-  const { palette } = useTheme()
-  const bgPrimary = palette.primary.main
+  const [loading, setLoading] = useState(false)
 
   const columns = [
     {
@@ -83,22 +83,21 @@ const DiscountOnRecharge = () => {
     },
     {
       text: "Action",
-      headerStyle: () => {
-        return { width: "10%" }
-      },
       formatter: (cell, row) => (
-        <div>
+        <div className="d-flex">
           <button
             type="button"
-            className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+            className="btn btn-sm"
+            title="Edit"
             size="sm"
             onClick={() => handleEdit(row)}
           >
-            <AiFillEdit />
+            <AiOutlineEdit style={{ color: "green" }} />
           </button>
           <button
             type="button"
-            className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+            className="btn text-danger btn-sm"
+            title="Delete"
             size="sm"
             onClick={() => handleDiscountDelete(row)}
           >
@@ -106,13 +105,8 @@ const DiscountOnRecharge = () => {
           </button>
         </div>
       ),
-      classes: "p-1",
     },
   ]
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {},
-  }
 
   const getAllProviders = async () => {
     setIsShowLoader(true)
@@ -307,24 +301,25 @@ const DiscountOnRecharge = () => {
           {isShowDiscountData && (
             <>
               <div className="d-flex justify-content-end m-3">
-                <Button
-                  variant="info"
+                <button
+                  className={`ms-2 btn btn-secondary`}
                   type="button"
-                  className="btn btn-sm ml-2 ts-buttom m-1"
-                  size="sm"
-                  bgcolor={bgPrimary}
                   onClick={handleAddDiscount}
                 >
-                  <BsPlus />
-                  Add New
-                </Button>
+                  <AiOutlinePlus />
+                </button>
               </div>
 
-              <ReactBootstrapTable
-                tableData={discounts}
+              <CustomTable
+                showAddButton={false}
+                keyField="_id"
+                data={discounts}
                 columns={columns}
-                rowEvents={rowEvents}
-              />
+                showSearch={false}
+                withPagination={false}
+                loading={loading}
+                withCard={false}
+              ></CustomTable>
 
               {isShowDiscountModal && (
                 <DiscountModal

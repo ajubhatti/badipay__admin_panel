@@ -137,14 +137,8 @@ const WalletRequestListingTable = () => {
   useEffect(() => {
     setPayloadData((previousData) => ({
       ...previousData,
-      startDate: "",
-      endDate: "",
       page: page,
       limits: sizePerPage,
-      sortBy: "created",
-      orderBy: "DESC",
-      skip: 0,
-      search: "",
     }))
   }, [sizePerPage, page])
 

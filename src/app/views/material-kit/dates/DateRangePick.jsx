@@ -16,6 +16,7 @@ const DateRangePick = (props) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateRangePicker
+        slotProps={{ textField: { size: "small" } }}
         className="form-control"
         startText="Check-in"
         endText="Check-out"

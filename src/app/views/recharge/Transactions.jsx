@@ -20,6 +20,21 @@ import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import { discountServices } from "app/services/discount.service"
 import { toast } from "react-toastify"
 import { ExportToCsv } from "export-to-csv"
+
+const options = {
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  showTitle: true,
+  title: "Activities",
+  useTextFile: false,
+  useBom: true,
+  useKeysAsHeaders: true,
+}
+
+const csvExporter = new ExportToCsv(options)
+
 const Transactions = () => {
   const dispatch = useDispatch()
 
@@ -44,30 +59,16 @@ const Transactions = () => {
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
-    limits: 20,
+    limits: 25,
     sortBy: "created",
     orderBy: "DESC",
     skip: 0,
     search: "",
-    startDate: "", //"10-15-2022",
-    endDate: "",
+    startDate: moment(dateRangeValue?.start).format("MM-DD-yyyy"), //"10-15-2022",
+    endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
     services: "",
   })
-
-  const options = {
-    fieldSeparator: ",",
-    quoteStrings: '"',
-    decimalSeparator: ".",
-    showLabels: true,
-    showTitle: true,
-    title: "Activities",
-    useTextFile: false,
-    useBom: true,
-    useKeysAsHeaders: true,
-  }
-
-  const csvExporter = new ExportToCsv(options)
 
   const pageOptions = useMemo(
     () => ({
@@ -112,14 +113,8 @@ const Transactions = () => {
   useEffect(() => {
     setPayloadData((previousData) => ({
       ...previousData,
-      startDate: "",
-      endDate: "",
       page: page,
       limits: sizePerPage,
-      sortBy: "created",
-      orderBy: "DESC",
-      skip: 0,
-      search: "",
     }))
   }, [sizePerPage, page])
 
@@ -614,7 +609,7 @@ const Transactions = () => {
                 <CustomTable
                   showAddButton={false}
                   pageOptions={pageOptions}
-                  keyField="transaction_id"
+                  keyField="_id"
                   data={transactionList}
                   columns={columns}
                   showSearch={false}

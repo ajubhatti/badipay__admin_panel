@@ -18,9 +18,9 @@ export const accountService = {
   resetPassword,
   getAll,
   getById,
-  create,
+  createUser,
   fetchState,
-  update,
+  updateUserById,
   delete: _delete,
   user: userSubject.asObservable(),
   get userValue() {
@@ -88,7 +88,7 @@ function getById(id) {
   return fetchWrapper.get(`${baseUrl}/${id}`)
 }
 
-function create(params) {
+function createUser(params) {
   return fetchWrapper.post(baseUrl, params)
 }
 
@@ -96,7 +96,7 @@ function fetchState() {
   return fetchWrapper.get(`${process.env.REACT_APP_BASE_URL}/state`)
 }
 
-async function update(id, params) {
+async function updateUserById(id, params) {
   return await fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {
     // update stored user if the logged in user updated their own record
     // if (user.id === userSubject.value.id) {

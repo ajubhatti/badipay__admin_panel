@@ -10,9 +10,9 @@ import {
 } from "react-icons/ai"
 import { useDispatch, useSelector } from "react-redux"
 import AddUpdateCompanyModal from "./AddUpdateCompanyModal"
-import { getCompanies } from "./store/action"
+import { deleteCompany, getCompanies } from "./store/action"
 import moment from "moment"
-import { getApiList } from "../apis/store/action"
+import { deleteApis, getApiList } from "../apis/store/action"
 import { getServices } from "../services-listing/store/action"
 
 const OperatorList = () => {
@@ -181,76 +181,74 @@ const OperatorList = () => {
   }
 
   const handleOk = async () => {
-    // dispatch(
-    //   deleteApis(servicesData._id, () => {
-    //     setIsShowConfirmModal(false)
-    //   })
-    // )
+    dispatch(
+      deleteCompany(companysData._id, () => {
+        setIsShowConfirmModal(false)
+      })
+    )
   }
 
   return (
-    <div className="container w-100">
-      <div className="container-fluid w-100 mt-3">
-        <div className="row">
-          <div className="col-lg-12 justify-content-between d-flex">
-            <h2 className="main-heading">Company List</h2>
-          </div>
+    <div className="container-fluid w-100 mt-3">
+      <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h2 className="main-heading">Company List</h2>
         </div>
+      </div>
 
-        <div className="col-lg-12">
-          <div className="card mb-4">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex "></div>
-                  <div className="col-md-6 d-flex justify-content-end">
-                    <div className="me-2"></div>
+      <div className="col-lg-12">
+        <div className="card mb-4">
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-12 d-flex">
+                <div className="col-md-6 d-flex "></div>
+                <div className="col-md-6 d-flex justify-content-end">
+                  <div className="me-2"></div>
 
-                    <button
-                      className={`ms-2 btn btn-secondary`}
-                      type="button"
-                      onClick={addNewOperator}
-                    >
-                      <AiOutlinePlus />
-                    </button>
-                  </div>
+                  <button
+                    className={`ms-2 btn btn-secondary`}
+                    type="button"
+                    onClick={addNewOperator}
+                  >
+                    <AiOutlinePlus />
+                  </button>
                 </div>
+              </div>
 
-                <div className="col-md-12">
-                  <CustomTable
-                    showAddButton={false}
-                    keyField="_id"
-                    data={companyListData}
-                    columns={columns}
-                    showSearch={false}
-                    withPagination={false}
-                    loading={loading}
-                    withCard={false}
-                  ></CustomTable>
-                </div>
+              <div className="col-md-12">
+                <CustomTable
+                  showAddButton={false}
+                  keyField="_id"
+                  data={companyListData}
+                  columns={columns}
+                  showSearch={false}
+                  withPagination={false}
+                  loading={loading}
+                  withCard={false}
+                ></CustomTable>
               </div>
             </div>
           </div>
         </div>
-        {modalShow && (
-          <AddUpdateCompanyModal
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-            data={companysData}
-            type={type}
-          />
-        )}
-
-        {isShowConfirmModal && (
-          <ConfirmModal
-            title="Are you sure ?"
-            description="Are you sure you want to delete ?"
-            handleDelete={handleOk}
-            isShowConfirmModal={isShowConfirmModal}
-            onCloseConfirmModal={setIsShowConfirmModal(false)}
-          />
-        )}
       </div>
+      {modalShow && (
+        <AddUpdateCompanyModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          data={companysData}
+          type={type}
+        />
+      )}
+      {console.log({ isShowConfirmModal })}
+      {isShowConfirmModal && (
+        <ConfirmModal
+          title="Are you sure ?"
+          description="Are you sure you want to delete ?"
+          handleDelete={handleOk}
+          isShowConfirmModal={isShowConfirmModal}
+          onCloseConfirmModal={() => setIsShowConfirmModal(false)}
+        />
+      )}
     </div>
   )
 }

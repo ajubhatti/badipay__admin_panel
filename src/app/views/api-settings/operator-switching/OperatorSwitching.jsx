@@ -1,8 +1,8 @@
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 import { companyService } from "app/services/company.service"
-import { filter } from "lodash"
 import React, { useEffect, useState } from "react"
 import { Button, Form } from "react-bootstrap"
+import { AiOutlineSearch } from "react-icons/ai"
 import { useDispatch, useSelector } from "react-redux"
 import { getCompanies } from "../company-listing/store/action"
 import { getServices } from "../services-listing/store/action"
@@ -73,168 +73,160 @@ const OperatorSwitching = () => {
       })
   }
 
-  const arraymove = (arr, fromIndex, toIndex) => {
-    var element = arr[fromIndex]
-    arr.splice(fromIndex, 1)
-    arr.splice(toIndex, 0, element)
-  }
-
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
           <h2 className="main-heading">API PRIORITY</h2>
         </div>
-        <div className="col-lg-12">
-          <div className="mb-4">
-            <div className="card-header">
-              <h6> Search Filters</h6>
-            </div>
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-8">
-                  <Form onSubmit={submitHandler} className="select-operator">
-                    <h5>Select Operator</h5>
+      </div>
 
-                    <div className="list-of-operator m-2">
-                      <Form.Group controlId="formGridServic">
-                        <ReactSelect
-                          title={"Services"}
-                          handleChange={(e) => {
-                            // setSelectedValue(e)
-                            setCompanyData({
-                              ...searchData,
-                              providerType: e,
-                            })
-                          }}
-                          options={serviceMenuData}
-                        />
-                      </Form.Group>
-                    </div>
+      <div className="col-lg-12">
+        <div className="card mb-4">
+          <div className="card-header">
+            <h6> Search Filters</h6>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-12">
+                <Form onSubmit={submitHandler} className="select-operator">
+                  <div className="me-2">
+                    <Form.Group controlId="formGridServic">
+                      <ReactSelect
+                        placeHolder={"Select Services"}
+                        title={"Services"}
+                        handleChange={(e) => {
+                          setCompanyData({
+                            ...searchData,
+                            providerType: e,
+                          })
+                        }}
+                        options={serviceMenuData}
+                      />
+                    </Form.Group>
+                  </div>
 
-                    <div className="list-of-operator m-2">
-                      <Form.Group controlId="formGridOperator">
-                        <ReactSelect
-                          title={"Operator"}
-                          handleChange={(e) => {
-                            // setSelectedValue(e)
-                            setCompanyData({
-                              ...searchData,
-                              operator: e,
-                            })
-                          }}
-                          options={operatorMenuData}
-                        />
-                      </Form.Group>
-                    </div>
-                    <Button className="btn btn-md btn-primary" type="submit">
-                      Search
-                    </Button>
-                  </Form>
-                </div>
+                  <div className="me-2">
+                    <Form.Group controlId="formGridOperator">
+                      <ReactSelect
+                        placeHolder={"Select Operator"}
+                        title={"Operator"}
+                        handleChange={(e) => {
+                          setCompanyData({
+                            ...searchData,
+                            operator: e,
+                          })
+                        }}
+                        options={operatorMenuData}
+                      />
+                    </Form.Group>
+                  </div>
+
+                  <button className={`btn btn-primary`} onClick={submitHandler}>
+                    <AiOutlineSearch />
+                  </button>
+                </Form>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="col-lg-12">
-          <div className="card mb-4">
-            <div className="card-header">
-              <h6> OPERATOR LIST</h6>
-            </div>
+      <div className="col-lg-12">
+        <div className="card mb-4">
+          <div className="card-header">
+            <h6> OPERATOR LIST</h6>
+          </div>
 
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12">
-                  <form onSubmit={submitHandler}>
-                    <table className="table mb-4">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>NAME</th>
-                          <th>PENDING LIMIT</th>
-                          <th>TOTAL PENDING</th>
-                          <th>PRIORITY</th>
-                          <th>ENABLE/DISABLE</th>
-                          <th>FAILURE LIMIT</th>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-12">
+                <form onSubmit={submitHandler}>
+                  <table className="table mb-4">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>NAME</th>
+                        <th>PENDING LIMIT</th>
+                        <th>TOTAL PENDING</th>
+                        <th>PRIORITY</th>
+                        <th>ENABLE/DISABLE</th>
+                        <th>FAILURE LIMIT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedOperatorData?.referenceApis?.map((x, index) => (
+                        <tr key={x._id}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{x.apiName}</td>
+                          <td>
+                            <input
+                              defaultValue={x.pendingLimit}
+                              type="number"
+                              className="form-input"
+                              id="exampleCheck1"
+                              onChange={(e) => {
+                                handleOnChange(index, x, "pendingLimit", e)
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span>{x.totalPending}</span>
+                          </td>
+                          <td>
+                            <input
+                              defaultValue={x.priority}
+                              type="number"
+                              className="form-input"
+                              id="exampleCheck1"
+                              onChange={(e) => {
+                                handleOnChange(index, x, "priority", e)
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <Form.Check
+                              type="switch"
+                              checked={x.isActive || false}
+                              onChange={(e) => {
+                                handleOnChange(index, x, "isActive", e)
+                              }}
+                            />
+                            {/* <input
+                                      checked={
+                                          x.isActive
+                                      }
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      id="exampleCheck1"
+                                      onChange={(
+                                          e
+                                      ) => {
+                                          handleOnChange(
+                                              index,
+                                              x,
+                                              'isActive',
+                                              e
+                                          )
+                                      }}
+                                  /> */}
+                          </td>
+                          <td>
+                            <input
+                              defaultValue={x.failureLimit}
+                              type="number"
+                              className="form-input"
+                              id="exampleCheck1"
+                              onChange={(e) => {
+                                handleOnChange(index, x, "failureLimit", e)
+                              }}
+                            />
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {selectedOperatorData?.referenceApis?.map(
-                          (x, index) => (
-                            <tr key={x._id}>
-                              <th scope="row">{index + 1}</th>
-                              <td>{x.apiName}</td>
-                              <td>
-                                <input
-                                  defaultValue={x.pendingLimit}
-                                  type="number"
-                                  className="form-input"
-                                  id="exampleCheck1"
-                                  onChange={(e) => {
-                                    handleOnChange(index, x, "pendingLimit", e)
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                <span>{x.totalPending}</span>
-                              </td>
-                              <td>
-                                <input
-                                  defaultValue={x.priority}
-                                  type="number"
-                                  className="form-input"
-                                  id="exampleCheck1"
-                                  onChange={(e) => {
-                                    handleOnChange(index, x, "priority", e)
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                <Form.Check
-                                  type="switch"
-                                  checked={x.isActive || false}
-                                  onChange={(e) => {
-                                    handleOnChange(index, x, "isActive", e)
-                                  }}
-                                />
-                                {/* <input
-                                                                    checked={
-                                                                        x.isActive
-                                                                    }
-                                                                    type="checkbox"
-                                                                    className="form-check-input"
-                                                                    id="exampleCheck1"
-                                                                    onChange={(
-                                                                        e
-                                                                    ) => {
-                                                                        handleOnChange(
-                                                                            index,
-                                                                            x,
-                                                                            'isActive',
-                                                                            e
-                                                                        )
-                                                                    }}
-                                                                /> */}
-                              </td>
-                              <td>
-                                <input
-                                  defaultValue={x.failureLimit}
-                                  type="number"
-                                  className="form-input"
-                                  id="exampleCheck1"
-                                  onChange={(e) => {
-                                    handleOnChange(index, x, "failureLimit", e)
-                                  }}
-                                />
-                              </td>
-                            </tr>
-                          )
-                        )}
-                      </tbody>
-                    </table>
-                  </form>
-                </div>
+                      ))}
+                    </tbody>
+                  </table>
+                </form>
               </div>
             </div>
           </div>

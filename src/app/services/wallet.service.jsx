@@ -1,6 +1,5 @@
 import { BehaviorSubject } from "rxjs"
 import { fetchWrapper } from "../helpers/fetch-wrapper"
-import { history } from "../helpers/history"
 
 const userSubject = new BehaviorSubject(null)
 

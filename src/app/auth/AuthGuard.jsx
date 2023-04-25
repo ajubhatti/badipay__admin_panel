@@ -5,15 +5,9 @@ import { Cookie } from "@mui/icons-material"
 import Cookies from "app/helpers/cookies"
 
 const AuthGuard = ({ children }) => {
-    return (
-        <>
-            {!!Cookies.get("token") ? (
-                children
-            ) : (
-                <Navigate to="/session/signin" />
-            )}
-        </>
-    )
+  return (
+    <>{!!Cookies.get("token") ? children : <Navigate to="/session/signin" />}</>
+  )
 }
 
 export default AuthGuard

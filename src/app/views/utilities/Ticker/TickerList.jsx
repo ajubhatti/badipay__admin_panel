@@ -60,9 +60,9 @@ const TickerList = () => {
     setTickerInfo(row)
   }
 
-  const handleDelete = async (data) => {
+  const handleDelete = async () => {
     dispatch(
-      removeTicker(data._id, () => {
+      removeTicker(tickerInfo._id, () => {
         setIsShowConfirmModal(false)
       })
     )

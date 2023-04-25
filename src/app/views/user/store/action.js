@@ -1,8 +1,6 @@
-import { accountService } from "app/services/recharge.service"
+import { accountService } from "app/services/account.service"
 import { toast } from "react-toastify"
 import {
-  FETCH_RECHARGES,
-  FETCH_RECHARGES_BY_ID,
   FETCH_USERS,
   FETCH_USERS_BY_ID,
   SET_PAGE_USERS,
@@ -16,7 +14,7 @@ import {
 export const getUserById = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await accountService.getUserById(data).then((res) => {
+    await accountService.getById(data).then((res) => {
       dispatch(fetchUserById(res?.data))
       dispatch(setLoading(false))
     })
@@ -29,7 +27,7 @@ export const getUserById = (data) => async (dispatch) => {
 export const getAllUsersList = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await accountService.getAllUsers(data).then((res) => {
+    await accountService.getAll(data).then((res) => {
       if (res?.data) {
         dispatch(setLoading(false))
       }
@@ -43,9 +41,10 @@ export const getAllUsersList = (data) => async (dispatch) => {
 export const getUserList = (data, cb) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await accountService.getUsers(data).then((res) => {
+    await accountService.getAll(data).then((res) => {
       if (res?.data) {
-        dispatch(fetchRechargeList(res?.data))
+        console.log(res?.data)
+        dispatch(fetchUserList(res?.data))
         dispatch(setLoading(false))
         cb(res?.data)
       }
@@ -55,9 +54,9 @@ export const getUserList = (data, cb) => async (dispatch) => {
   }
 }
 
-export const getRechargeListForPrint = (data, cb) => async (dispatch) => {
+export const getUserListForPrint = (data, cb) => async (dispatch) => {
   try {
-    await accountService.getRecharges(data).then((res) => {
+    await accountService.getAll(data).then((res) => {
       if (res?.data) {
         cb(res?.data)
       }
@@ -71,7 +70,6 @@ export const updateUser = (id, data, cb) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
     await accountService.updateUserById(id, data).then((res) => {
-      // dispatch(getRechargeList())
       if (res?.data) {
         cb(res.data)
       }
@@ -84,7 +82,7 @@ export const updateUser = (id, data, cb) => async (dispatch) => {
 export const createUser = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await accountService.addRecharge(data).then((res) => {
+    await accountService.createUser(data).then((res) => {
       dispatch(getUserList())
     })
   } catch (err) {
@@ -97,48 +95,38 @@ export const setLoading = (data) => ({
   payload: data,
 })
 
-export const fetchRechargeList = (data) => ({
-  type: FETCH_RECHARGES,
-  payload: data,
-})
-
-export const fetchUserById = (data) => ({
-  type: FETCH_RECHARGES_BY_ID,
-  payload: data,
-})
-
-export const fetchTransactionList = (data) => ({
+export const fetchUserList = (data) => ({
   type: FETCH_USERS,
   payload: data,
 })
 
-export const fetchTransactionById = (data) => ({
+export const fetchUserById = (data) => ({
   type: FETCH_USERS_BY_ID,
   payload: data,
 })
 
 // ================== new =====================
-export const setPageTransactions = (data) => ({
+export const setPageUsers = (data) => ({
   type: SET_PAGE_USERS,
   payload: data,
 })
 
-export const setSizePerPageTransactions = (data) => ({
+export const setSizePerPageUsers = (data) => ({
   type: SET_SIZE_PER_PAGE_USERS,
   payload: data,
 })
 
-export const setSearchTransactions = (data) => ({
+export const setSearchUsers = (data) => ({
   type: SET_SEARCH_USERS,
   payload: data,
 })
 
-export const setSortFieldOfTransactions = (data) => ({
+export const setSortFieldOfUsers = (data) => ({
   type: SET_SORT_FIELD_USERS,
   payload: data,
 })
 
-export const setSortOrderOfTransactions = (data) => ({
+export const setSortOrderOfUsers = (data) => ({
   type: SET_SORT_ORDER_USERS,
   payload: data,
 })

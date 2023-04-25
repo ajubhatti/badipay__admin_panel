@@ -113,10 +113,10 @@ export const createTicker = (data) => async (dispatch) => {
   }
 }
 
-export const removeTicker = (data, cb) => async (dispatch) => {
+export const removeTicker = (id, cb) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await tickerService.deleteTicker(data._id).then((res) => {
+    await tickerService.deleteTicker(id).then((res) => {
       dispatch(getTickerList())
       cb()
     })

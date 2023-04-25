@@ -55,15 +55,222 @@ const RechargeList = () => {
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
   const [filter, setFilter] = useState({ api: "", services: "" })
   const [searchString, setSearchString] = useState("")
-
   const [dateRangeValue, setDateRangeValue] = useState({
     start: new Date(),
     end: new Date(),
   })
-
   const [exportLoading, setExportLoading] = useState(false)
   const [providers, setApis] = useState([])
   const [services, setServices] = useState([])
+  const [payloadData, setPayloadData] = useState({
+    page: 1,
+    limits: 25,
+    sortBy: "created",
+    orderBy: "DESC",
+    skip: 0,
+    search: "",
+    startDate: moment(dateRangeValue?.start).format("MM-DD-yyyy"), //"10-15-2022",
+    endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
+    api: "",
+    services: "",
+  })
+
+  useEffect(() => {
+    const getAllProviders = async () => {
+      await discountServices.getAllApisAndServices().then((res) => {
+        let apis = []
+        apis = res?.apisResponse?.data?.data?.data
+          .filter((apis) => {
+            return apis.isActive
+          })
+          .map(function (apis) {
+            return { value: apis._id, label: apis.apiName }
+          })
+        apis.unshift({ value: 0, label: "Select API" })
+        setApis(apis)
+
+        let service = []
+        service = res?.serviceResponse?.data?.data
+          .filter((service) => {
+            return service.isActive
+          })
+          .map(function (service) {
+            return { value: service._id, label: service.serviceName }
+          })
+        service.unshift({ value: 0, label: "Select Service" })
+        setServices(service)
+      })
+    }
+    getAllProviders()
+  }, [])
+
+  const handleDelete = (cell, row) => {}
+
+  const handleView = (cell, row) => {}
+
+  const handleDiscountClose = () => {
+    setdDiscountInfo({})
+    setIsDiscountEdit(false)
+    setIsShowDiscountModal(false)
+  }
+
+  const handleEdit = (info) => {
+    setdDiscountInfo(info)
+    setIsDiscountEdit(true)
+    setIsShowDiscountModal(true)
+  }
+
+  useEffect(() => {
+    dispatch(getStateList())
+    dispatch(getCompanies())
+    dispatch(getAllRechargeList())
+  }, [dispatch])
+
+  const getTransactionList = useCallback(() => {
+    console.log({ payloadData })
+    dispatch(getRechargeList(payloadData))
+  }, [dispatch, payloadData])
+
+  useEffect(() => {
+    getTransactionList()
+  }, [getTransactionList])
+
+  useEffect(() => {
+    setPayloadData((previousData) => ({
+      ...previousData,
+      page: page,
+      limits: sizePerPage,
+    }))
+  }, [sizePerPage, page])
+
+  const pageOptions = useMemo(
+    () => ({
+      page,
+      sizePerPage,
+      totalSize,
+      custom: true,
+      sizePerPageList,
+    }),
+    [sizePerPage, totalSize, page]
+  )
+
+  const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
+    switch (type) {
+      case "sort":
+        dispatch(setSortFieldOfTransactions(sortField))
+        dispatch(setSortOrderOfTransactions(sortOrder.toUpperCase()))
+        break
+      case "pagination":
+        dispatch(setPageTransactions(page))
+        dispatch(setSizePerPageTransactions(sizePerPage))
+        break
+      default:
+        break
+    }
+  }
+
+  const handleSearch = (e) => {
+    setSearchString(e.target.value.trim())
+  }
+
+  const handleFilterData = () => {
+    setPayloadData((prev) => ({
+      ...prev,
+      page: page,
+      api: filter?.api || "",
+      services: filter?.services || "",
+      search: searchString,
+      startDate: dateRangeValue?.start
+        ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
+        : "", //"10-15-2022",
+      endDate: dateRangeValue?.end
+        ? moment(dateRangeValue?.end).format("MM-DD-yyyy")
+        : "",
+    }))
+  }
+
+  const handleCSV = () => {
+    try {
+      setExportLoading(true)
+      const payload = {
+        ...payloadData,
+        limits: totalSize,
+      }
+      dispatch(
+        getRechargeListForPrint(payload, (status) => {
+          if (status) {
+            const exportData = status?.data
+              ?.filter((item) => item.status === CONSTANT_STATUS.SUCCESS)
+              ?.map((item) => ({
+                Date:
+                  moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
+                "User Name": item?.userDetail?.userName || "-",
+                "Phone Number": item?.userDetail?.phoneNumber || "-",
+                "Transaction No": item?.transactionData?.transactionId || "",
+                // "service type": item?.transactionData?.serviceTypeName || "-",
+                "Operator Id":
+                  item?.transactionData?.rechargeData?.OPRID ||
+                  item?.transactionData?.rechargeData?.opid ||
+                  "-",
+                "Operator Name": item?.transactionData?.rechargeData
+                  ?.rechargeOperator?.companyName
+                  ? item?.transactionData?.rechargeData?.rechargeOperator
+                      ?.companyName
+                  : "-",
+                "Api Name": item?.transactionData?.rechargeData?.rechargeApi
+                  ?.apiName
+                  ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
+                  : "-",
+                "Customer Number": item?.transactionData?.customerNo
+                  ? item?.transactionData?.customerNo
+                  : "-",
+                "User Balance": item?.transactionData?.userBalance
+                  ? item?.transactionData?.userBalance
+                  : "-",
+                "Request Amount": item?.transactionData?.requestAmount
+                  ? item?.transactionData?.requestAmount
+                  : "-",
+                "User CashBack": item?.transactionData?.cashBackAmount || "-",
+                "Net CashBack": item?.transactionData?.netCashBack || "-",
+                "Recharge Amount": item?.transactionData?.rechargeAmount || "-",
+                "Final Balance": item?.transactionData?.userFinalBalance || "-",
+                Remark: item?.transactionData?.remark || "-",
+                Status: item?.transactionData?.status,
+              }))
+
+            setExportLoading(false)
+            csvExporter.generateCsv(exportData)
+          }
+        })
+      )
+    } catch (err) {
+      setExportLoading(false)
+      toast.err("something want's wrong!!")
+    }
+  }
+
+  const handleChange = (e) => {
+    const { value, name } = e.target
+    if (name === "api") {
+      setFilter((prev) => ({
+        ...prev,
+        api: value,
+      }))
+    } else {
+      setFilter((prev) => ({
+        ...prev,
+        services: value,
+      }))
+    }
+  }
+
+  const resetValue = () => {
+    setFilter({ api: "", services: "" })
+    setDateRangeValue({
+      start: null,
+      end: null,
+    })
+  }
 
   const columns = useMemo(
     () => [
@@ -306,221 +513,6 @@ const RechargeList = () => {
     [page, reportType, sizePerPage]
   )
 
-  useEffect(() => {
-    const getAllProviders = async () => {
-      await discountServices.getAllApisAndServices().then((res) => {
-        let apis = []
-        apis = res?.apisResponse?.data?.data?.data
-          .filter((apis) => {
-            return apis.isActive
-          })
-          .map(function (apis) {
-            return { value: apis._id, label: apis.apiName }
-          })
-        apis.unshift({ value: 0, label: "Select API" })
-        setApis(apis)
-
-        let service = []
-        service = res?.serviceResponse?.data?.data
-          .filter((service) => {
-            return service.isActive
-          })
-          .map(function (service) {
-            return { value: service._id, label: service.serviceName }
-          })
-        service.unshift({ value: 0, label: "Select Service" })
-        setServices(service)
-      })
-    }
-    getAllProviders()
-  }, [])
-
-  const handleDelete = (cell, row) => {}
-
-  const handleView = (cell, row) => {}
-
-  const handleDiscountClose = () => {
-    setdDiscountInfo({})
-    setIsDiscountEdit(false)
-    setIsShowDiscountModal(false)
-  }
-
-  const handleEdit = (info) => {
-    setdDiscountInfo(info)
-    setIsDiscountEdit(true)
-    setIsShowDiscountModal(true)
-  }
-
-  useEffect(() => {
-    dispatch(getStateList())
-    dispatch(getCompanies())
-    dispatch(getAllRechargeList())
-  }, [dispatch])
-
-  const [payloadData, setPayloadData] = useState({
-    page: 1,
-    limits: 20,
-    sortBy: "created",
-    orderBy: "DESC",
-    skip: 0,
-    search: "",
-    startDate: "", //"10-15-2022",
-    endDate: "",
-    api: "",
-    services: "",
-  })
-
-  const getTransactionList = useCallback(() => {
-    dispatch(getRechargeList(payloadData))
-  }, [dispatch, payloadData])
-
-  useEffect(() => {
-    getTransactionList()
-  }, [getTransactionList])
-
-  useEffect(() => {
-    setPayloadData((previousData) => ({
-      ...previousData,
-      startDate: "",
-      endDate: "",
-      page: page,
-      limits: sizePerPage,
-      sortBy: "created",
-      orderBy: "DESC",
-      skip: 0,
-      search: "",
-    }))
-  }, [sizePerPage, page])
-
-  const pageOptions = useMemo(
-    () => ({
-      page,
-      sizePerPage,
-      totalSize,
-      custom: true,
-      sizePerPageList,
-    }),
-    [sizePerPage, totalSize, page]
-  )
-
-  const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
-    switch (type) {
-      case "sort":
-        dispatch(setSortFieldOfTransactions(sortField))
-        dispatch(setSortOrderOfTransactions(sortOrder.toUpperCase()))
-        break
-      case "pagination":
-        dispatch(setPageTransactions(page))
-        dispatch(setSizePerPageTransactions(sizePerPage))
-        break
-      default:
-        break
-    }
-  }
-
-  const handleSearch = (e) => {
-    setSearchString(e.target.value.trim())
-  }
-
-  const handleFilterData = () => {
-    setPayloadData((prev) => ({
-      ...prev,
-      page: 1,
-      api: filter?.api || "",
-      services: filter?.services || "",
-      search: searchString,
-      startDate: dateRangeValue?.start
-        ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
-        : "", //"10-15-2022",
-      endDate: dateRangeValue?.end
-        ? moment(dateRangeValue?.end).format("MM-DD-yyyy")
-        : "",
-    }))
-  }
-
-  const handleCSV = () => {
-    try {
-      setExportLoading(true)
-      const payload = {
-        ...payloadData,
-        limits: totalSize,
-      }
-      dispatch(
-        getRechargeListForPrint(payload, (status) => {
-          if (status) {
-            const exportData = status?.data
-              ?.filter((item) => item.status === CONSTANT_STATUS.SUCCESS)
-              ?.map((item) => ({
-                Date:
-                  moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
-                "User Name": item?.userDetail?.userName || "-",
-                "Phone Number": item?.userDetail?.phoneNumber || "-",
-                "Transaction No": item?.transactionData?.transactionId || "",
-                // "service type": item?.transactionData?.serviceTypeName || "-",
-                "Operator Id":
-                  item?.transactionData?.rechargeData?.OPRID ||
-                  item?.transactionData?.rechargeData?.opid ||
-                  "-",
-                "Operator Name": item?.transactionData?.rechargeData
-                  ?.rechargeOperator?.companyName
-                  ? item?.transactionData?.rechargeData?.rechargeOperator
-                      ?.companyName
-                  : "-",
-                "Api Name": item?.transactionData?.rechargeData?.rechargeApi
-                  ?.apiName
-                  ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
-                  : "-",
-                "Customer Number": item?.transactionData?.customerNo
-                  ? item?.transactionData?.customerNo
-                  : "-",
-                "User Balance": item?.transactionData?.userBalance
-                  ? item?.transactionData?.userBalance
-                  : "-",
-                "Request Amount": item?.transactionData?.requestAmount
-                  ? item?.transactionData?.requestAmount
-                  : "-",
-                "User CashBack": item?.transactionData?.cashBackAmount || "-",
-                "Net CashBack": item?.transactionData?.netCashBack || "-",
-                "Recharge Amount": item?.transactionData?.rechargeAmount || "-",
-                "Final Balance": item?.transactionData?.userFinalBalance || "-",
-                Remark: item?.transactionData?.remark || "-",
-                Status: item?.transactionData?.status,
-              }))
-
-            setExportLoading(false)
-            csvExporter.generateCsv(exportData)
-          }
-        })
-      )
-    } catch (err) {
-      setExportLoading(false)
-      toast.err("something want's wrong!!")
-    }
-  }
-
-  const handleChange = (e) => {
-    const { value, name } = e.target
-    if (name === "api") {
-      setFilter((prev) => ({
-        ...prev,
-        api: value,
-      }))
-    } else {
-      setFilter((prev) => ({
-        ...prev,
-        services: value,
-      }))
-    }
-  }
-
-  const resetValue = () => {
-    setFilter({ api: "", services: "" })
-    setDateRangeValue({
-      start: null,
-      end: null,
-    })
-  }
-
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
@@ -585,7 +577,7 @@ const RechargeList = () => {
                   />
                   <button
                     className={`btn btn-primary`}
-                    onClick={handleFilterData}
+                    onClick={() => handleFilterData()}
                   >
                     <AiOutlineSearch />
                   </button>

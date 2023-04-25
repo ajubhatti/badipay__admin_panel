@@ -1,114 +1,68 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { Icon, IconButton } from "@mui/material"
+import { useDispatch, useSelector } from "react-redux"
+import { Icon } from "@mui/material"
 import { accountService } from "../../services/account.service"
 import AddUpdateUserDialog from "./AddUpdateUserDialog"
-import { jsPDF } from "jspdf"
 import "jspdf-autotable"
-import DateRangePick from "../material-kit/dates/DateRangePick"
 import moment from "moment"
 import AddRemoveBalance from "./AddRemoveBalance"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { toast } from "react-toastify"
 import { useCallback } from "react"
 import {
+  AiFillDelete,
+  AiFillEye,
+  AiOutlineDollar,
   AiOutlineDownload,
+  AiOutlineEdit,
   AiOutlinePlus,
   AiOutlineSearch,
 } from "react-icons/ai"
 import { Button } from "react-bootstrap"
+import CustomDateRangePicker from "../reports/CustomDateRangePicker"
+import {
+  getUserList,
+  setPageUsers,
+  setSizePerPageUsers,
+  setSortFieldOfUsers,
+  setSortOrderOfUsers,
+} from "./store/action"
 
 const UserListings = () => {
-  const [page, setPage] = React.useState(1)
+  const dispatch = useDispatch()
+  const { loading, page, sizePerPage, totalSize, userList } = useSelector(
+    (state) => state.account
+  )
   const [usersList, setUsersList] = useState([])
   const [userModelOpen, setUserModelOpen] = useState(false)
   const [userData, setUserData] = useState({})
-  const [userType, setUserType] = useState("user")
-  const [selectedDates, setSelectedDates] = useState([])
-  const [searchText, setSearchText] = useState("")
   const [addRemoveModelOpen, setAddRemoveModelOpen] = useState(false)
   const [modelTitle, setModelTitle] = useState("Add balance")
   const [userModelTitle, setUserModelTitle] = useState("New User")
   const [addRemoveModelType, setAddRemoveModelType] = useState("add")
-  const [loading, setLoading] = useState(false)
-  const [sizePerPage, setSizePerPage] = useState(10)
-  const [sort, setSort] = useState({ field: "", order: "" })
   const [viewType, setViewType] = useState("")
-
+  const [searchString, setSearchString] = useState("")
   const [exportLoading, setExportLoading] = useState(false)
-
   const [statusLoading, setStatusLoading] = useState(false)
-
+  const [dateRangeValue, setDateRangeValue] = useState({
+    start: null,
+    end: null,
+  })
   const [payloadData, setPayloadData] = useState({
     page: 1,
-    limits: 20,
+    limits: 25,
     sortBy: "created",
     orderBy: "DESC",
     skip: 0,
     search: "",
     startDate: "", //"10-15-2022",
     endDate: "",
-    api: "",
-    services: "",
   })
 
   useEffect(() => {
-    getAllUsers()
-  }, [userType, selectedDates, searchText, page, sizePerPage, sort])
-
-  const getAllUsers = useCallback(async () => {
-    let startDate = moment(selectedDates[0]).format("YYYY-MM-DD")
-    let endDate = moment(selectedDates[1]).format("YYYY-MM-DD")
-
-    let payload = {
-      role: userType,
-      page: page,
-      limits: sizePerPage,
-      sortBy: sort?.field,
-      orderBy: sort?.order,
-    }
-    if (searchText !== "") {
-      payload.searchParams = searchText
-    }
-    if (selectedDates.length > 0) {
-      payload.startDate = startDate
-      payload.endDate = endDate
-    }
-
-    try {
-      setLoading(true)
-      const res = await accountService.getAll(payload)
-      if (!!res && res?.data) {
-        setUsersList(res?.data)
-      }
-      setLoading(false)
-    } catch (err) {
-      setLoading(false)
-      toast.error(err?.response?.data?.message || "Something want's wrong")
-    }
-  }, [
-    page,
-    searchText,
-    selectedDates,
-    sizePerPage,
-    sort?.field,
-    sort?.order,
-    userType,
-  ])
-
-  useEffect(() => {
-    setPayloadData((previousData) => ({
-      ...previousData,
-      startDate: "",
-      endDate: "",
-      page: page,
-      limits: sizePerPage,
-      sortBy: "created",
-      orderBy: "DESC",
-      skip: 0,
-      search: "",
-    }))
-  }, [sizePerPage, page])
+    console.log({ userList })
+    setUsersList(userList)
+  }, [userList])
 
   const editUser = (data) => {
     // setUserData(data)
@@ -138,14 +92,12 @@ const UserListings = () => {
     setAddRemoveModelOpen(true)
     setAddRemoveModelType("add")
   }
-  const handleUpdate = useCallback(
-    async (id, data) => {
-      await accountService.update(id, data).then((res) => {
-        getAllUsers()
-      })
-    },
-    [getAllUsers]
-  )
+  const handleUpdate = useCallback(async (id, data) => {
+    setStatusLoading(true)
+    await accountService.update(id, data).then((res) => {
+      setStatusLoading(false)
+    })
+  }, [])
 
   const changeStatus = useCallback(
     (data) => {
@@ -157,54 +109,95 @@ const UserListings = () => {
     [handleUpdate]
   )
 
-  const exportPDF = () => {
-    const unit = "pt"
-    const size = "A4" // Use A1, A2, A3 or A4
-    const orientation = "portrait" // portrait or landscape
-
-    const marginLeft = 40
-    const doc = new jsPDF(orientation, unit, size)
-
-    doc.setFontSize(15)
-
-    const title = "User Report"
-    const headers = [
-      [
-        "user Name",
-        "phone",
-        "email",
-        "location",
-        "balance",
-        "status",
-        "created at",
-      ],
-    ]
-
-    const data = usersList?.data?.map((elt) => [
-      elt.userName,
-      elt.phoneNumber,
-      elt.email,
-      elt.location,
-      elt.balance,
-      elt.isActive,
-      elt.createdAt,
-    ])
-
-    let content = {
-      startY: 50,
-      head: headers,
-      body: data,
-      theme: "grid",
+  const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
+    switch (type) {
+      case "sort":
+        dispatch(setSortFieldOfUsers(sortField))
+        dispatch(setSortOrderOfUsers(sortOrder.toUpperCase()))
+        break
+      case "pagination":
+        dispatch(setPageUsers(page))
+        dispatch(setSizePerPageUsers(sizePerPage))
+        break
+      default:
+        break
     }
-
-    doc.text(title, marginLeft, 40)
-    doc.autoTable(content)
-    doc.save("report.pdf")
   }
 
-  const handleChange = (event) => {
-    setSearchText(event.target.value)
+  // const handleDiscountClose = () => {
+  //   setdDiscountInfo({})
+  //   setIsDiscountEdit(false)
+  //   setIsShowDiscountModal(false)
+  // }
+
+  // const handleEdit = (info) => {
+  //   setdDiscountInfo(info)
+  //   setIsDiscountEdit(true)
+  //   setIsShowDiscountModal(true)
+  // }
+
+  const handleSearch = (e) => {
+    setSearchString(e.target.value.trim())
   }
+
+  // const getUsersList = useCallback(() => {
+  //   console.log({ payloadData })
+  //   dispatch(getUserList(payloadData))
+  // }, [dispatch, payloadData])
+
+  useEffect(() => {
+    dispatch(getUserList(payloadData))
+  }, [payloadData, dispatch])
+
+  // useEffect(() => {
+  //   getUsersList()
+  // }, [])
+
+  useEffect(() => {
+    console.log({ sizePerPage, page })
+    setPayloadData((previousData) => ({
+      ...previousData,
+      page: page,
+      limits: sizePerPage,
+    }))
+  }, [sizePerPage, page])
+
+  const pageOptions = useMemo(
+    () => ({
+      page,
+      sizePerPage,
+      totalSize,
+      custom: true,
+      sizePerPageList,
+    }),
+    [sizePerPage, totalSize, page]
+  )
+
+  const handleFilterData = () => {
+    console.log({ payloadData })
+    setPayloadData((prev) => ({
+      ...prev,
+      page: page,
+      search: searchString,
+      startDate: dateRangeValue?.start
+        ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
+        : "", //"10-15-2022",
+      endDate: dateRangeValue?.end
+        ? moment(dateRangeValue?.end).format("MM-DD-yyyy")
+        : "",
+    }))
+  }
+
+  const resetValue = () => {
+    setDateRangeValue({
+      start: null,
+      end: null,
+    })
+  }
+
+  const handleCSV = () => {}
+
+  const handleDelete = (cell, row) => {}
 
   const columns = useMemo(
     () => [
@@ -278,78 +271,48 @@ const UserListings = () => {
         dataField: "action",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="d-flex">
-            <div title="View Profile">
-              <IconButton onClick={() => viewUser(row)}>
-                <Icon>person</Icon>
-              </IconButton>
-            </div>
-            <div title="Edit Profile">
-              <IconButton onClick={() => editUser(row)}>
-                <Icon>edit_icon</Icon>
-              </IconButton>
-            </div>
-            <div title="Credit/Debit Amount">
-              <IconButton onClick={() => addBalance(row)}>
-                <Icon>currency_rupee</Icon>
-              </IconButton>
-            </div>
+            <button
+              type="button"
+              className="btn text-primary btn-sm"
+              title="Preview"
+              size="sm"
+              onClick={() => viewUser(row)}
+            >
+              <AiFillEye />
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm"
+              title="Edit"
+              size="sm"
+              onClick={() => editUser(row)}
+            >
+              <AiOutlineEdit />
+            </button>
+            <button
+              type="button"
+              className="btn text-danger btn-sm"
+              title="Delete"
+              size="sm"
+              onClick={() => handleDelete(row)}
+            >
+              <AiFillDelete />
+            </button>
+            <button
+              type="button"
+              className="btn text-primary btn-sm"
+              title="Preview"
+              size="sm"
+              onClick={() => addBalance(row)}
+            >
+              <AiOutlineDollar />
+            </button>
           </div>
         ),
       },
     ],
     [changeStatus, statusLoading]
   )
-
-  const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
-    switch (type) {
-      case "sort":
-        setSort({ field: sortField, order: sortOrder.toUpperCase() })
-        break
-      case "pagination":
-        setPage(page)
-        setSizePerPage(sizePerPage)
-        break
-      default:
-        break
-    }
-  }
-
-  const pageOptions = useMemo(
-    () => ({
-      page,
-      sizePerPage,
-      totalSize: usersList?.total || 0,
-      custom: true,
-      sizePerPageList,
-    }),
-    [page, sizePerPage, usersList?.total]
-  )
-
-  const handleFilterData = () => {
-    // setPayloadData((prev) => ({
-    //   ...prev,
-    //   page: 1,
-    //   api: filter?.api || "",
-    //   services: filter?.services || "",
-    //   search: searchString,
-    //   startDate: dateRangeValue?.start
-    //     ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
-    //     : "", //"10-15-2022",
-    //   endDate: dateRangeValue?.end
-    //     ? moment(dateRangeValue?.end).format("MM-DD-yyyy")
-    //     : "",
-    // }))
-  }
-
-  const resetValue = () => {
-    // setFilter({ api: "", services: "" })
-    // setDateRangeValue({
-    //   start: null,
-    //   end: null,
-    // })
-  }
-
-  const handleCSV = () => {}
 
   return (
     <>
@@ -372,19 +335,19 @@ const UserListings = () => {
                         type="text"
                         className="form-control"
                         placeholder="Search"
-                        onChange={handleChange}
+                        onChange={handleSearch}
                       />
                     </div>
-                    {/* <CustomDateRangePicker
+                    <CustomDateRangePicker
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}
-                    /> */}
-                    <DateRangePick
-                      setDateValue={(data) => setSelectedDates(data)}
                     />
+                    {/* <DateRangePick
+                      setDateValue={(data) => setSelectedDates(data)}
+                    /> */}
                     <button
                       className={`btn btn-primary ms-2`}
-                      onClick={handleFilterData}
+                      onClick={() => handleFilterData()}
                     >
                       <AiOutlineSearch />
                     </button>
@@ -432,7 +395,7 @@ const UserListings = () => {
                     showAddButton={false}
                     pageOptions={pageOptions}
                     keyField="_id"
-                    data={usersList?.data || []}
+                    data={usersList || []}
                     columns={columns}
                     showSearch={false}
                     onTableChange={onTableChange}
@@ -448,7 +411,7 @@ const UserListings = () => {
                     title={userModelTitle}
                     setUserData={setUserData}
                     getAllusers={() => {
-                      getAllUsers()
+                      // getAllUsers()
                     }}
                     type={viewType}
                   />
@@ -460,7 +423,7 @@ const UserListings = () => {
                     title={modelTitle}
                     type={addRemoveModelType}
                     getAllusers={() => {
-                      getAllUsers()
+                      // getAllUsers()
                     }}
                   />
 
@@ -470,7 +433,7 @@ const UserListings = () => {
                       isDiscountEdit={isDiscountEdit}
                       isShowDiscountModal={isShowDiscountModal}
                       onCloseDiscountModal={handleDiscountClose}
-                      fetchTransactionList={getTransactionList}
+                      fetchTransactionList={getUsersList}
                       // onSaveDiscountModal={handleSaveDiscountModal}
                       // selectedServiceIndex={selectedServiceIndex}
                       // discountModalSave={discountModalSave}

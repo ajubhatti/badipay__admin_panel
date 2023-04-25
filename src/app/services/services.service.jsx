@@ -1,29 +1,29 @@
-import { fetchWrapper } from 'app/helpers/fetch-wrapper'
+import { fetchWrapper } from "app/helpers/fetch-wrapper"
 const url = `${process.env.REACT_APP_BASE_URL}/service`
 
 const getAllService = () => {
-    return fetchWrapper.get(url)
+  return fetchWrapper.get(url)
 }
 const getServiceById = (id) => {
-    return fetchWrapper.get(`${url}/${id}`)
+  return fetchWrapper.get(`${url}/${id}`)
 }
 
 const addService = (data) => {
-    return fetchWrapper.post(url, data)
+  return fetchWrapper.post(url, data)
 }
 
 const updateService = (id, data) => {
-    return fetchWrapper.put(`${url}/${id}`, data)
+  return fetchWrapper.put(`${url}/${id}`, data)
 }
 
 const deleteService = (id) => {
-    return fetchWrapper.delete(`${url}/${id}`)
+  return fetchWrapper.delete(`${url}/${id}`)
 }
 
 export const servicesService = {
-    getAllService,
-    getServiceById,
-    addService,
-    updateService,
-    deleteService,
+  getAllService,
+  getServiceById,
+  addService,
+  updateService,
+  deleteService,
 }

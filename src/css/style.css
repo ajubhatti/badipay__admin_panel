@@ -13,8 +13,7 @@
 }
 .select-operator{
     display:flex;
-    align-items: center;
-   
+    /* align-items: center; */
 }
 .select-operator h5{
     font-size: 14px;

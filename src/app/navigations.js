@@ -143,15 +143,15 @@ export const navigations = [
     icon: "account_box",
     badge: {},
     children: [
-      // {
-      //     name: "Add User",
-      //     path: "/user/register",
-      //     iconText: "STT",
-      // },
       {
         name: "user list",
         path: "/user/list",
         iconText: "UL",
+      },
+      {
+        name: "Users",
+        path: "/user/lists",
+        iconText: "US",
       },
     ],
   },

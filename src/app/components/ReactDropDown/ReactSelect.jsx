@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Select from "react-select"
 
-const ReactSelect = ({ options, selectedValue, handleChange }) => {
+const ReactSelect = ({ options, selectedValue, handleChange, placeHolder }) => {
   const [defaultValue, setDefaultValue] = useState("")
 
   useEffect(() => {
@@ -14,6 +14,7 @@ const ReactSelect = ({ options, selectedValue, handleChange }) => {
 
   return (
     <Select
+      placeholder={placeHolder || "select"}
       value={defaultValue}
       defaultValue={defaultValue}
       onChange={handleOnChange}
