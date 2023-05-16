@@ -12,12 +12,12 @@ import { useCallback } from "react"
 import {
   AiFillDelete,
   AiFillEye,
-  AiOutlineDollar,
   AiOutlineDownload,
   AiOutlineEdit,
   AiOutlinePlus,
   AiOutlineSearch,
 } from "react-icons/ai"
+import { FaRupeeSign } from "react-icons/fa"
 import { Button } from "react-bootstrap"
 import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import {
@@ -30,9 +30,8 @@ import {
 
 const UserListings = () => {
   const dispatch = useDispatch()
-  const { loading, page, sizePerPage, totalSize, userList } = useSelector(
-    (state) => state.account
-  )
+  const { loading, page, sizePerPage, totalSize, userList, totalBalance } =
+    useSelector((state) => state.account)
   const [usersList, setUsersList] = useState([])
   const [userModelOpen, setUserModelOpen] = useState(false)
   const [userData, setUserData] = useState({})
@@ -243,8 +242,7 @@ const UserListings = () => {
         dataField: "walletBalance",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <span className="d-flex align-items-center">
-            <Icon style={{ fontSize: "16px" }}>currency_rupee</Icon>
-            {parseFloat(row?.walletBalance).toFixed(2)}/-
+            {parseFloat(row?.walletBalance).toFixed(2)}
           </span>
         ),
       },
@@ -305,7 +303,7 @@ const UserListings = () => {
               size="sm"
               onClick={() => addBalance(row)}
             >
-              <AiOutlineDollar />
+              <FaRupeeSign />
             </button>
           </div>
         ),
@@ -328,7 +326,10 @@ const UserListings = () => {
             <div className="card-body">
               <div className="row">
                 <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex"></div>
+                  <div className="col-md-6 d-flex">
+                    {" "}
+                    <h4>Total Balance : {totalBalance}</h4>
+                  </div>
                   <div className="col-md-6 d-flex justify-content-end">
                     <div className="me-2">
                       <input

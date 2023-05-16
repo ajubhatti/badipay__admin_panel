@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { bannerService } from "../../../services/banner.service"
 import moment from "moment"
 import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
 import CustomTable from "app/components/Tables/CustomTable"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import BannerModal from "./BannerModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
-import { Button } from "react-bootstrap"
+import { Button, Image } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getBannerList, removeBanner, updateBanner } from "../store/action"
 
@@ -24,7 +23,7 @@ const BannerList = () => {
 
   const [type, setType] = useState("Add")
 
-  const { bannerListData, loading } = useSelector((state) => state.utilities)
+  const { bannerListData } = useSelector((state) => state.utilities)
 
   useEffect(() => {
     dispatch(getBannerList())
@@ -70,6 +69,10 @@ const BannerList = () => {
     )
   }
 
+  const ShowImage = (data) => {
+    return <Image src={data} width={150} height={100} alt="" fluid />
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -84,14 +87,14 @@ const BannerList = () => {
         text: "Image",
         dataField: "banner",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.banner || "-"}</div>
+          <div className="align-middle ">{ShowImage(row.path)}</div>
         ),
       },
       {
-        text: "Name",
-        dataField: "bannerName",
+        text: "description",
+        dataField: "description",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.bannerName || "-"}</div>
+          <div className="align-middle ">{row?.description || "-"}</div>
         ),
       },
       {

@@ -29,6 +29,13 @@ import { ExportToCsv } from "export-to-csv"
 import { CONSTANT_STATUS } from "app/constants/constant"
 import { useParams } from "react-router-dom"
 
+const statusList = [
+  { value: "", name: "Select Status" },
+  { value: "success", name: "success" },
+  { value: "pending", name: "pending" },
+  { value: "failed", name: "failed" },
+]
+
 const options = {
   fieldSeparator: ",",
   quoteStrings: '"',
@@ -53,7 +60,7 @@ const RechargeList = () => {
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState({})
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
-  const [filter, setFilter] = useState({ api: "", services: "" })
+  const [filter, setFilter] = useState({ api: "", services: "", status: "" })
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
     start: new Date(),
@@ -73,6 +80,7 @@ const RechargeList = () => {
     endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
     services: "",
+    status: reportType ? "success" : "",
   })
 
   useEffect(() => {
@@ -179,6 +187,7 @@ const RechargeList = () => {
       page: page,
       api: filter?.api || "",
       services: filter?.services || "",
+      status: filter?.status || "",
       search: searchString,
       startDate: dateRangeValue?.start
         ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
@@ -256,19 +265,24 @@ const RechargeList = () => {
         ...prev,
         api: value,
       }))
-    } else {
+    } else if (name === "services") {
       setFilter((prev) => ({
         ...prev,
         services: value,
+      }))
+    } else {
+      setFilter((prev) => ({
+        ...prev,
+        status: value,
       }))
     }
   }
 
   const resetValue = () => {
-    setFilter({ api: "", services: "" })
+    setFilter({ api: "", services: "", status: "" })
     setDateRangeValue({
-      start: null,
-      end: null,
+      start: new Date(),
+      end: new Date(),
     })
   }
 
@@ -561,6 +575,26 @@ const RechargeList = () => {
                       })}
                     </select>
                   </div>
+
+                  {!reportType && (
+                    <div className="me-2">
+                      <select
+                        name="status"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="status"
+                        value={filter.status || ""}
+                      >
+                        {statusList.map((stts) => {
+                          return (
+                            <option key={stts.value} value={stts.value}>
+                              {stts.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-6 d-flex justify-content-end">
                   <div className="me-2">

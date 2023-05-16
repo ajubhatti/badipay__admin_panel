@@ -41,6 +41,7 @@ const AddUpdateUserDialog = (props) => {
   const [state, setState] = useState(null)
 
   const onSubmit = async (values) => {
+    console.log({ values })
     if (!!props?.open?.data) {
       let id = props?.open?.data?._id
       delete values.password
@@ -52,7 +53,7 @@ const AddUpdateUserDialog = (props) => {
       })
     } else {
       delete values.walletBalance
-      await accountService.create(values).then((res) => {
+      await accountService.createUser(values).then((res) => {
         handleClose()
         props.getAllusers()
       })
@@ -101,8 +102,8 @@ const AddUpdateUserDialog = (props) => {
           city: data?.city,
           pincode: data?.pincode,
           walletBalance: data?.walletBalance,
-          password: data?.passwordHash,
-          transactionPin: data?.transactionPin,
+          password: data?.pswdString,
+          transactionPin: data?.transPin,
           referalName: data?.referedUser?.userName,
         },
       })

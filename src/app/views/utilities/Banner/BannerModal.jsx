@@ -1,82 +1,35 @@
 import React, { useEffect, useState } from "react"
-import { Button, Form, Modal } from "react-bootstrap"
+import { Button, Form, Image, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-// import { updateApis, createApi } from "./store/action"
+import { createBanner, updateBanner, uploadImage } from "../store/action"
 
 const BannerModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
 
   const [modalData, setModalData] = useState({
-    apiName: "",
-    apiDetail: "",
-    isActive: false,
+    path: "",
+    description: "",
+    isActive: true,
   })
 
+  const [imageUrl, setImageUrl] = useState(null)
   const [error, setError] = useState({})
+  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
     if (data && Object.keys(data).length !== 0) setModalData(data)
   }, [data])
 
-  const handleSubmit = (event) => {
-    if (!modalData.apiName) {
-      setError({ type: "error", message: "Please enter api name" })
+  const handleSaveOrUpdate = async () => {
+    console.log({ modalData })
+    if (modalData?._id) {
+      dispatch(updateBanner(modalData?._id, modalData))
+      clearData()
     } else {
-      handleSaveOrUpdate()
+      dispatch(createBanner(modalData))
+      clearData()
     }
   }
-
-  const handleSaveOrUpdate = async () => {
-    // if (modalData?._id) {
-    //   dispatch(updateApis(modalData?._id, modalData))
-    //   clearData()
-    // } else {
-    //   dispatch(createApi(modalData))
-    //   clearData()
-    // }
-  }
-
-  //   const handleSubmitBanner = async (e) => {
-  //     e.preventDefault()
-  //     // Update the formData object
-
-  //     var formData = new FormData()
-  //     if (bannerImage) {
-  //       formData.append("images", bannerImage)
-  //     }
-  //     formData.append("description", bannerDesc)
-  //     formData.append("fileName", bannerName)
-
-  //     if (bannerData && bannerData?._id) {
-  //       if (bannerImage) {
-  //         await bannerService
-  //           .updateBannerWithImage(bannerData?._id, formData)
-  //           .then((res) => {
-  //             getAllbanners()
-  //             handleClose()
-  //           })
-  //       } else {
-  //         let payload = {}
-  //         if (bannerName) {
-  //           payload.fileName = bannerName
-  //         }
-  //         if (bannerDesc) {
-  //           payload.description = bannerDesc
-  //         }
-  //         await bannerService
-  //           .updateBanner(bannerData?._id, payload)
-  //           .then((res) => {
-  //             getAllbanners()
-  //             handleClose()
-  //           })
-  //       }
-  //     } else {
-  //       await bannerService.uploadBanner(formData).then((res) => {
-  //         getAllbanners()
-  //         handleClose()
-  //       })
-  //     }
-  //   }
 
   const closeModal = () => {
     clearData()
@@ -85,11 +38,30 @@ const BannerModal = ({ show, onHide, type, data }) => {
   const clearData = () => {
     onHide()
     setModalData({
-      apiName: "",
-      apiDetail: "",
-      apiImage: "",
+      path: "",
+      description: "",
       isActive: false,
     })
+  }
+
+  const onImageChange = async (event) => {
+    setImageLoading(true)
+    if (event.target.files && event.target.files[0]) {
+      var formData = new FormData()
+      formData.append("file", event.target.files[0])
+      dispatch(
+        uploadImage(formData, (data) => {
+          if (data.status === 200) {
+            setImageUrl(data.data)
+            setModalData({ ...modalData, path: data.data })
+            setImageLoading(false)
+          } else {
+            setImageLoading(false)
+          }
+          console.log(data)
+        })
+      )
+    }
   }
 
   return (
@@ -102,7 +74,7 @@ const BannerModal = ({ show, onHide, type, data }) => {
           <Form noValidate>
             <Form.Group className="mb-3" controlId="formGridBannerName">
               <Form.Label>Banner Name</Form.Label>
-              <Form.Control
+              {/* <Form.Control
                 name="bannerName"
                 required
                 type="text"
@@ -121,14 +93,22 @@ const BannerModal = ({ show, onHide, type, data }) => {
               <Form.Control.Feedback type="invalid">
                 Please provide a banner name.
               </Form.Control.Feedback>
-              <span className="danger">{error.message}</span>
+              <span className="danger">{error.message}</span> */}
+
+              <Form.Control
+                type="file"
+                onChange={(e) => onImageChange(e)}
+                className="mb-3"
+              />
+
+              {imageUrl && <Image src={imageUrl} fluid />}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formGridBannerDetail">
               <Form.Label>Banner Description</Form.Label>
               <Form.Control
-                name="bannerDescription"
-                defaultValue={modalData?.bannerDescription}
+                name="description"
+                defaultValue={modalData?.description}
                 as="textarea"
                 rows={3}
                 placeholder="Enter banner Description"
@@ -136,7 +116,7 @@ const BannerModal = ({ show, onHide, type, data }) => {
                 onChange={(e) =>
                   setModalData({
                     ...modalData,
-                    bannerDescription: e.target.value,
+                    description: e.target.value,
                   })
                 }
               />
@@ -148,7 +128,6 @@ const BannerModal = ({ show, onHide, type, data }) => {
                 type="switch"
                 id="custom-switch"
                 checked={modalData?.isActive}
-                defaultChecked={modalData?.isActive}
                 disabled={type === "View"}
                 onChange={(e) => {
                   setModalData({
@@ -159,30 +138,6 @@ const BannerModal = ({ show, onHide, type, data }) => {
               />
             </Form.Group>
           </Form>
-
-          {/* <div className="register_profile_image">
-            <input type="file" onChange={onChangePicture} />
-          </div>
-          <div className="previewProfilePic align-center">
-            {bannerData && bannerData?.img ? (
-              <img
-                src={`data:image/*;base64,${new Buffer.from(
-                  bannerData?.img?.data
-                ).toString("base64")}`}
-                height={"50%"}
-                width={"100%"}
-                alt=""
-              />
-            ) : (
-              <img
-                height={"50%"}
-                width={"100%"}
-                className="playerProfilePic_home_tile"
-                src={bannerImageUrl && bannerImageUrl}
-                alt=""
-              ></img>
-            )}
-          </div> */}
         </Modal.Body>
 
         <Modal.Footer>
@@ -190,7 +145,11 @@ const BannerModal = ({ show, onHide, type, data }) => {
             Cancel
           </Button>
           {type !== "View" && (
-            <Button type="button" variant="primary" onClick={handleSubmit}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={handleSaveOrUpdate}
+            >
               Save
             </Button>
           )}

@@ -1,6 +1,7 @@
 import { bannerService } from "app/services/banner.service"
 import { tickerService } from "app/services/ticker.service"
 import { utilityService } from "app/services/utility.services"
+import { uploadService } from "app/services/upload.service"
 import { toast } from "react-toastify"
 import {
   FETCH_BANNER,
@@ -12,6 +13,16 @@ import {
   SET_LOADING,
 } from "./actionTypes"
 import {} from "./actionTypes"
+
+export const uploadImage = (data, cb) => async (dispatch) => {
+  try {
+    await uploadService.uploadFile(data).then((res) => {
+      cb(res)
+    })
+  } catch (err) {
+    toast.error(err?.response?.data?.message || err?.message)
+  }
+}
 
 export const getStateById = (data) => async (dispatch) => {
   try {

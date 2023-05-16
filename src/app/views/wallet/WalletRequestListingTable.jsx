@@ -23,6 +23,13 @@ import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import { ExportToCsv } from "export-to-csv"
 import { useParams } from "react-router-dom"
 
+const statusList = [
+  { value: "", name: "Select Status" },
+  { value: "approve", name: "approve" },
+  { value: "pending", name: "pending" },
+  { value: "reject", name: "reject" },
+]
+
 const options = {
   fieldSeparator: ",",
   quoteStrings: '"',
@@ -61,7 +68,7 @@ const WalletRequestListingTable = () => {
     end: null,
   })
 
-  const [filter, setFilter] = useState({ provider: "", services: "" })
+  const [filter, setFilter] = useState({ status: "" })
 
   const [exportLoading, setExportLoading] = useState(false)
 
@@ -392,6 +399,7 @@ const WalletRequestListingTable = () => {
       page: 1,
       provider: filter?.provider || "",
       services: filter?.services || "",
+      status: filter?.status || "",
       search: searchString,
       startDate: dateRangeValue.start
         ? moment(dateRangeValue.start).format("MM-DD-YYYY")
@@ -441,6 +449,14 @@ const WalletRequestListingTable = () => {
     }
   }
 
+  const handleChange = (e) => {
+    const { value } = e.target
+    setFilter((prev) => ({
+      ...prev,
+      status: value,
+    }))
+  }
+
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
@@ -487,6 +503,25 @@ const WalletRequestListingTable = () => {
                       })}
                     </select>
                   </div> */}
+                  {!reportType && (
+                    <div className="me-2">
+                      <select
+                        name="status"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="status"
+                        value={filter.status || ""}
+                      >
+                        {statusList.map((stts) => {
+                          return (
+                            <option key={stts.value} value={stts.value}>
+                              {stts.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-6 d-flex justify-content-end">
                   <div className="me-2">

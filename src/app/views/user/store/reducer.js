@@ -13,7 +13,7 @@ const initialState = {
   loading: false,
   userList: [],
   userDetail: {},
-
+  totalBalance: 0,
   page: 1,
   sizePerPage: 25,
   totalSize: 0,
@@ -38,6 +38,7 @@ const accountReducer = (state = initialState, action) => {
         userList: payload.data,
         loading: false,
         totalSize: payload?.total || 0,
+        totalBalance: payload?.totalBalance || 0,
       }
 
     case FETCH_USERS_BY_ID:

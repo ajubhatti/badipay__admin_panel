@@ -21,6 +21,13 @@ import { discountServices } from "app/services/discount.service"
 import { toast } from "react-toastify"
 import { ExportToCsv } from "export-to-csv"
 
+const statusList = [
+  { value: "", name: "Select Status" },
+  { value: "success", name: "success" },
+  { value: "pending", name: "pending" },
+  { value: "failed", name: "failed" },
+]
+
 const options = {
   fieldSeparator: ",",
   quoteStrings: '"',
@@ -68,6 +75,7 @@ const Transactions = () => {
     endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
     services: "",
+    status: "",
   })
 
   const pageOptions = useMemo(
@@ -407,10 +415,15 @@ const Transactions = () => {
         ...prev,
         api: value,
       }))
-    } else {
+    } else if (name === "services") {
       setFilter((prev) => ({
         ...prev,
         services: value,
+      }))
+    } else {
+      setFilter((prev) => ({
+        ...prev,
+        status: value,
       }))
     }
   }
@@ -425,6 +438,7 @@ const Transactions = () => {
       page: 1,
       api: filter?.api || "",
       services: filter?.services || "",
+      status: filter?.status || "",
       search: searchString,
       startDate: dateRangeValue?.start
         ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
@@ -555,6 +569,23 @@ const Transactions = () => {
                         return (
                           <option key={service.value} value={service.value}>
                             {service.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                  <div className="me-2">
+                    <select
+                      name="status"
+                      onChange={handleChange}
+                      className="form-control"
+                      id="status"
+                      value={filter.status || ""}
+                    >
+                      {statusList.map((stts) => {
+                        return (
+                          <option key={stts.value} value={stts.value}>
+                            {stts.name}
                           </option>
                         )
                       })}

@@ -43,7 +43,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
         {/* <label>Start Date</label> */}
         <DatePicker
           name="startDate"
-          isClearable={rangeDate.start ? true : false}
+          isClearable={false}
           autoComplete="off"
           label=""
           type="text"
@@ -66,7 +66,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
         {/* <label>End Date</label> */}
         <DatePicker
           name="endDate"
-          isClearable={rangeDate.end ? true : false}
+          isClearable={false}
           autoComplete="off"
           label=""
           type="text"

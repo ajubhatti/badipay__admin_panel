@@ -364,7 +364,7 @@ const SlabConfig = () => {
                   <CustomTable
                     showAddButton={false}
                     pageOptions={pageOptions}
-                    keyField="transaction_id"
+                    keyField="_id"
                     data={slabsList}
                     columns={columns}
                     showSearch={false}
