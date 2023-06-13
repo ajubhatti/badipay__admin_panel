@@ -12,7 +12,6 @@ import {
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { Box, styled } from "@mui/system"
-import AddUpdateCompanyDialog from "./AddUpdateCompanyDialog"
 import { useNavigate } from "react-router-dom"
 import { ambikaService } from "app/services/ambika.service copy"
 
@@ -174,16 +173,6 @@ const AmbikaSlabList = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
-
-      <AddUpdateCompanyDialog
-        setOpen={setModelOpen}
-        open={modelOpen}
-        userData={companies}
-        title={modelTitle}
-        getAllCompany={() => {
-          getAllCompany()
-        }}
-      />
     </Card>
   )
 }

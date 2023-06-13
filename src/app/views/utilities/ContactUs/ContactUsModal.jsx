@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { updateApis, createApi } from "./store/action"
+import { createContatUs, updateContactUs } from "../store/action"
 
-const AddUpdateApiModal = ({ show, onHide, type, data }) => {
+const ContactUsModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
 
   const [modalData, setModalData] = useState({
-    apiName: "",
-    apiDetail: "",
+    description: "",
     isActive: false,
   })
 
@@ -19,8 +18,8 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
   }, [data])
 
   const handleSubmit = (event) => {
-    if (!modalData.apiName) {
-      setError({ type: "error", message: "Please enter api name" })
+    if (!modalData.description) {
+      setError({ type: "error", message: "Please enter service name" })
     } else {
       handleSaveOrUpdate()
     }
@@ -28,10 +27,10 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
 
   const handleSaveOrUpdate = async () => {
     if (modalData?._id) {
-      dispatch(updateApis(modalData?._id, modalData))
+      dispatch(updateContactUs(modalData?._id, modalData))
       clearData()
     } else {
-      dispatch(createApi(modalData))
+      dispatch(createContatUs(modalData))
       clearData()
     }
   }
@@ -43,12 +42,32 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
   const clearData = () => {
     onHide()
     setModalData({
-      apiName: "",
-      apiDetail: "",
-      apiImage: "",
+      description: "",
       isActive: false,
     })
   }
+
+  // const handleSubmit = async () => {
+  //   let payload = {
+  //     description: bannerDesc,
+  //   }
+  //   //  let obj = props.userData
+  //   //  obj.userName = userName
+  //   //  obj.phoneNumber = phone
+  //   //  obj.email = email
+  //   //  let id = props.userData.id
+  //   if (bannerData && bannerData?._id) {
+  //     await tickerService.updateContactUs(bannerData?._id, payload).then((res) => {
+  //       handleClose()
+  //       getAllTicker()
+  //     })
+  //   } else {
+  //     await tickerService.addTicker(payload).then((res) => {
+  //       handleClose()
+  //       getAllTicker()
+  //     })
+  //   }
+  // }
 
   return (
     <>
@@ -58,45 +77,25 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
         </Modal.Header>
         <Modal.Body>
           <Form noValidate>
-            <Form.Group className="mb-3" controlId="formGridApiName">
-              <Form.Label>Api Name</Form.Label>
+            <Form.Group controlId="formGridServiceName" className="mb-3">
+              <Form.Label>Description</Form.Label>
               <Form.Control
-                name="apiName"
-                required
-                type="text"
-                placeholder="Enter api name"
-                defaultValue={modalData?.apiName}
-                autoFocus
+                value={modalData?.description}
+                type="textarea"
+                placeholder="Enter description"
                 disabled={type === "View"}
+                autoFocus
                 onChange={(e) => {
-                  setError({})
                   setModalData({
                     ...modalData,
-                    apiName: e.target.value,
+                    description: e.target.value,
                   })
                 }}
               />
               <Form.Control.Feedback type="invalid">
-                Please provide a api name.
+                Please provide a description.
               </Form.Control.Feedback>
               <span className="danger">{error.message}</span>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formGridApiDetail">
-              <Form.Label>Api Detail</Form.Label>
-              <Form.Control
-                defaultValue={modalData?.apiDetail}
-                as="textarea"
-                rows={3}
-                placeholder="Enter Api Detail"
-                disabled={type === "View"}
-                onChange={(e) =>
-                  setModalData({
-                    ...modalData,
-                    apiDetail: e.target.value,
-                  })
-                }
-              />
             </Form.Group>
 
             <Form.Group controlId="formGridApiIsActive" className="d-flex">
@@ -105,7 +104,6 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
                 type="switch"
                 id="custom-switch"
                 checked={modalData?.isActive}
-                defaultChecked={modalData?.isActive}
                 disabled={type === "View"}
                 onChange={(e) => {
                   setModalData({
@@ -132,4 +130,4 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
   )
 }
 
-export default AddUpdateApiModal
+export default ContactUsModal

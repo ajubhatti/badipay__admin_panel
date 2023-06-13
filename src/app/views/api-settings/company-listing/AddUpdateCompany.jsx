@@ -249,7 +249,7 @@ const AddUpdateCompany = (props) => {
                       // value={companyData?.minAmount}
                       defaultValue={companyData?.minAmount}
                       type="text"
-                      placeholder="Enter Mobile App Code"
+                      placeholder="Enter min amount"
                       onChange={(e) => {
                         setCompanyData({
                           ...companyData,
@@ -265,7 +265,7 @@ const AddUpdateCompany = (props) => {
                       // value={companyData?.maxAmount}
                       defaultValue={companyData?.maxAmount}
                       type="text"
-                      placeholder="Enter Mobile App Code"
+                      placeholder="Enter max amount"
                       onChange={(e) => {
                         setCompanyData({
                           ...companyData,

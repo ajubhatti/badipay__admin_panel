@@ -4,10 +4,10 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { BsPlusLg } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
 import { getCompanies } from "../company-listing/store/action"
 import { getServices } from "../services-listing/store/action"
 import {
+  deleteSlabById,
   getSPSlabs,
   setPageSlab,
   setSizePerPageSlab,
@@ -15,30 +15,31 @@ import {
   setSortOrderOfSlab,
 } from "./store/action"
 import { sizePerPageList } from "../../../constants/table"
-import moment from "moment"
+import AddUpdateSlabModal from "./AddUpdateSlabModal"
+import { AiFillDelete, AiOutlineEdit } from "react-icons/ai"
+import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
+import { getApiList } from "../apis/store/action"
+import { toast } from "react-toastify"
 
 const SlabConfig = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+
   const { apisList } = useSelector((state) => state.apis)
   const { serviceList } = useSelector((state) => state.servicesList)
   const { companyList } = useSelector((state) => state.company)
-  const {
-    slabLoading,
-    slabDetail,
-    page,
-    sizePerPage,
-    totalSize,
-    search,
-    sortField,
-    sortOrder,
-    slabsList,
-  } = useSelector((state) => state.SPSlab)
+  const { slabLoading, page, sizePerPage, totalSize, slabsList } = useSelector(
+    (state) => state.SPSlab
+  )
 
   const [searchData, setSearchData] = useState({})
   const [apisDDData, setApisDDData] = useState([])
   const [serviceDDData, setServiceDDData] = useState([])
   const [operatorDDData, setOperatorDDData] = useState([])
+
+  const [modalShow, setModalShow] = useState(false)
+  const [companysData, setCompanysData] = useState([])
+  const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
+  const [type, setType] = useState("Add")
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
@@ -65,7 +66,7 @@ const SlabConfig = () => {
   useEffect(() => {
     dispatch(getServices())
     dispatch(getCompanies())
-    dispatch(getSPSlabs())
+    dispatch(getApiList())
   }, [dispatch])
 
   useEffect(() => {
@@ -105,14 +106,61 @@ const SlabConfig = () => {
   }, [companyList, searchData])
 
   const submitHandler = (e) => {
-    let filteredData = companyList.find((x) => x._id === searchData.operator)
+    console.log({ searchData })
 
+    let filteredData = { ...payloadData, ...searchData }
+
+    // setPayloadData((previousData) => ({
+    //   ...previousData,
+    //   page: page,
+    //   limits: sizePerPage,
+    // }))
     console.log("filteredData", filteredData)
+    dispatch(getSPSlabs(filteredData))
     e.preventDefault()
   }
 
   const addSlab = () => {
-    navigate("/api-setting/slab-config/add")
+    setModalShow(true)
+    setCompanysData({})
+    setType("Add")
+  }
+
+  const handleDelete = (cell, row) => {
+    setIsShowConfirmModal(true)
+    setCompanysData(row)
+  }
+
+  const handleEdit = (cell, row) => {
+    setModalShow(true)
+    setType("Update")
+    setCompanysData(row)
+  }
+
+  const handleOk = async () => {
+    dispatch(
+      deleteSlabById(companysData?._id, (data) => {
+        console.log({ data })
+        setIsShowConfirmModal(false)
+        if (data?.status === 200) {
+          toast.success(data?.message)
+          dispatch(getSPSlabs(payloadData))
+        }
+      })
+    )
+  }
+
+  useEffect(() => {
+    setPayloadData((previousData) => ({
+      ...previousData,
+      page: page,
+      limits: sizePerPage,
+    }))
+  }, [sizePerPage, page])
+
+  const fetchRefreshData = () => {
+    console.log({ payloadData })
+    dispatch(getSPSlabs(payloadData))
   }
 
   const columns = useMemo(
@@ -128,16 +176,6 @@ const SlabConfig = () => {
         sort: true,
       },
       {
-        text: "Date",
-        dataField: "created",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle">
-            {row?.created ? moment(row?.created).format("DD/MM/YYYY") : "-"}
-          </div>
-        ),
-      },
-      {
         text: "Company Data",
         dataField: "companyData",
         sort: true,
@@ -146,24 +184,6 @@ const SlabConfig = () => {
             {row?.companyData?.companyName
               ? row?.companyData?.companyName
               : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "Service Provider Name",
-        dataField: "serviceProviderName",
-        sort: false,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{row?.serviceProviderName ? row?.serviceProviderName : "-"}</div>
-        ),
-      },
-      {
-        text: "Service Provider Type",
-        dataField: "serviceProviderType",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.serviceProviderType ? row?.serviceProviderType : "-"}
           </div>
         ),
       },
@@ -196,36 +216,6 @@ const SlabConfig = () => {
         ),
       },
       {
-        text: "CashBack Amount",
-        dataField: "cashBackAmount",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.cashBackAmount ? row?.cashBackAmount : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "FinalBalance",
-        dataField: "userFinalBalance",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.userFinalBalance ? row?.userFinalBalance : "-"}
-          </div>
-        ),
-      },
-      {
-        text: "providedBy",
-        dataField: "providedBy",
-        sort: true,
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.providedBy ? row?.providedBy : "-"}
-          </div>
-        ),
-      },
-      {
         text: "Is Active",
         dataField: "isActive",
         formatter: (cell, row, rowIndex, formatExtraData) => (
@@ -245,15 +235,29 @@ const SlabConfig = () => {
         ),
       },
       {
-        text: "Is Active",
-        dataField: "isBilling",
+        dataField: "",
+        text: "Action",
+        classes: "p-1",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div
-            className={`align-middle text-${
-              row?.isBilling ? "success" : "danger"
-            }`}
-          >
-            {row?.isBilling ? "true" : "false"}
+          <div className="d-flex">
+            <button
+              type="button"
+              className="btn btn-sm"
+              title="Edit"
+              size="sm"
+              onClick={() => handleEdit(cell, row)}
+            >
+              <AiOutlineEdit style={{ color: "green" }} />
+            </button>
+            <button
+              type="button"
+              className="btn text-danger btn-sm"
+              title="Delete"
+              size="sm"
+              onClick={() => handleDelete(cell, row)}
+            >
+              <AiFillDelete />
+            </button>
           </div>
         ),
       },
@@ -280,7 +284,7 @@ const SlabConfig = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h6 className="main-heading">Slab setting</h6>
+          <h6 className="main-heading">Operator setting</h6>
         </div>
         <div className="col-lg-12">
           <div className="card mb-4">
@@ -295,13 +299,14 @@ const SlabConfig = () => {
                       <Form.Group controlId="formGridServic">
                         <ReactSelect
                           title={"Apis"}
+                          placeHolder={"select api"}
                           handleChange={(e) => {
-                            // setSelectedValue(e)
                             setSearchData({
                               ...searchData,
                               apis: e,
                             })
                           }}
+                          isClearable={true}
                           options={apisDDData}
                         />
                       </Form.Group>
@@ -310,14 +315,15 @@ const SlabConfig = () => {
                     <div className="list-of-operator m-2">
                       <Form.Group controlId="formGridServic">
                         <ReactSelect
+                          placeHolder={"select services"}
                           title={"services"}
                           handleChange={(e) => {
-                            // setSelectedValue(e)
                             setSearchData({
                               ...searchData,
                               providerType: e,
                             })
                           }}
+                          isClearable={true}
                           options={serviceDDData}
                         />
                       </Form.Group>
@@ -327,18 +333,22 @@ const SlabConfig = () => {
                       <Form.Group controlId="formGridOperator">
                         <ReactSelect
                           title={"Operator"}
+                          placeHolder={"select operator"}
                           handleChange={(e) => {
-                            // setSelectedValue(e)
                             setSearchData({
                               ...searchData,
                               operator: e,
                             })
                           }}
                           options={operatorDDData}
+                          isClearable={true}
                         />
                       </Form.Group>
                     </div>
-                    <Button className="btn btn-md btn-primary" type="submit">
+                    <Button
+                      className="btn btn-md btn-primary m-2"
+                      type="submit"
+                    >
                       Search
                     </Button>
                   </Form>
@@ -351,9 +361,9 @@ const SlabConfig = () => {
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-header d-flex justify-content-between">
-              <h6> Slab List</h6>
-              <Button variant="secondary">
-                <BsPlusLg onClick={() => addSlab()} />
+              <h6> Operator List</h6>
+              <Button variant="secondary" onClick={() => addSlab()}>
+                <BsPlusLg />
               </Button>
             </div>
 
@@ -379,6 +389,25 @@ const SlabConfig = () => {
           </div>
         </div>
       </div>
+      {modalShow && (
+        <AddUpdateSlabModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          data={companysData}
+          type={type}
+          fetchRefreshData={fetchRefreshData}
+        />
+      )}
+
+      {isShowConfirmModal && (
+        <ConfirmModal
+          title="Are you sure ?"
+          description="Are you sure you want to delete ?"
+          handleDelete={handleOk}
+          isShowConfirmModal={isShowConfirmModal}
+          onCloseConfirmModal={() => setIsShowConfirmModal(false)}
+        />
+      )}
     </div>
   )
 }

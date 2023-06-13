@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react"
-import AddUpdateUserDialog from "../user/AddUpdateUserDialog"
 import "jspdf-autotable"
 import moment from "moment"
 import { walletServices } from "../../services/wallet.service"
@@ -13,7 +12,6 @@ import {
   setSortOrderOfWallet,
 } from "./store/action"
 import { toast } from "react-toastify"
-import ApproveRejectDialog from "./ApproveRejectDialog"
 import { Button } from "react-bootstrap"
 import ApprovalDialog from "./ApprovalDialog"
 import CustomTable from "app/components/Tables/CustomTable"
@@ -52,25 +50,16 @@ const WalletRequestListingTable = () => {
     (state) => state.wallet
   )
 
-  const [open, setOpen] = useState(false)
-  const [userData, setUserData] = useState({})
-  const [modalShow, setModalShow] = useState(false)
-  const [modalData, setModalData] = useState({})
-  const [type, setType] = useState("reject")
   const [load, setLoad] = useState(false)
-
   const [show, setShow] = useState(false)
   const [idForChange, setIdForChange] = useState("")
-
   const [searchString, setSearchString] = useState("")
+  const [filter, setFilter] = useState({ status: "" })
+  const [exportLoading, setExportLoading] = useState(false)
   const [dateRangeValue, setDateRangeValue] = useState({
     start: null,
     end: null,
   })
-
-  const [filter, setFilter] = useState({ status: "" })
-
-  const [exportLoading, setExportLoading] = useState(false)
 
   const handleChangeStatus = (data) => {
     if (data?.statusOfWalletRequest === "pending") {
@@ -81,31 +70,13 @@ const WalletRequestListingTable = () => {
     }
   }
 
-  const handleSaveUpdate = async (data) => {
-    let payload = {
-      id: modalData.id,
-      statusOfWalletRequest: modalData.data,
-      userId: "",
-    }
-    if (data.reason) {
-      payload.reason = data.reason
-    }
-
-    await walletServices.updateWalletStatus(payload).then((res) => {
-      if (res.status === 200) {
-        toast.success("Status updated successfully")
-        setModalShow(false)
-      }
-      getWalletListData()
-    })
-  }
-
   const handleSaveUpdate2 = async (data) => {
     setLoad(true)
     let payload = {
       id: idForChange,
       statusOfWalletRequest: data.type,
       userId: "",
+      password: data.password,
     }
     if (data.reason) {
       payload.reason = data.reason
@@ -117,15 +88,12 @@ const WalletRequestListingTable = () => {
     await walletServices.updateWalletStatus(payload).then((res) => {
       if (res.status === 200) {
         toast.success("Status updated successfully")
-        setModalShow(false)
         setShow(false)
       }
       setLoad(false)
       getWalletListData()
     })
   }
-
-  // ==========================================
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
@@ -586,21 +554,9 @@ const WalletRequestListingTable = () => {
         </div>
       </div>
 
-      <AddUpdateUserDialog setOpen={setOpen} open={open} userData={userData} />
-
-      <ApproveRejectDialog
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        message={type}
-        handleSave={(data) => {
-          handleSaveUpdate(data)
-        }}
-      />
-
       <ApprovalDialog
         show={show}
         onHide={() => setShow(false)}
-        message={type}
         handleSave={(data) => {
           handleSaveUpdate2(data)
         }}

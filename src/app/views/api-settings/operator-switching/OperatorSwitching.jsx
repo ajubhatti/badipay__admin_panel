@@ -11,7 +11,7 @@ const OperatorSwitching = () => {
   const dispatch = useDispatch()
   const { serviceList } = useSelector((state) => state.servicesList)
   const { companyList } = useSelector((state) => state.company)
-  const { searchSearviceData } = useSelector((state) => state.operator)
+  const { searchSearviceData } = useSelector((state) => state.operatorSwitch)
 
   const [searchData, setCompanyData] = useState({})
   const [serviceMenuData, setServiceMenuData] = useState([])

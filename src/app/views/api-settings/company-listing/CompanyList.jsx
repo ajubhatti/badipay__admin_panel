@@ -12,10 +12,10 @@ import { useDispatch, useSelector } from "react-redux"
 import AddUpdateCompanyModal from "./AddUpdateCompanyModal"
 import { deleteCompany, getCompanies } from "./store/action"
 import moment from "moment"
-import { deleteApis, getApiList } from "../apis/store/action"
+import { getApiList } from "../apis/store/action"
 import { getServices } from "../services-listing/store/action"
 
-const OperatorList = () => {
+const CompanyList = () => {
   const dispatch = useDispatch()
 
   const { companyList, loading } = useSelector((state) => state.company)
@@ -239,7 +239,7 @@ const OperatorList = () => {
           type={type}
         />
       )}
-      {console.log({ isShowConfirmModal })}
+
       {isShowConfirmModal && (
         <ConfirmModal
           title="Are you sure ?"
@@ -252,4 +252,4 @@ const OperatorList = () => {
     </div>
   )
 }
-export default OperatorList
+export default CompanyList

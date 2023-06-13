@@ -52,18 +52,21 @@ const BannerList = () => {
     setIsShowBannerModal(true)
   }
 
-  const handleRemoveBanner = (cell, row) => {
+  const handleRemoveBanner = (data) => {
+    setBannerInfo(data)
     setIsShowConfirmModal(true)
-    setBannerInfo(row)
   }
 
   const onCloseConfirmModal = () => {
     setIsShowConfirmModal(false)
   }
 
-  const handleDelete = async (data) => {
+  const handleDelete = async () => {
     dispatch(
-      removeBanner(data._id, () => {
+      removeBanner(bannerInfo._id, (res) => {
+        if (res.status === 200) {
+          dispatch(getBannerList())
+        }
         setIsShowConfirmModal(false)
       })
     )

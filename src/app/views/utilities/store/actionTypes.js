@@ -7,3 +7,4 @@ export const FETCH__BANNER_BY_ID = "FETCH_BANNER__BY_ID"
 
 export const FETCH_STATE = "FETCH_STATE"
 export const FETCH_STATE_BY_ID = "FETCH_STATE_BY_ID"
+export const FETCH_CONTACTUS = "FETCH_CONTACTUS"

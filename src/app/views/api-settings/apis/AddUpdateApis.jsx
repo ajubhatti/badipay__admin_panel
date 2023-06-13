@@ -83,7 +83,7 @@ const AddUpdateApis = () => {
           </Form.Group>
 
           <Form.Group controlId="formGridApiDetail">
-            <Form.Label>Service Detail</Form.Label>
+            <Form.Label>api Detail</Form.Label>
             <Form.Control
               value={apiData?.apiDetail}
               as="textarea"

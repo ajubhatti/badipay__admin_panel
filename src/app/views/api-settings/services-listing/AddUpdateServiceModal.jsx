@@ -13,6 +13,7 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
     title: "",
     image: "",
     isActive: false,
+    icon: "",
   })
 
   const [error, setError] = useState({})
@@ -58,7 +59,7 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
     <>
       <Modal show={show} onHide={onHide} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{data._id ? "Update" : "Add"} API </Modal.Title>
+          <Modal.Title>{data._id ? "Update" : "Add"} Service </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate>
@@ -110,6 +111,22 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
                   setModalData({
                     ...modalData,
                     title: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formGridServiceDetail" className="mb-3">
+              <Form.Label>Service Icon</Form.Label>
+              <Form.Control
+                value={modalData?.icon}
+                type="text"
+                placeholder="Enter Service Icon"
+                disabled={type === "View"}
+                onChange={(e) =>
+                  setModalData({
+                    ...modalData,
+                    icon: e.target.value,
                   })
                 }
               />

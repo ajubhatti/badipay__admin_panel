@@ -1,11 +1,25 @@
 import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
-import Transactions from "../recharge/Transactions"
-import RechargeList from "../recharge/RechargeList"
-import OperatorList from "../api-settings/company-listing/OperatorList"
-import UserListings from "../user/UserListings"
-import BannerList from "../utilities/Banner/BannerList"
-import TickerList from "../utilities/Ticker/TickerList"
+
+const Transactions = Loadable(lazy(() => import("../recharge/Transactions")))
+const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
+const OperatorList = Loadable(
+  lazy(() => import("../api-settings/operator-list/OperatorList"))
+)
+const CompanyList = Loadable(
+  lazy(() => import("../api-settings/company-listing/CompanyList"))
+)
+
+const UserListings = Loadable(lazy(() => import("../user/UserListings")))
+const BannerList = Loadable(
+  lazy(() => import("../utilities/Banner/BannerList"))
+)
+const TickerList = Loadable(
+  lazy(() => import("../utilities/Ticker/TickerList"))
+)
+const ContactUsList = Loadable(
+  lazy(() => import("../utilities/ContactUs/ContactUsList"))
+)
 const BankAccountTable = Loadable(
   lazy(() => import("../bank/bankAccount/BankAccountTable"))
 )
@@ -14,12 +28,6 @@ const UserListingTable = Loadable(
 )
 const WalletRequestListingTable = Loadable(
   lazy(() => import("../wallet/WalletRequestListingTable"))
-)
-const TickerListTable = Loadable(
-  lazy(() => import("../utilities/Ticker/TickerListTable"))
-)
-const OperatorListing = Loadable(
-  lazy(() => import("../api-settings/company-listing/OperatorListing"))
 )
 const ApiListings = Loadable(
   lazy(() => import("../api-settings/apis/ApiListings"))
@@ -149,6 +157,10 @@ const materialRoutes = [
     element: <TickerList />,
   },
   {
+    path: "/contact/list",
+    element: <ContactUsList />,
+  },
+  {
     path: "/user/wallet-request",
     element: <WalletRequestListingTable />,
   },
@@ -169,11 +181,11 @@ const materialRoutes = [
     element: <ApiListings />,
   },
   {
-    path: "/api-setting/company",
-    element: <OperatorListing />,
+    path: "/api-setting/company-list",
+    element: <CompanyList />,
   },
   {
-    path: "/api-setting/companyList",
+    path: "/api-setting/operator-list",
     element: <OperatorList />,
   },
   {
@@ -193,11 +205,11 @@ const materialRoutes = [
     element: <AmbikaSlabList />,
   },
   {
-    path: "/api-setting/slab-config",
+    path: "/api-setting/operator-config",
     element: <SlabConfig />,
   },
   {
-    path: "/api-setting/slab-config/add",
+    path: "/api-setting/operator-config/add",
     element: <AddUpdateSlabConfig />,
   },
   {

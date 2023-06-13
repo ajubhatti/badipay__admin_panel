@@ -1,14 +1,7 @@
 import React, { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 
-const ApprovalDialog = ({
-  show,
-  onHide,
-  message,
-  id,
-  handleSave,
-  isLoading,
-}) => {
+const ApprovalDialog = ({ show, onHide, id, handleSave, isLoading }) => {
   const [modalData, setModalData] = useState({
     password: "",
     reason: "",
@@ -30,12 +23,13 @@ const ApprovalDialog = ({
   }
   const submitSave = (type, data) => {
     if (!isLoading) {
-      if (!modalData.password) {
+      if (!data.password) {
         setError({
           type: "error",
           message: "Please enter your password",
         })
       } else {
+        setIsChecked(false)
         handleSave({ type, data })
       }
     }
@@ -75,12 +69,12 @@ const ApprovalDialog = ({
                 <Form.Check
                   type="checkbox"
                   id={`reverse-checkbox`}
-                  className="mr-6"
+                  className="m-1"
                   onChange={(e) => setIsChecked(e.target.checked)}
                 />
               </div>
 
-              <Form.Label className="ml-3">
+              <Form.Label className="m-1">
                 Are you want to deduct amount?
               </Form.Label>
             </div>

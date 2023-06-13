@@ -7,13 +7,12 @@ import {
   FormControlLabel,
 } from "@mui/material"
 import React, { useState } from "react"
-import useAuth from "app/hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 import { Box, styled, useTheme } from "@mui/system"
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator"
-import { Paragraph, Span } from "app/components/Typography"
 import { useDispatch, useSelector } from "react-redux"
 import { handleLogin } from "app/redux/actions/loginActions"
+import userLogin from "../../../assets/images/login.png"
 
 const FlexBox = styled(Box)(() => ({
   display: "flex",
@@ -88,21 +87,19 @@ const JwtLogin = () => {
     <JWTRoot>
       <Card className="card mb-4">
         <Grid container>
-          <Grid item lg={5} md={5} sm={5} xs={12}>
+          <Grid item lg={6} md={6} sm={6} xs={12}>
             <JustifyBox p={4} height="100%">
-              <IMG
-                src="https://images.pexels.com/photos/13007861/pexels-photo-13007861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                alt=""
-              />
+              <IMG src={userLogin} alt="" />
             </JustifyBox>
           </Grid>
-          <Grid item lg={7} md={7} sm={7} xs={12}>
+          <Grid item lg={6} md={6} sm={6} xs={12}>
             <ContentBox>
               <ValidatorForm onSubmit={handleFormSubmit}>
                 <TextValidator
                   sx={{ mb: 3, width: "100%" }}
                   variant="outlined"
-                  label="ph-number"
+                  label="Mobile Number"
+                  size="small"
                   max={10}
                   min={10}
                   onChange={handleChange}
@@ -116,7 +113,7 @@ const JwtLogin = () => {
                   ]}
                 />
                 <TextValidator
-                  sx={{ mb: "12px", width: "100%" }}
+                  sx={{ mb: 3, width: "100%" }}
                   label="Password"
                   variant="outlined"
                   size="small"

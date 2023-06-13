@@ -37,11 +37,13 @@ export const getSPSlabs = (payload) => async (dispatch) => {
   }
 }
 
-export const editSPSlab = (id, data) => async (dispatch) => {
+export const editSPSlab = (id, data, cb) => async (dispatch) => {
   try {
     dispatch(setSlabLoading(true))
     await slabService.updateSlab(id, data).then((res) => {
-      dispatch(getSPSlabs())
+      if (res.status === 200) {
+        cb(res)
+      }
     })
   } catch (err) {
     dispatch(setSlabLoading(false))
@@ -60,6 +62,17 @@ export const createSlab = (payload, cb) => async (dispatch) => {
     })
   } catch (err) {
     toast.error(err)
+    dispatch(setSlabLoading(false))
+  }
+}
+
+export const deleteSlabById = (id, cb) => async (dispatch) => {
+  try {
+    dispatch(setSlabLoading(true))
+    await slabService.deleteSlab(id).then((res) => {
+      cb(res)
+    })
+  } catch (err) {
     dispatch(setSlabLoading(false))
   }
 }

@@ -118,7 +118,12 @@ export const navigations = [
       },
       {
         name: "company list",
-        path: "/api-setting/companyList",
+        path: "/api-setting/company-list",
+        iconText: "COL",
+      },
+      {
+        name: "Operator list",
+        path: "/api-setting/operator-list",
         iconText: "COL",
       },
       {
@@ -132,9 +137,9 @@ export const navigations = [
         iconText: "COL",
       },
       {
-        name: "Slab settings",
-        path: "/api-setting/slab-config",
-        iconText: "SLBCNFG",
+        name: "Operartor settings",
+        path: "/api-setting/operator-config",
+        iconText: "Oprtr",
       },
     ],
   },
@@ -174,6 +179,11 @@ export const navigations = [
         name: "state",
         path: "/utility/state",
         iconText: "STT",
+      },
+      {
+        name: "contactus",
+        path: "/contact/list",
+        iconText: "cntct",
       },
     ],
   },

@@ -1,33 +1,35 @@
+import ReactLoaderSpinner from "app/components/LoadingSpinner/ReactLoaderSpinner"
 import React, { useEffect, useState } from "react"
-import { Button, Form, Image, Modal } from "react-bootstrap"
+import { Button, Card, Form, Image, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
+import { toast } from "react-toastify"
 import { createBanner, updateBanner, uploadImage } from "../store/action"
 
 const BannerModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
 
+  const [imageLoading, setImageLoading] = useState(false)
   const [modalData, setModalData] = useState({
     path: "",
     description: "",
     isActive: true,
   })
 
-  const [imageUrl, setImageUrl] = useState(null)
-  const [error, setError] = useState({})
-  const [imageLoading, setImageLoading] = useState(false)
-
   useEffect(() => {
     if (data && Object.keys(data).length !== 0) setModalData(data)
   }, [data])
 
   const handleSaveOrUpdate = async () => {
-    console.log({ modalData })
-    if (modalData?._id) {
-      dispatch(updateBanner(modalData?._id, modalData))
-      clearData()
+    if (modalData?.path) {
+      if (modalData?._id) {
+        dispatch(updateBanner(modalData?._id, modalData))
+        clearData()
+      } else {
+        dispatch(createBanner(modalData))
+        clearData()
+      }
     } else {
-      dispatch(createBanner(modalData))
-      clearData()
+      toast.error("Please Add Image!")
     }
   }
 
@@ -52,13 +54,11 @@ const BannerModal = ({ show, onHide, type, data }) => {
       dispatch(
         uploadImage(formData, (data) => {
           if (data.status === 200) {
-            setImageUrl(data.data)
             setModalData({ ...modalData, path: data.data })
             setImageLoading(false)
           } else {
             setImageLoading(false)
           }
-          console.log(data)
         })
       )
     }
@@ -100,8 +100,17 @@ const BannerModal = ({ show, onHide, type, data }) => {
                 onChange={(e) => onImageChange(e)}
                 className="mb-3"
               />
-
-              {imageUrl && <Image src={imageUrl} fluid />}
+              <div>
+                {imageLoading && (
+                  <Card
+                    className="justify-content-center"
+                    style={{ width: "auto", height: "200px" }}
+                  >
+                    <ReactLoaderSpinner />
+                  </Card>
+                )}
+                {modalData?.path && <Image src={modalData?.path} fluid />}
+              </div>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formGridBannerDetail">

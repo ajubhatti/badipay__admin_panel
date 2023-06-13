@@ -14,6 +14,7 @@ import SPSlabReducer from "app/views/api-settings/slab-config/store/reducer"
 import reportsReducer from "app/views/reports/store/reducer"
 import LoginReducers from "./loginReducer"
 import accountReducer from "app/views/user/store/reducer"
+import operatorReducer from "app/views/api-settings/operator-list/store/reducer"
 
 const RootReducer = combineReducers({
   notifications: NotificationReducer,
@@ -23,13 +24,14 @@ const RootReducer = combineReducers({
   company: companyReducer,
   apis: apisReducer,
   servicesList: servicesListReducer,
-  operator: operatorSwitchReducer,
+  operatorSwitch: operatorSwitchReducer,
   recharge: rechargeReducer,
   reports: reportsReducer,
   utilities: utilityReducer,
   wallet: walletReducer,
   SPSlab: SPSlabReducer,
   account: accountReducer,
+  operators: operatorReducer,
   user: LoginReducers,
 })
 

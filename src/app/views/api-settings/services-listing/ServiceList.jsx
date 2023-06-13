@@ -90,6 +90,13 @@ const ServiceList = () => {
       ),
     },
     {
+      text: "Icon",
+      dataField: "icon",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.icon || "-"}</div>
+      ),
+    },
+    {
       text: "Is Active",
       dataField: "isActive",
       // formatter: (cell, row, rowIndex, formatExtraData) => (
