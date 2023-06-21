@@ -1,26 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { Paragraph } from "app/components/Typography"
 import { Box, styled, useTheme } from "@mui/system"
-import {
-  Card,
-  Icon,
-  IconButton,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Avatar,
-  MenuItem,
-  Select,
-  Button,
-  Fab,
-  TablePagination,
-} from "@mui/material"
+import { Card, Icon, IconButton, MenuItem, Select, Fab } from "@mui/material"
 
 import { accountService } from "../../services/account.service"
 import AddUpdateUserDialog from "./AddUpdateUserDialog"
-import { CSVLink, CSVDownload } from "react-csv"
+import { CSVLink } from "react-csv"
 import { jsPDF } from "jspdf"
 import "jspdf-autotable"
 import DateRangePick from "../material-kit/dates/DateRangePick"
@@ -47,23 +31,6 @@ const Title = styled("span")(() => ({
   textTransform: "capitalize",
 }))
 
-const UserTable = styled(Table)(() => ({
-  minWidth: 400,
-  whiteSpace: "pre",
-  "& small": {
-    height: 15,
-    width: 50,
-    borderRadius: 500,
-    boxShadow: "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
-  },
-  "& td": {
-    borderBottom: "none",
-  },
-  "& td:first-of-type": {
-    paddingLeft: "16px !important",
-  },
-}))
-
 const Small = styled("small")(({ bgcolor }) => ({
   height: 15,
   width: 50,
@@ -79,9 +46,7 @@ const UserListingTable = () => {
   const { palette } = useTheme()
   const bgError = palette.error.main
   const bgPrimary = palette.primary.main
-  const bgSecondary = palette.secondary.main
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [page, setPage] = React.useState(1)
   const [usersList, setUsersList] = useState([])
   const [userModelOpen, setUserModelOpen] = useState(false)
@@ -370,7 +335,7 @@ const UserListingTable = () => {
           <MenuItem value="pdf">pdf</MenuItem>
         </Select>
 
-        {downloadType == "csv" ? (
+        {downloadType === "csv" ? (
           <CSVLink filename={"user data.csv"} data={usersList?.data || []}>
             <Fab
               size="small"

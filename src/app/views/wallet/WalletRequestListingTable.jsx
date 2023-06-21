@@ -118,8 +118,8 @@ const WalletRequestListingTable = () => {
   }, [sizePerPage, page])
 
   useEffect(() => {
-    getWalletListData()
-  }, [payloadData])
+    dispatch(getWalletList(payloadData))
+  }, [dispatch, payloadData])
 
   const getWalletListData = () => {
     dispatch(getWalletList(payloadData))

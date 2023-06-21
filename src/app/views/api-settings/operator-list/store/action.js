@@ -6,8 +6,6 @@ import {
   SET_LOADING,
 } from "./actionTypes"
 import { toast } from "react-toastify"
-import { axiosAdmin } from "app/services/api"
-import { GET_OPERATOR_BY_ID } from "app/constants/urls"
 import { operatorService } from "app/services/operator.service"
 
 export const getOperatorById = (data) => async (dispatch) => {

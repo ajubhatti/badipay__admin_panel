@@ -117,7 +117,7 @@ const AddUpdateSlabConfig = (props) => {
   }, [serviceList])
 
   const handleClose = () => {
-    navigate("/api-setting/operator-config")
+    navigate("/api-setting/operator-slab-setting")
   }
 
   const clearData = () => {

@@ -1,6 +1,10 @@
 import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
+import DiscountOnRechargeNew from "../recharge/discount/DiscountOnRechargeNew"
 
+const OperatorConfigs = Loadable(
+  lazy(() => import("../api-settings/operator-config/OperatorConfigs"))
+)
 const Transactions = Loadable(lazy(() => import("../recharge/Transactions")))
 const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
 const OperatorList = Loadable(
@@ -50,6 +54,11 @@ const ServiceList = Loadable(
 )
 const OperatorSwitching = Loadable(
   lazy(() => import("../api-settings/operator-switching/OperatorSwitching"))
+)
+const OperatorSwitchingNew = Loadable(
+  lazy(() =>
+    import("../api-settings/operator-switching-new/OperatorSwitchingNew")
+  )
 )
 const AddUpdateService = Loadable(
   lazy(() => import("../api-settings/services-listing/AddUpdateService"))
@@ -161,11 +170,11 @@ const materialRoutes = [
     element: <ContactUsList />,
   },
   {
-    path: "/user/wallet-request",
+    path: "/wallet-request",
     element: <WalletRequestListingTable />,
   },
   {
-    path: "/user/wallet-request/:reportType",
+    path: "/wallet-request/:reportType",
     element: <WalletRequestListingTable />,
   },
   {
@@ -193,6 +202,10 @@ const materialRoutes = [
     element: <OperatorSwitching />,
   },
   {
+    path: "/api-setting/operator/priority",
+    element: <OperatorSwitchingNew />,
+  },
+  {
     path: "/api-setting/company/add",
     element: <AddUpdateCompany />,
   },
@@ -205,12 +218,16 @@ const materialRoutes = [
     element: <AmbikaSlabList />,
   },
   {
-    path: "/api-setting/operator-config",
+    path: "/api-setting/operator-slab-setting",
     element: <SlabConfig />,
   },
   {
-    path: "/api-setting/operator-config/add",
+    path: "/api-setting/operator-slab-setting/add",
     element: <AddUpdateSlabConfig />,
+  },
+  {
+    path: "/api-setting/operator-config",
+    element: <OperatorConfigs />,
   },
   {
     path: "/api-setting/service",
@@ -227,6 +244,10 @@ const materialRoutes = [
   {
     path: "/recharge/discount",
     element: <DiscountOnRecharge />,
+  },
+  {
+    path: "/recharge/discount-new",
+    element: <DiscountOnRechargeNew />,
   },
   {
     path: "/recharge/transactions",

@@ -18,7 +18,7 @@ function getOperatorById(id) {
 }
 
 function addOperator(data) {
-  return fetchWrapper.post(Url, data)
+  return fetchWrapper.post(`${Url}/create`, data)
 }
 
 function updateOperator(id, data) {

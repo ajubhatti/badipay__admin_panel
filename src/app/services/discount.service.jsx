@@ -1,3 +1,6 @@
+import { fetchWrapper } from "app/helpers/fetch-wrapper"
+const discountUrl = `${process.env.REACT_APP_BASE_URL}/discount`
+
 var axios = require("axios")
 const api_url = `${process.env.REACT_APP_BASE_URL}`
 
@@ -42,10 +45,35 @@ const deleteDiscount = (id) => {
   })
 }
 
+const getAllDiscountNew = (data) => {
+  return fetchWrapper.post(`${discountUrl}/getWithPagination`, data)
+}
+const getDiscountByIdNew = (id) => {
+  return fetchWrapper.get(`${discountUrl}/${id}`)
+}
+
+const addDiscountNew = (data) => {
+  return fetchWrapper.post(discountUrl, data)
+}
+
+const updateDiscountNew = (id, data) => {
+  return fetchWrapper.put(`${discountUrl}/${id}`, data)
+}
+
+const deleteDiscountNew = (id) => {
+  return fetchWrapper.delete(`${discountUrl}/${id}`)
+}
+
 export const discountServices = {
   getAllApisAndServices,
   getAllDiscount,
   addDiscount,
   updateDiscount,
   deleteDiscount,
+  // ==================
+  deleteDiscountNew,
+  updateDiscountNew,
+  addDiscountNew,
+  getDiscountByIdNew,
+  getAllDiscountNew,
 }

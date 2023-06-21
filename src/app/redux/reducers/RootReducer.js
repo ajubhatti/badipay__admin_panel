@@ -15,6 +15,8 @@ import reportsReducer from "app/views/reports/store/reducer"
 import LoginReducers from "./loginReducer"
 import accountReducer from "app/views/user/store/reducer"
 import operatorReducer from "app/views/api-settings/operator-list/store/reducer"
+import operatorConfigReducer from "app/views/api-settings/operator-config/store/reducer"
+import discountReducer from "app/views/recharge/discount/store/reducer"
 
 const RootReducer = combineReducers({
   notifications: NotificationReducer,
@@ -33,6 +35,8 @@ const RootReducer = combineReducers({
   account: accountReducer,
   operators: operatorReducer,
   user: LoginReducers,
+  operatorConfig: operatorConfigReducer,
+  discount: discountReducer,
 })
 
 export default RootReducer

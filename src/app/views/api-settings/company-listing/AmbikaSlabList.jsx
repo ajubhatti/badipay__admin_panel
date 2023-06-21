@@ -30,34 +30,6 @@ const Title = styled("span")(() => ({
   textTransform: "capitalize",
 }))
 
-const UserTable = styled(Table)(() => ({
-  minWidth: 400,
-  whiteSpace: "pre",
-  "& small": {
-    height: 15,
-    width: 50,
-    borderRadius: 500,
-    boxShadow: "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
-  },
-  "& td": {
-    borderBottom: "none",
-  },
-  "& td:first-of-type": {
-    paddingLeft: "16px !important",
-  },
-}))
-
-const Small = styled("small")(({ bgcolor }) => ({
-  height: 15,
-  width: 50,
-  color: "#fff",
-  padding: "2px 8px",
-  borderRadius: "4px",
-  overflow: "hidden",
-  background: bgcolor,
-  boxShadow: "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
-}))
-
 const StyledTable = styled(Table)(({ theme }) => ({
   whiteSpace: "pre",
   "& thead": {
@@ -83,8 +55,6 @@ const AmbikaSlabList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [page, setPage] = useState(0)
   const [companies, setCompanies] = useState([])
-  const [modelOpen, setModelOpen] = useState(false)
-  const [modelTitle, setModelTitle] = useState("New Operator")
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)

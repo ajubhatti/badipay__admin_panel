@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Icon } from "@mui/material"
 import { accountService } from "../../services/account.service"
 import AddUpdateUserDialog from "./AddUpdateUserDialog"
 import "jspdf-autotable"

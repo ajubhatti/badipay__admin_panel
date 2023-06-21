@@ -79,9 +79,6 @@ const CustomBootstrapTable = ({
       : {}),
   }))
 
-  const headerStyle = { backgroundColor: "#c8e6c9" }
-  const rowStyle = { backgroundColor: "#c8e6c9" }
-
   return (
     <React.Fragment>
       <div className="mb-2 d-flex flex-column ">

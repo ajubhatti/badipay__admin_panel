@@ -1,6 +1,5 @@
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import React, { useEffect, useState } from "react"
-import DiscountModal from "./DiscountModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
 import { discountServices } from "app/services/discount.service"
@@ -11,8 +10,19 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai"
 import CustomTable from "app/components/Tables/CustomTable"
+import { useDispatch, useSelector } from "react-redux"
+import { getServices } from "../../api-settings/services-listing/store/action"
+import { getApiList } from "app/views/api-settings/apis/store/action"
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { editDiscount, getDiscountList } from "./store/action"
+import DiscountModalNew from "./DiscountModalNew"
 
-const DiscountOnRecharge = () => {
+const DiscountOnRechargeNew = () => {
+  const dispatch = useDispatch()
+  const { apisList } = useSelector((state) => state.apis)
+  const { serviceList } = useSelector((state) => state.servicesList)
+  const { discountList } = useSelector((state) => state.discount)
+
   const [isShowLoader, setIsShowLoader] = useState(false)
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [
@@ -28,10 +38,12 @@ const DiscountOnRecharge = () => {
   const [discountInfo, setdDiscountInfo] = useState([])
   const [discounts, setdDiscounts] = useState([])
 
-  const [providers, setProviders] = useState([])
+  const [apis, setApis] = useState([])
   const [services, setServices] = useState([])
-  const [isShowDiscountData, setIsShowDiscountData] = useState(false)
+  const [isShowDiscountData, setIsShowDiscountData] = useState(true)
   const [loading, setLoading] = useState(false)
+
+  const [searchData, setSearchData] = useState({})
 
   const columns = [
     {
@@ -45,39 +57,47 @@ const DiscountOnRecharge = () => {
       },
     },
     {
-      dataField: "companyName",
+      dataField: "serviceData.serviceName",
       text: "Company Name",
     },
     {
-      dataField: "discountData.adminDiscount",
+      dataField: "apiData.apiName",
+      text: "Api Name",
+    },
+    {
+      dataField: "operatorData.operatorName",
+      text: "Operator Name",
+    },
+    {
+      dataField: "adminDiscount",
       text: "Admin Discount",
     },
     {
-      dataField: "discountData.adminDiscountType",
+      dataField: "adminDiscountType",
       text: "Discount Type",
     },
     {
-      dataField: "discountData.userDiscount",
+      dataField: "userDiscount",
       text: "User Discount",
     },
     {
-      dataField: "discountData.userDiscountLimit",
+      dataField: "userDiscountLimit",
       text: "Discount Limit",
     },
     {
-      dataField: "discountData.userDiscountType",
+      dataField: "userDiscountType",
       text: "Discount Type",
     },
     {
-      dataField: "discountData.referalDiscount",
+      dataField: "referalDiscount",
       text: "Referal Discount",
     },
     {
-      dataField: "discountData.referalDiscountLimit",
+      dataField: "referalDiscountLimit",
       text: "Discount Limit",
     },
     {
-      dataField: "discountData.referalDiscountType",
+      dataField: "referalDiscountType",
       text: "Discount Type",
     },
     {
@@ -107,38 +127,36 @@ const DiscountOnRecharge = () => {
     },
   ]
 
-  const getAllProviders = async () => {
-    setIsShowLoader(true)
-    await discountServices.getAllApisAndServices().then((res) => {
-      let provider = []
-      provider = res?.apisResponse?.data?.data?.data
-        .filter((provider) => {
-          return provider.isActive
-        })
-        .map(function (provider) {
-          return { value: provider._id, label: provider.apiName }
-        })
-      provider.unshift({ value: 0, label: "Select Provider" })
-      setProviders(provider)
-
-      let service = []
-      service = res?.serviceResponse?.data?.data
-        .filter((service) => {
-          return service.isActive
-        })
-        .map(function (service) {
-          return { value: service._id, label: service.serviceName }
-        })
-      service.unshift({ value: 0, label: "Select Service" })
-      setServices(service)
-
-      setIsShowLoader(false)
-    })
-  }
+  useEffect(() => {
+    dispatch(getApiList())
+    dispatch(getServices())
+  }, [dispatch])
 
   useEffect(() => {
-    getAllProviders()
-  }, [])
+    let api = []
+    api = apisList
+      .filter((api) => {
+        return api.isActive
+      })
+      .map(function (api) {
+        return { value: api._id, label: api.apiName }
+      })
+    api.unshift({ value: 0, label: "Select Api" })
+    setApis(api)
+  }, [apisList])
+
+  useEffect(() => {
+    let service = []
+    service = serviceList
+      .filter((service) => {
+        return service.isActive
+      })
+      .map(function (service) {
+        return { value: service._id, label: service.serviceName }
+      })
+    service.unshift({ value: 0, label: "Select Service" })
+    setServices(service)
+  }, [serviceList])
 
   const getAllDiscounts = async (params) => {
     setIsShowLoader(true)
@@ -160,6 +178,7 @@ const DiscountOnRecharge = () => {
   }
 
   const handleEdit = (info) => {
+    console.log(info)
     let tmpInfo = []
     tmpInfo._id = info?._id
     tmpInfo.discountData = info?.discountData
@@ -189,14 +208,20 @@ const DiscountOnRecharge = () => {
     setIsShowDeleteDiscountConfirmModal(false)
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === "selectedProviderIndex") {
-      setSelectedProviderIndex(value)
-    } else {
-      setSelectedServiceIndex(value)
+  useEffect(() => {
+    console.log({ searchData })
+    let payload = {
+      // apis: "632974511164a0942d5d56e1",
+      // provider: "61ebf005b15b7b52ddc35dff",
+      // operator: "6488d49e5bc4d80784c5e578",
     }
-  }
+    dispatch(getDiscountList(searchData))
+  }, [searchData, dispatch])
+
+  useEffect(() => {
+    console.log({ discountList })
+    setdDiscounts(discountList)
+  }, [discountList])
 
   const handleFilter = () => {
     if (selectedProviderIndex !== "" && selectedServiceIndex !== "") {
@@ -208,26 +233,17 @@ const DiscountOnRecharge = () => {
   }
 
   const handleSaveDiscountModal = async (data) => {
+    console.log({ data })
     setIsShowLoader(true)
     setDiscountModalSave(true)
-    data.apiId = selectedProviderIndex
-    data.serviceId = selectedServiceIndex
-    if (isDiscountEdit && data?._id) {
-      await discountServices
-        .updateDiscount(data._id, data)
-        .then((res) => {
-          getAllDiscounts(data)
-          setIsShowLoader(false)
-        })
-        .catch((error) => {
-          setIsShowLoader(false)
-        })
-    } else {
-      await discountServices.addDiscount(data).then((res) => {
-        getAllDiscounts(data)
-        setIsShowLoader(false)
+
+    dispatch(
+      editDiscount(data._id, data, (cbData) => {
+        console.log({ cbData })
+        dispatch(getDiscountList(searchData))
       })
-    }
+    )
+
     setIsShowDiscountModal(false)
   }
 
@@ -252,36 +268,32 @@ const DiscountOnRecharge = () => {
                 <div className="col-md-12 d-flex">
                   <div className="col-md-6 d-flex">
                     <div className="me-2">
-                      <select
-                        name="selectedProviderIndex"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="selectedProviderIndex"
-                      >
-                        {providers.map((provider) => {
-                          return (
-                            <option key={provider.value} value={provider.value}>
-                              {provider.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                      <ReactSelect
+                        placeHolder={"Select Services"}
+                        title={"Services"}
+                        handleChange={(e) => {
+                          setSearchData({
+                            ...searchData,
+                            apis: e,
+                          })
+                        }}
+                        options={apis}
+                        value={searchData.apis}
+                      />
                     </div>
                     <div className="me-2">
-                      <select
-                        name="selectedServiceIndex"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="selectedServiceIndex"
-                      >
-                        {services.map((service) => {
-                          return (
-                            <option key={service.value} value={service.value}>
-                              {service.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                      <ReactSelect
+                        placeHolder={"Select Operator"}
+                        title={"Operator"}
+                        handleChange={(e) => {
+                          setSearchData({
+                            ...searchData,
+                            provider: e,
+                          })
+                        }}
+                        value={searchData.provider}
+                        options={services}
+                      />
                     </div>
                     <button
                       className={`btn btn-primary`}
@@ -321,7 +333,7 @@ const DiscountOnRecharge = () => {
               ></CustomTable>
 
               {isShowDiscountModal && (
-                <DiscountModal
+                <DiscountModalNew
                   discountInfo={discountInfo}
                   isDiscountEdit={isDiscountEdit}
                   isShowDiscountModal={isShowDiscountModal}
@@ -349,4 +361,4 @@ const DiscountOnRecharge = () => {
   )
 }
 
-export default DiscountOnRecharge
+export default DiscountOnRechargeNew

@@ -44,7 +44,7 @@ export const navigations = [
     badge: { color: "secondary" },
     children: [
       {
-        name: "Recharge",
+        name: "Recharges",
         path: "/recharge",
         iconText: "RCH",
       },
@@ -65,6 +65,11 @@ export const navigations = [
         path: "/recharge/discount",
         iconText: "DS",
       },
+      {
+        name: "Discount-new",
+        path: "/recharge/discount-new",
+        iconText: "DSNW",
+      },
     ],
   },
   {
@@ -84,7 +89,7 @@ export const navigations = [
       },
       {
         name: "Wallet Report",
-        path: "/user/wallet-request/success",
+        path: "/wallet-request/success",
         iconText: "WL",
       },
     ],
@@ -96,7 +101,7 @@ export const navigations = [
     children: [
       {
         name: "Wallet list",
-        path: "/user/wallet-request",
+        path: "/wallet-request",
         iconText: "WL",
       },
     ],
@@ -132,14 +137,24 @@ export const navigations = [
         iconText: "APIL",
       },
       {
+        name: "Operator Switching New",
+        path: "/api-setting/operator/priority",
+        iconText: "APILP",
+      },
+      {
         name: "Ambika Slabs",
         path: "/api-setting/ambika-slabs",
         iconText: "COL",
       },
       {
-        name: "Operartor settings",
-        path: "/api-setting/operator-config",
+        name: "Operator slab settings",
+        path: "/api-setting/operator-slab-setting",
         iconText: "Oprtr",
+      },
+      {
+        name: "Operator config",
+        path: "/api-setting/operator-config",
+        iconText: "Opcnfg",
       },
     ],
   },

@@ -18,8 +18,16 @@ const ReactSelect = ({
     handleChange(event?.value)
   }
 
+  const customStyles = {
+    container: (provided) => ({
+      ...provided,
+      width: 200,
+    }),
+  }
+
   return (
     <Select
+      styles={customStyles}
       isClearable={isClearable}
       placeholder={placeHolder || "select"}
       value={defaultValue}

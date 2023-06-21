@@ -65,12 +65,10 @@ const AddUpdateOperatorModal = ({
 
       setApiArray(arrWithColor)
     }
-  }, [apisList])
+  }, [apisList, data?.referenceApis])
 
   const handleSaveOrUpdate = async () => {
     companyData.referenceApis = apiArray
-    // companyData.requiredFields = inputFields
-    console.log({ companyData })
     if (companyData?._id) {
       dispatch(
         editOperator(companyData?._id, companyData, () => {
@@ -107,15 +105,12 @@ const AddUpdateOperatorModal = ({
     })
   }
 
-  // =================================================================
-
   useEffect(() => {
     if (serviceList && serviceList.length > 0) {
       let newService = serviceList.map((service) => ({
         value: service._id,
         label: service.serviceName,
       }))
-      // setSelectedValue(newService[0].value)
       if (!data._id) {
         setCompanyData({
           ...companyData,
@@ -126,14 +121,9 @@ const AddUpdateOperatorModal = ({
     }
   }, [serviceList, data])
 
-  const handleClose = () => {
-    clearData()
-  }
-
   const addFields = () => {
     let newfield = { fieldName: "", fieldValue: "" }
 
-    // setInputFields([...inputFields, newfield])
     setCompanyData({
       ...companyData,
       requiredFields: [...companyData.requiredFields, newfield],
@@ -143,7 +133,6 @@ const AddUpdateOperatorModal = ({
   const handleFormChange = (index, event) => {
     let data = [...companyData.requiredFields]
     data[index][event.target.name] = event.target.value
-    // setInputFields(data)
     setCompanyData({
       ...companyData,
       requiredFields: data,
@@ -153,7 +142,6 @@ const AddUpdateOperatorModal = ({
   const removeFields = (index) => {
     let data = [...companyData.requiredFields]
     data.splice(index, 1)
-    // setInputFields(data)
     setCompanyData({
       ...companyData,
       requiredFields: data,
@@ -194,6 +182,22 @@ const AddUpdateOperatorModal = ({
                 setCompanyData({
                   ...companyData,
                   operatorDetail: e.target.value,
+                })
+              }}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formGridOperatorDetail" className="m-2">
+            <Form.Label>Mplan Code</Form.Label>
+            <Form.Control
+              // value={companyData?.operatorDetail}
+              defaultValue={companyData?.mplanCode}
+              type="textarea"
+              placeholder="Enter mplan code"
+              onChange={(e) => {
+                setCompanyData({
+                  ...companyData,
+                  mplanCode: e.target.value,
                 })
               }}
             />

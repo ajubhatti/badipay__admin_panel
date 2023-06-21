@@ -34,7 +34,7 @@ const OperatorList = () => {
     search: "",
     startDate: "",
     endDate: "",
-    serviceId: "61ebf005b15b7b52ddc35dff",
+    serviceId: "",
   })
 
   useEffect(() => {
@@ -208,7 +208,7 @@ const OperatorList = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
-          <h2 className="main-heading">Company List</h2>
+          <h2 className="main-heading">Operator List</h2>
         </div>
       </div>
 
@@ -260,7 +260,7 @@ const OperatorList = () => {
       {isShowConfirmModal && (
         <ConfirmModal
           title="Are you sure ?"
-          description="Are you sure you want to delete ?"
+          description="Are you sure you want to delete?"
           handleDelete={handleOk}
           isShowConfirmModal={isShowConfirmModal}
           onCloseConfirmModal={() => setIsShowConfirmModal(false)}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { editService, getServices } from "./store/action"
+import { deleteService, editService, getServices } from "./store/action"
 import {
   AiOutlineEdit,
   AiFillDelete,
@@ -170,11 +170,11 @@ const ServiceList = () => {
   }
 
   const handleOk = async () => {
-    // dispatch(
-    //   deleteApis(servicesData._id, () => {
-    //     setIsShowConfirmModal(false)
-    //   })
-    // )
+    dispatch(
+      deleteService(servicesData._id, () => {
+        setIsShowConfirmModal(false)
+      })
+    )
   }
 
   return (
@@ -232,11 +232,11 @@ const ServiceList = () => {
 
         {isShowConfirmModal && (
           <ConfirmModal
-            title="Are you sure ?"
-            description="Are you sure you want to delete ?"
+            title="Are you sure?"
+            description="Are you sure you want to delete?"
             handleDelete={handleOk}
             isShowConfirmModal={isShowConfirmModal}
-            onCloseConfirmModal={setIsShowConfirmModal(false)}
+            onCloseConfirmModal={() => setIsShowConfirmModal(false)}
           />
         )}
       </div>

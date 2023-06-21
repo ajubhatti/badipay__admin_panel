@@ -57,7 +57,7 @@ const AddUpdateCompanyModal = ({ show, onHide, type, data }) => {
 
       setApiArray(arrWithColor)
     }
-  }, [apisList])
+  }, [apisList, data?.referenceApis])
 
   const handleSaveOrUpdate = async () => {
     companyData.referenceApis = apiArray
@@ -98,7 +98,6 @@ const AddUpdateCompanyModal = ({ show, onHide, type, data }) => {
         value: service._id,
         label: service.serviceName,
       }))
-      // setSelectedValue(newService[0].value)
       if (!data._id) {
         setCompanyData({
           ...companyData,
@@ -107,11 +106,7 @@ const AddUpdateCompanyModal = ({ show, onHide, type, data }) => {
       }
       setServicesData(newService)
     }
-  }, [serviceList, data])
-
-  const handleClose = () => {
-    clearData()
-  }
+  }, [serviceList, data, companyData])
 
   return (
     <Modal show={show} onHide={onHide} centered>

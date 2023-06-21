@@ -1,25 +1,18 @@
-import React, { useEffect } from "react"
+import React from "react"
 import moment from "moment"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
 const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
-  // const [dateRangeValue, setDateRangeValueValues] = useState({
-  //   start: null,
-  //   end: null,
-  // });
-
   const getStartDate = (newValue, range) => {
     if (newValue && range) {
       const start = moment(newValue)
       const end = moment(range && range.end)
-
       if (end) {
         if (start.isAfter(end)) {
           return end.toDate()
         }
       }
-
       return start.toDate()
     }
   }
@@ -28,11 +21,9 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
     if (newValue && range) {
       const start = moment(range && range.start)
       const end = moment(newValue)
-
       if (end.isSameOrAfter(start)) {
         return end.toDate()
       }
-
       return range && range.end
     }
   }
@@ -40,7 +31,6 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   return (
     <div className="d-flex">
       <div className="me-2">
-        {/* <label>Start Date</label> */}
         <DatePicker
           name="startDate"
           isClearable={false}
@@ -59,11 +49,9 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
           }}
           startDate={rangeDate.start}
           endDate={rangeDate.end}
-          // maxDate={rangeDate.end}
         />
       </div>
       <div className="me-2">
-        {/* <label>End Date</label> */}
         <DatePicker
           name="endDate"
           isClearable={false}

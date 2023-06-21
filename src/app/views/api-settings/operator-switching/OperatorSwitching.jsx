@@ -1,7 +1,7 @@
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 import { companyService } from "app/services/company.service"
 import React, { useEffect, useState } from "react"
-import { Button, Form } from "react-bootstrap"
+import { Form } from "react-bootstrap"
 import { AiOutlineSearch } from "react-icons/ai"
 import { useDispatch, useSelector } from "react-redux"
 import { getCompanies } from "../company-listing/store/action"
@@ -11,7 +11,6 @@ const OperatorSwitching = () => {
   const dispatch = useDispatch()
   const { serviceList } = useSelector((state) => state.servicesList)
   const { companyList } = useSelector((state) => state.company)
-  const { searchSearviceData } = useSelector((state) => state.operatorSwitch)
 
   const [searchData, setCompanyData] = useState({})
   const [serviceMenuData, setServiceMenuData] = useState([])
@@ -192,24 +191,6 @@ const OperatorSwitching = () => {
                                 handleOnChange(index, x, "isActive", e)
                               }}
                             />
-                            {/* <input
-                                      checked={
-                                          x.isActive
-                                      }
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      id="exampleCheck1"
-                                      onChange={(
-                                          e
-                                      ) => {
-                                          handleOnChange(
-                                              index,
-                                              x,
-                                              'isActive',
-                                              e
-                                          )
-                                      }}
-                                  /> */}
                           </td>
                           <td>
                             <input

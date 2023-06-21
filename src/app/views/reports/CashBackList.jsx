@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import {
   getCashBackList,
@@ -38,8 +37,6 @@ const options = {
 const csvExporter = new ExportToCsv(options)
 
 const CashBackList = () => {
-  const { reportType } = useParams()
-
   const dispatch = useDispatch()
 
   const {
@@ -129,7 +126,7 @@ const CashBackList = () => {
       provider: filter?.provider || "",
       services: filter?.services || "",
     }))
-  }, [sizePerPage, page, sortOrder, sortField, search])
+  }, [sizePerPage, page, sortOrder, sortField, search, dateRangeValue, filter])
 
   const handleFilterData = () => {
     setPayloadData((prev) => ({
@@ -498,8 +495,8 @@ const CashBackList = () => {
   }, [dispatch])
 
   useEffect(() => {
-    getCashBackListData()
-  }, [payloadData])
+    dispatch(getCashBackList(payloadData))
+  }, [payloadData, dispatch])
 
   const getCashBackListData = () => {
     dispatch(getCashBackList(payloadData))

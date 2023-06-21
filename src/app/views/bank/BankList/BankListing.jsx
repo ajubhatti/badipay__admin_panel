@@ -1,12 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { bankService } from "app/services/bank.service"
 import moment from "moment"
-import {
-  AiFillDelete,
-  AiFillEye,
-  AiOutlineEdit,
-  AiOutlinePlus,
-} from "react-icons/ai"
+import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
 import { Button } from "react-bootstrap"
 import BankModal from "./BankModal"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
