@@ -64,6 +64,10 @@ const deleteDiscountNew = (id) => {
   return fetchWrapper.delete(`${discountUrl}/${id}`)
 }
 
+const AddDiscountbyScan = () => {
+  return fetchWrapper.post(`${discountUrl}/addbyScan`)
+}
+
 export const discountServices = {
   getAllApisAndServices,
   getAllDiscount,
@@ -76,4 +80,5 @@ export const discountServices = {
   addDiscountNew,
   getDiscountByIdNew,
   getAllDiscountNew,
+  AddDiscountbyScan,
 }

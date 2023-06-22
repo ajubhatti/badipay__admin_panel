@@ -11,6 +11,7 @@ import { getAllOperators } from "../operator-list/store/action"
 import { getServices } from "../services-listing/store/action"
 
 const OperatorSwitchingNew = () => {
+  
   const dispatch = useDispatch()
   const { serviceList } = useSelector((state) => state.servicesList)
   const { operatorList } = useSelector((state) => state.operators)

@@ -57,16 +57,16 @@ const DiscountOnRechargeNew = () => {
       },
     },
     {
+      dataField: "operatorData.operatorName",
+      text: "Operator Name",
+    },
+    {
       dataField: "serviceData.serviceName",
-      text: "Company Name",
+      text: "service Name",
     },
     {
       dataField: "apiData.apiName",
       text: "Api Name",
-    },
-    {
-      dataField: "operatorData.operatorName",
-      text: "Operator Name",
     },
     {
       dataField: "adminDiscount",
@@ -128,6 +128,14 @@ const DiscountOnRechargeNew = () => {
   ]
 
   useEffect(() => {
+    dispatch(getDiscountList(searchData))
+  }, [searchData, dispatch])
+
+  useEffect(() => {
+    setdDiscounts(discountList)
+  }, [discountList])
+
+  useEffect(() => {
     dispatch(getApiList())
     dispatch(getServices())
   }, [dispatch])
@@ -167,8 +175,10 @@ const DiscountOnRechargeNew = () => {
     })
   }
 
-  const handleAddDiscount = () => {
-    setIsShowDiscountModal(true)
+  const handleAddDiscount = async () => {
+    await discountServices.AddDiscountbyScan().then((res) => {
+      console.log({ res })
+    })
   }
 
   const handleDiscountClose = () => {
@@ -178,7 +188,6 @@ const DiscountOnRechargeNew = () => {
   }
 
   const handleEdit = (info) => {
-    console.log(info)
     let tmpInfo = []
     tmpInfo._id = info?._id
     tmpInfo.discountData = info?.discountData
@@ -208,30 +217,6 @@ const DiscountOnRechargeNew = () => {
     setIsShowDeleteDiscountConfirmModal(false)
   }
 
-  useEffect(() => {
-    console.log({ searchData })
-    let payload = {
-      // apis: "632974511164a0942d5d56e1",
-      // provider: "61ebf005b15b7b52ddc35dff",
-      // operator: "6488d49e5bc4d80784c5e578",
-    }
-    dispatch(getDiscountList(searchData))
-  }, [searchData, dispatch])
-
-  useEffect(() => {
-    console.log({ discountList })
-    setdDiscounts(discountList)
-  }, [discountList])
-
-  const handleFilter = () => {
-    if (selectedProviderIndex !== "" && selectedServiceIndex !== "") {
-      getAllDiscounts({
-        apiId: selectedProviderIndex,
-        serviceId: selectedServiceIndex,
-      })
-    }
-  }
-
   const handleSaveDiscountModal = async (data) => {
     console.log({ data })
     setIsShowLoader(true)
@@ -239,11 +224,9 @@ const DiscountOnRechargeNew = () => {
 
     dispatch(
       editDiscount(data._id, data, (cbData) => {
-        console.log({ cbData })
         dispatch(getDiscountList(searchData))
       })
     )
-
     setIsShowDiscountModal(false)
   }
 
@@ -253,8 +236,15 @@ const DiscountOnRechargeNew = () => {
 
       <div className="container-fluid w-100 mt-3">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-12 justify-content-between d-flex">
             <h2 className="main-heading">Discount List</h2>
+            <button
+              className={`ms-2 btn btn-secondary`}
+              type="button"
+              onClick={handleAddDiscount}
+            >
+              <AiOutlinePlus />
+            </button>
           </div>
         </div>
 
@@ -269,6 +259,7 @@ const DiscountOnRechargeNew = () => {
                   <div className="col-md-6 d-flex">
                     <div className="me-2">
                       <ReactSelect
+                        isClearable
                         placeHolder={"Select Services"}
                         title={"Services"}
                         handleChange={(e) => {
@@ -283,6 +274,7 @@ const DiscountOnRechargeNew = () => {
                     </div>
                     <div className="me-2">
                       <ReactSelect
+                        isClearable
                         placeHolder={"Select Operator"}
                         title={"Operator"}
                         handleChange={(e) => {
@@ -295,12 +287,12 @@ const DiscountOnRechargeNew = () => {
                         options={services}
                       />
                     </div>
-                    <button
+                    {/* <button
                       className={`btn btn-primary`}
                       onClick={handleFilter}
                     >
                       <AiOutlineSearch />
-                    </button>
+                    </button> */}
                   </div>
                   <div className="col-md-6"></div>
                 </div>
@@ -309,53 +301,48 @@ const DiscountOnRechargeNew = () => {
           </div>
         </div>
         <div className="col-lg-12">
-          {isShowDiscountData && (
-            <>
-              <div className="d-flex justify-content-end m-3">
-                <button
-                  className={`ms-2 btn btn-secondary`}
-                  type="button"
-                  onClick={handleAddDiscount}
-                >
-                  <AiOutlinePlus />
-                </button>
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12">
+                  {isShowDiscountData && (
+                    <CustomTable
+                      showAddButton={false}
+                      keyField="_id"
+                      data={discounts}
+                      columns={columns}
+                      showSearch={false}
+                      withPagination={false}
+                      loading={loading}
+                      withCard={false}
+                    ></CustomTable>
+                  )}
+                </div>
               </div>
-
-              <CustomTable
-                showAddButton={false}
-                keyField="_id"
-                data={discounts}
-                columns={columns}
-                showSearch={false}
-                withPagination={false}
-                loading={loading}
-                withCard={false}
-              ></CustomTable>
-
-              {isShowDiscountModal && (
-                <DiscountModalNew
-                  discountInfo={discountInfo}
-                  isDiscountEdit={isDiscountEdit}
-                  isShowDiscountModal={isShowDiscountModal}
-                  onCloseDiscountModal={handleDiscountClose}
-                  onSaveDiscountModal={handleSaveDiscountModal}
-                  selectedServiceIndex={selectedServiceIndex}
-                  discountModalSave={discountModalSave}
-                />
-              )}
-
-              {isShowDeleteDiscountConfirmModal && (
-                <ConfirmModal
-                  title="Are you sure ?"
-                  description="Are you sure you want to delete ?"
-                  handleDelete={handleDelete}
-                  isShowConfirmModal={isShowDeleteDiscountConfirmModal}
-                  onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
-                />
-              )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
+        {isShowDiscountModal && (
+          <DiscountModalNew
+            discountInfo={discountInfo}
+            isDiscountEdit={isDiscountEdit}
+            isShowDiscountModal={isShowDiscountModal}
+            onCloseDiscountModal={handleDiscountClose}
+            onSaveDiscountModal={handleSaveDiscountModal}
+            selectedServiceIndex={selectedServiceIndex}
+            discountModalSave={discountModalSave}
+          />
+        )}
+
+        {isShowDeleteDiscountConfirmModal && (
+          <ConfirmModal
+            title="Are you sure ?"
+            description="Are you sure you want to delete ?"
+            handleDelete={handleDelete}
+            isShowConfirmModal={isShowDeleteDiscountConfirmModal}
+            onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
+          />
+        )}
       </div>
     </div>
   )

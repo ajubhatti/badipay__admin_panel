@@ -11,13 +11,12 @@ import { useDispatch, useSelector } from "react-redux"
 import AddUpdateOperatorModal from "./AddUpdateOperatorModal"
 import { deleteOperator, getAllOperators } from "./store/action"
 import moment from "moment"
-import { getApiList } from "../apis/store/action"
 import { getServices } from "../services-listing/store/action"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
 const OperatorList = () => {
   const dispatch = useDispatch()
-
+  const { serviceList } = useSelector((state) => state.servicesList)
   const { operatorList, loading } = useSelector((state) => state.operators)
 
   const [modalShow, setModalShow] = useState(false)
@@ -25,28 +24,23 @@ const OperatorList = () => {
   const [type, setType] = useState("Add")
   const [operatorListData, setOperatorListData] = useState([])
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
-  const [payload, setPayload] = useState({
-    page: 1,
-    limits: 200,
-    sortBy: "created",
-    orderBy: "desc",
-    skip: 0,
-    search: "",
-    startDate: "",
-    endDate: "",
-    serviceId: "",
-  })
 
   useEffect(() => {
-    console.log({ operatorList })
-    setOperatorListData(operatorList || [])
-  }, [operatorList])
-
-  useEffect(() => {
-    dispatch(getAllOperators(payload))
-    dispatch(getApiList())
+    dispatch(getAllOperators({}))
     dispatch(getServices())
   }, [dispatch])
+
+  useEffect(() => {
+    for (let i = 0; i < operatorList.length; i++) {
+      for (let j = 0; j < serviceList.length; j++) {
+        if (operatorList[i]?.providerType === serviceList[j]?._id) {
+          operatorList[i].providerData = serviceList[j]
+        }
+      }
+    }
+
+    setOperatorListData(operatorList || [])
+  }, [operatorList, serviceList])
 
   const GetActionFormat = (cell, row) => (
     <div>
@@ -92,7 +86,6 @@ const OperatorList = () => {
   }
 
   const handleEdit = (cell, row) => {
-    // navigate("/api-setting/operator/add/" + row._id)
     setType("Update")
     setoperatorsData(row)
     setModalShow(true)
@@ -145,6 +138,13 @@ const OperatorList = () => {
       dataField: "operatorDetail",
       formatter: (cell, row, rowIndex, formatExtraData) => (
         <div>{row?.operatorDetail || "-"}</div>
+      ),
+    },
+    {
+      text: "Provider Type",
+      dataField: "providerData",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.providerData?.serviceName || "-"}</div>
       ),
     },
     {
@@ -201,7 +201,7 @@ const OperatorList = () => {
   }
 
   const getUpdatedData = () => {
-    dispatch(getAllOperators(payload))
+    dispatch(getAllOperators({}))
   }
 
   return (
@@ -209,6 +209,13 @@ const OperatorList = () => {
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
           <h2 className="main-heading">Operator List</h2>
+          <button
+            className={`ms-2 btn btn-secondary`}
+            type="button"
+            onClick={addNewOperator}
+          >
+            <AiOutlinePlus />
+          </button>
         </div>
       </div>
 
@@ -216,21 +223,6 @@ const OperatorList = () => {
         <div className="card mb-4">
           <div className="card-body">
             <div className="row">
-              <div className="col-md-12 d-flex">
-                <div className="col-md-6 d-flex "></div>
-                <div className="col-md-6 d-flex justify-content-end">
-                  <div className="me-2"></div>
-
-                  <button
-                    className={`ms-2 btn btn-secondary`}
-                    type="button"
-                    onClick={addNewOperator}
-                  >
-                    <AiOutlinePlus />
-                  </button>
-                </div>
-              </div>
-
               <div className="col-md-12">
                 <CustomTable
                   showAddButton={false}
