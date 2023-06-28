@@ -122,38 +122,20 @@ export const navigations = [
         iconText: "SR",
       },
       {
-        name: "company list",
-        path: "/api-setting/company-list",
-        iconText: "COL",
-      },
-      {
         name: "Operator list",
         path: "/api-setting/operator-list",
         iconText: "COL",
       },
-      {
-        name: "Operator Switching",
-        path: "/api-setting/operator",
-        iconText: "APIL",
-      },
+
       {
         name: "Operator Switching New",
         path: "/api-setting/operator/priority",
         iconText: "APILP",
       },
-      {
-        name: "Ambika Slabs",
-        path: "/api-setting/ambika-slabs",
-        iconText: "COL",
-      },
-      {
-        name: "Operator slab settings",
-        path: "/api-setting/operator-slab-setting",
-        iconText: "Oprtr",
-      },
+      
       {
         name: "Operator config",
-        path: "/api-setting/operator-config",
+        path: "/api-setting/operators-configs",
         iconText: "Opcnfg",
       },
     ],

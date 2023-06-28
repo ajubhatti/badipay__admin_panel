@@ -207,8 +207,8 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.rechargeOperator?.companyName
-              ? row?.rechargeData?.rechargeOperator?.companyName
+            {row?.rechargeData?.operatorConfig?.operatorData?.operatorName
+              ? row?.rechargeData?.operatorConfig?.operatorData?.operatorName
               : "-"}
           </div>
         ),
@@ -219,8 +219,8 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.rechargeApi?.apiName
-              ? row?.rechargeData?.rechargeApi?.apiName
+            {row?.rechargeData?.operatorConfig?.apiData?.apiName
+              ? row?.rechargeData?.operatorConfig?.apiData?.apiName
               : "-"}
           </div>
         ),

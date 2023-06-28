@@ -352,9 +352,8 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.rechargeData?.rechargeOperator?.companyName
-              ? row?.transactionData?.rechargeData?.rechargeOperator
-                  ?.companyName
+            {row?.rechargeByOperator?.operatorName
+              ? row?.rechargeByOperator?.operatorName
               : "-"}
           </div>
         ),
@@ -365,9 +364,7 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.rechargeData?.rechargeApi?.apiName
-              ? row?.transactionData?.rechargeData?.rechargeApi?.apiName
-              : "-"}
+            {row?.rechargeByApi?.apiName ? row?.rechargeByApi?.apiName : "-"}
           </div>
         ),
       },

@@ -10,9 +10,6 @@ const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
 const OperatorList = Loadable(
   lazy(() => import("../api-settings/operator-list/OperatorList"))
 )
-const CompanyList = Loadable(
-  lazy(() => import("../api-settings/company-listing/CompanyList"))
-)
 
 const UserListings = Loadable(lazy(() => import("../user/UserListings")))
 const BannerList = Loadable(
@@ -37,23 +34,9 @@ const ApiListings = Loadable(
   lazy(() => import("../api-settings/apis/ApiListings"))
 )
 const BankListing = Loadable(lazy(() => import("../bank/BankList/BankListing")))
-const AddUpdateCompany = Loadable(
-  lazy(() => import("../api-settings/company-listing/AddUpdateCompany"))
-)
-const AmbikaSlabList = Loadable(
-  lazy(() => import("../api-settings/company-listing/AmbikaSlabList"))
-)
-const SlabConfig = Loadable(
-  lazy(() => import("../api-settings/slab-config/SlabConfig"))
-)
-const AddUpdateSlabConfig = Loadable(
-  lazy(() => import("../api-settings/slab-config/AddUpdateSlabConfig"))
-)
+
 const ServiceList = Loadable(
   lazy(() => import("../api-settings/services-listing/ServiceList"))
-)
-const OperatorSwitching = Loadable(
-  lazy(() => import("../api-settings/operator-switching/OperatorSwitching"))
 )
 const OperatorSwitchingNew = Loadable(
   lazy(() =>
@@ -189,44 +172,17 @@ const materialRoutes = [
     path: "/api-setting/api",
     element: <ApiListings />,
   },
-  {
-    path: "/api-setting/company-list",
-    element: <CompanyList />,
-  },
+
   {
     path: "/api-setting/operator-list",
     element: <OperatorList />,
-  },
-  {
-    path: "/api-setting/operator",
-    element: <OperatorSwitching />,
   },
   {
     path: "/api-setting/operator/priority",
     element: <OperatorSwitchingNew />,
   },
   {
-    path: "/api-setting/company/add",
-    element: <AddUpdateCompany />,
-  },
-  {
-    path: "/api-setting/company/add/:id",
-    element: <AddUpdateCompany />,
-  },
-  {
-    path: "/api-setting/ambika-slabs",
-    element: <AmbikaSlabList />,
-  },
-  {
-    path: "/api-setting/operator-slab-setting",
-    element: <SlabConfig />,
-  },
-  {
-    path: "/api-setting/operator-slab-setting/add",
-    element: <AddUpdateSlabConfig />,
-  },
-  {
-    path: "/api-setting/operator-config",
+    path: "/api-setting/operators-configs",
     element: <OperatorConfigs />,
   },
   {
