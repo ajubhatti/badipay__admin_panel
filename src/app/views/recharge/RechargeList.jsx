@@ -87,7 +87,7 @@ const RechargeList = () => {
     const getAllProviders = async () => {
       await discountServices.getAllApisAndServices().then((res) => {
         let apis = []
-        apis = res?.apisResponse?.data?.data?.data
+        apis = res?.apisResponse?.data?.data
           .filter((apis) => {
             return apis.isActive
           })
@@ -135,7 +135,6 @@ const RechargeList = () => {
   }, [dispatch])
 
   const getTransactionList = useCallback(() => {
-    console.log({ payloadData })
     dispatch(getRechargeList(payloadData))
   }, [dispatch, payloadData])
 
@@ -528,143 +527,139 @@ const RechargeList = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="main-heading">Recharge List</h2>
-        </div>
-      </div>
-
-      <div className="col-lg-12">
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-md-12 d-flex">
-                <div className="col-md-6 d-flex ">
-                  <div className="me-2">
-                    <select
-                      name="api"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="api"
-                      value={filter.api || ""}
-                    >
-                      {providers.map((api) => {
-                        return (
-                          <option key={api.value} value={api.value}>
-                            {api.label}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </div>
-                  <div className="me-2">
-                    <select
-                      name="services"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="services"
-                      value={filter.services || ""}
-                    >
-                      {services.map((service) => {
-                        return (
-                          <option key={service.value} value={service.value}>
-                            {service.label}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </div>
-
-                  {!reportType && (
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex ">
                     <div className="me-2">
                       <select
-                        name="status"
+                        name="api"
                         onChange={handleChange}
                         className="form-control"
-                        id="status"
-                        value={filter.status || ""}
+                        id="api"
+                        value={filter.api || ""}
                       >
-                        {statusList.map((stts) => {
+                        {providers.map((api) => {
                           return (
-                            <option key={stts.value} value={stts.value}>
-                              {stts.name}
+                            <option key={api.value} value={api.value}>
+                              {api.label}
                             </option>
                           )
                         })}
                       </select>
                     </div>
-                  )}
-                </div>
-                <div className="col-md-6 d-flex justify-content-end">
-                  <div className="me-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search"
-                      onChange={handleSearch}
-                    />
+                    <div className="me-2">
+                      <select
+                        name="services"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="services"
+                        value={filter.services || ""}
+                      >
+                        {services.map((service) => {
+                          return (
+                            <option key={service.value} value={service.value}>
+                              {service.label}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
+
+                    {!reportType && (
+                      <div className="me-2">
+                        <select
+                          name="status"
+                          onChange={handleChange}
+                          className="form-control"
+                          id="status"
+                          value={filter.status || ""}
+                        >
+                          {statusList.map((stts) => {
+                            return (
+                              <option key={stts.value} value={stts.value}>
+                                {stts.name}
+                              </option>
+                            )
+                          })}
+                        </select>
+                      </div>
+                    )}
                   </div>
-                  <CustomDateRangePicker
-                    rangeDate={dateRangeValue}
-                    setRangeDate={setDateRangeValue}
-                  />
-                  <button
-                    className={`btn btn-primary`}
-                    onClick={() => handleFilterData()}
-                  >
-                    <AiOutlineSearch />
-                  </button>
-                  {reportType && (
+                  <div className="col-md-6 d-flex justify-content-end">
+                    <div className="me-2">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                        onChange={handleSearch}
+                      />
+                    </div>
+                    <CustomDateRangePicker
+                      rangeDate={dateRangeValue}
+                      setRangeDate={setDateRangeValue}
+                    />
                     <button
-                      className={`ms-2 btn btn-secondary ${
-                        exportLoading ? "disabled" : ""
-                      }`}
-                      onClick={handleCSV}
+                      className={`btn btn-primary`}
+                      onClick={() => handleFilterData()}
                     >
-                      {exportLoading ? (
-                        <div
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                        ></div>
-                      ) : (
-                        <AiOutlineDownload />
-                      )}
+                      <AiOutlineSearch />
                     </button>
-                  )}
+                    {reportType && (
+                      <button
+                        className={`ms-2 btn btn-secondary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        onClick={handleCSV}
+                      >
+                        {exportLoading ? (
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></div>
+                        ) : (
+                          <AiOutlineDownload />
+                        )}
+                      </button>
+                    )}
 
-                  <button
-                    className={`btn btn-primary ms-2`}
-                    onClick={resetValue}
-                  >
-                    Reset
-                  </button>
+                    <button
+                      className={`btn btn-primary ms-2`}
+                      onClick={resetValue}
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-md-12">
-                <CustomTable
-                  showAddButton={false}
-                  pageOptions={pageOptions}
-                  keyField="_id"
-                  data={rechargeList}
-                  columns={columns}
-                  showSearch={false}
-                  onTableChange={onTableChange}
-                  withPagination={true}
-                  loading={loading}
-                  withCard={false}
-                ></CustomTable>
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    pageOptions={pageOptions}
+                    keyField="_id"
+                    data={rechargeList}
+                    columns={columns}
+                    showSearch={false}
+                    onTableChange={onTableChange}
+                    withPagination={true}
+                    loading={loading}
+                    withCard={false}
+                  ></CustomTable>
 
-                {isShowDiscountModal && (
-                  <RechargeViewModal
-                    discountInfo={discountInfo}
-                    isDiscountEdit={isDiscountEdit}
-                    isShowDiscountModal={isShowDiscountModal}
-                    onCloseDiscountModal={handleDiscountClose}
-                    fetchTransactionList={getTransactionList}
-                    // onSaveDiscountModal={handleSaveDiscountModal}
-                    // selectedServiceIndex={selectedServiceIndex}
-                    // discountModalSave={discountModalSave}
-                  />
-                )}
+                  {isShowDiscountModal && (
+                    <RechargeViewModal
+                      discountInfo={discountInfo}
+                      isDiscountEdit={isDiscountEdit}
+                      isShowDiscountModal={isShowDiscountModal}
+                      onCloseDiscountModal={handleDiscountClose}
+                      fetchTransactionList={getTransactionList}
+                      // onSaveDiscountModal={handleSaveDiscountModal}
+                      // selectedServiceIndex={selectedServiceIndex}
+                      // discountModalSave={discountModalSave}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>

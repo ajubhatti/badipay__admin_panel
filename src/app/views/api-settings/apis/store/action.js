@@ -21,8 +21,8 @@ export const getApiList = () => async (dispatch) => {
   try {
     dispatch(setLoading(true))
     const res = await axiosAdmin.get(GET_APIS)
-    if (res.data?.data?.data) {
-      dispatch(fetchApiList(res?.data?.data?.data))
+    if (res.data?.data) {
+      dispatch(fetchApiList(res?.data?.data))
       dispatch(setLoading(false))
     }
   } catch (err) {

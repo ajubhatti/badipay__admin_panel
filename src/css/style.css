@@ -48,3 +48,44 @@
 .btn {
     margin-bottom: 10px;
 }
+
+.primary-btn {
+    /* height: 15px; */
+    width: 60px;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #1976d2;
+    box-shadow: 0 0 2px 0 rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 24%);
+}
+.danger-btn {
+    /* height: 15px; */
+    width:70px;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #FF3D57;
+    box-shadow: 0 0 2px 0 rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 24%);
+    font-size: smaller;
+}
+.active-btn {
+    /* height: 15px; */
+    width: 70px;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #58c658;
+    box-shadow: 0 0 2px 0 rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 24%);
+    font-size: smaller;
+}
+
+.search-box {
+    width: auto;
+}
+
+.cursor-pointer {
+    cursor: pointer
+}

@@ -1,6 +1,5 @@
 import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
-import DiscountOnRechargeNew from "../recharge/discount/DiscountOnRechargeNew"
 
 const OperatorConfigs = Loadable(
   lazy(() => import("../api-settings/operator-config/OperatorConfigs"))
@@ -24,9 +23,7 @@ const ContactUsList = Loadable(
 const BankAccountTable = Loadable(
   lazy(() => import("../bank/bankAccount/BankAccountTable"))
 )
-const UserListingTable = Loadable(
-  lazy(() => import("../user/UserListingTable"))
-)
+
 const WalletRequestListingTable = Loadable(
   lazy(() => import("../wallet/WalletRequestListingTable"))
 )
@@ -54,88 +51,12 @@ const UserRegister = Loadable(
 )
 const CashBackList = Loadable(lazy(() => import("../reports/CashBackList")))
 const StateList = Loadable(lazy(() => import("../utilities/StateList")))
-const AppTable = Loadable(lazy(() => import("./tables/AppTable")))
-const AppForm = Loadable(lazy(() => import("./forms/AppForm")))
-const AppButton = Loadable(lazy(() => import("./buttons/AppButton")))
-const AppIcon = Loadable(lazy(() => import("./icons/AppIcon")))
-const AppProgress = Loadable(lazy(() => import("./AppProgress")))
-const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")))
-const AppCheckbox = Loadable(lazy(() => import("./checkbox/AppCheckbox")))
-const AppSwitch = Loadable(lazy(() => import("./switch/AppSwitch")))
-const AppRadio = Loadable(lazy(() => import("./radio/AppRadio")))
-const AppSlider = Loadable(lazy(() => import("./slider/AppSlider")))
-const AppDialog = Loadable(lazy(() => import("./dialog/AppDialog")))
-const AppSnackbar = Loadable(lazy(() => import("./snackbar/AppSnackbar")))
-const AppAutoComplete = Loadable(
-  lazy(() => import("./auto-complete/AppAutoComplete"))
-)
-const AppExpansionPanel = Loadable(
-  lazy(() => import("./expansion-panel/AppExpansionPanel"))
-)
 
 const materialRoutes = [
-  {
-    path: "/material/table",
-    element: <AppTable />,
-  },
-  {
-    path: "/material/form",
-    element: <AppForm />,
-  },
-  {
-    path: "/material/buttons",
-    element: <AppButton />,
-  },
-  {
-    path: "/material/icons",
-    element: <AppIcon />,
-  },
-  {
-    path: "/material/progress",
-    element: <AppProgress />,
-  },
-  {
-    path: "/material/menu",
-    element: <AppMenu />,
-  },
-  {
-    path: "/material/checkbox",
-    element: <AppCheckbox />,
-  },
-  {
-    path: "/material/switch",
-    element: <AppSwitch />,
-  },
-  {
-    path: "/material/radio",
-    element: <AppRadio />,
-  },
-  {
-    path: "/material/slider",
-    element: <AppSlider />,
-  },
-  {
-    path: "/material/autocomplete",
-    element: <AppAutoComplete />,
-  },
-  {
-    path: "/material/expansion-panel",
-    element: <AppExpansionPanel />,
-  },
-  {
-    path: "/material/dialog",
-    element: <AppDialog />,
-  },
-  {
-    path: "/material/snackbar",
-    element: <AppSnackbar />,
-  },
-
   {
     path: "/bank/list",
     element: <BankListing />,
   },
-
   {
     path: "/bank/account",
     element: <BankAccountTable />,
@@ -161,10 +82,6 @@ const materialRoutes = [
     element: <WalletRequestListingTable />,
   },
   {
-    path: "/user/list",
-    element: <UserListingTable />,
-  },
-  {
     path: "/user/lists",
     element: <UserListings />,
   },
@@ -172,7 +89,6 @@ const materialRoutes = [
     path: "/api-setting/api",
     element: <ApiListings />,
   },
-
   {
     path: "/api-setting/operator-list",
     element: <OperatorList />,
@@ -200,10 +116,6 @@ const materialRoutes = [
   {
     path: "/recharge/discount",
     element: <DiscountOnRecharge />,
-  },
-  {
-    path: "/recharge/discount-new",
-    element: <DiscountOnRechargeNew />,
   },
   {
     path: "/recharge/transactions",

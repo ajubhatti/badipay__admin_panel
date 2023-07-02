@@ -19,7 +19,6 @@ const AddUpdateOperatorConfigModal = ({
   })
 
   useEffect(() => {
-    console.log({ data })
     if (Object.keys(data).length)
       setSlabValue({
         apiCode: data?.apiCode || "",
@@ -40,11 +39,9 @@ const AddUpdateOperatorConfigModal = ({
   }
 
   const handleSaveOrUpdate = async () => {
-    console.log({ data, slabValue })
     if (data?._id) {
       dispatch(
         editOperatorConfig(data?._id, slabValue, (cbData) => {
-          console.log({ cbData })
           fetchRefreshData()
           clearData()
           toast.success(cbData?.message)

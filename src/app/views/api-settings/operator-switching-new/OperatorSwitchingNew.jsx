@@ -11,7 +11,6 @@ import { getAllOperators } from "../operator-list/store/action"
 import { getServices } from "../services-listing/store/action"
 
 const OperatorSwitchingNew = () => {
-  
   const dispatch = useDispatch()
   const { serviceList } = useSelector((state) => state.servicesList)
   const { operatorList } = useSelector((state) => state.operators)
@@ -107,7 +106,7 @@ const OperatorSwitchingNew = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="main-heading">API PRIORITY</h2>
+          <h2 className="main-heading">API priority</h2>
         </div>
       </div>
 

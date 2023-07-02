@@ -134,8 +134,6 @@ const WalletRequestListingTable = () => {
           width: "10%",
           textAlign: "center",
         }),
-
-        // headerStyle: { width: "50px" },
         style: { height: "30px" },
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
@@ -271,7 +269,6 @@ const WalletRequestListingTable = () => {
             <div>
               <Button
                 id="approve"
-                // variant="primary"
                 type="button"
                 size="sm"
                 className={`btn btn-sm ml-2 ts-buttom m-1 btn-${
@@ -282,9 +279,7 @@ const WalletRequestListingTable = () => {
                     : "success"
                 }`}
                 onClick={() => {
-                  // if (row?.statusOfWalletRequest === "pending") {
                   handleChangeStatus(row)
-                  // }
                 }}
               >
                 {row?.statusOfWalletRequest}
@@ -429,17 +424,12 @@ const WalletRequestListingTable = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="main-heading">Wallet List</h2>
-        </div>
-      </div>
-
-      <div className="col-lg-12">
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-md-12 d-flex">
-                <div className="col-md-6 d-flex ">
-                  {/* <div className="me-2">
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex ">
+                    {/* <div className="me-2">
                     <select
                       name="provider"
                       onChange={handleChange}
@@ -471,83 +461,84 @@ const WalletRequestListingTable = () => {
                       })}
                     </select>
                   </div> */}
-                  {!reportType && (
-                    <div className="me-2">
-                      <select
-                        name="status"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="status"
-                        value={filter.status || ""}
-                      >
-                        {statusList.map((stts) => {
-                          return (
-                            <option key={stts.value} value={stts.value}>
-                              {stts.name}
-                            </option>
-                          )
-                        })}
-                      </select>
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-6 d-flex justify-content-end">
-                  <div className="me-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search"
-                      onChange={handleSearch}
-                    />
-                  </div>
-
-                  <CustomDateRangePicker
-                    rangeDate={dateRangeValue}
-                    setRangeDate={setDateRangeValue}
-                  />
-
-                  <button
-                    className={`btn btn-primary ${
-                      exportLoading ? "disabled" : ""
-                    }`}
-                    type="button"
-                    onClick={handleFilterData}
-                  >
-                    <AiOutlineSearch />
-                  </button>
-
-                  <button
-                    className={`ms-2 btn btn-secondary ${
-                      exportLoading ? "disabled" : ""
-                    }`}
-                    type="button"
-                    onClick={handleCSV}
-                  >
-                    {exportLoading ? (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      ></div>
-                    ) : (
-                      <AiOutlineDownload />
+                    {!reportType && (
+                      <div className="me-2">
+                        <select
+                          name="status"
+                          onChange={handleChange}
+                          className="form-control"
+                          id="status"
+                          value={filter.status || ""}
+                        >
+                          {statusList.map((stts) => {
+                            return (
+                              <option key={stts.value} value={stts.value}>
+                                {stts.name}
+                              </option>
+                            )
+                          })}
+                        </select>
+                      </div>
                     )}
-                  </button>
-                </div>
-              </div>
+                  </div>
+                  <div className="col-md-6 d-flex justify-content-end">
+                    <div className="me-2">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                        onChange={handleSearch}
+                      />
+                    </div>
 
-              <div className="col-md-12">
-                <CustomTable
-                  showAddButton={false}
-                  pageOptions={pageOptions}
-                  keyField="_id"
-                  data={walletLists}
-                  columns={columns}
-                  showSearch={false}
-                  onTableChange={onTableChange}
-                  withPagination={true}
-                  loading={loading}
-                  withCard={false}
-                ></CustomTable>
+                    <CustomDateRangePicker
+                      rangeDate={dateRangeValue}
+                      setRangeDate={setDateRangeValue}
+                    />
+
+                    <button
+                      className={`btn btn-primary ${
+                        exportLoading ? "disabled" : ""
+                      }`}
+                      type="button"
+                      onClick={handleFilterData}
+                    >
+                      <AiOutlineSearch />
+                    </button>
+
+                    <button
+                      className={`ms-2 btn btn-secondary ${
+                        exportLoading ? "disabled" : ""
+                      }`}
+                      type="button"
+                      onClick={handleCSV}
+                    >
+                      {exportLoading ? (
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        ></div>
+                      ) : (
+                        <AiOutlineDownload />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    pageOptions={pageOptions}
+                    keyField="_id"
+                    data={walletLists}
+                    columns={columns}
+                    showSearch={false}
+                    onTableChange={onTableChange}
+                    withPagination={true}
+                    loading={loading}
+                    withCard={false}
+                  ></CustomTable>
+                </div>
               </div>
             </div>
           </div>

@@ -7,7 +7,6 @@ const DiscountModalNew = (props) => {
   const [isShowLoader, setIsShowLoader] = useState(false)
 
   useEffect(() => {
-    console.log(props.discountInfo)
     setDiscountInfo(props.discountInfo)
   }, [props?.discountInfo])
 

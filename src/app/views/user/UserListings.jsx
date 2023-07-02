@@ -7,7 +7,6 @@ import moment from "moment"
 import AddRemoveBalance from "./AddRemoveBalance"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { useCallback } from "react"
 import {
   AiFillDelete,
   AiFillEye,
@@ -17,7 +16,7 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai"
 import { FaRupeeSign } from "react-icons/fa"
-import { Button } from "react-bootstrap"
+import { Form } from "react-bootstrap"
 import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import {
   getUserList,
@@ -49,7 +48,7 @@ const UserListings = () => {
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 25,
-    sortBy: "created",
+    sortBy: "createdAt",
     orderBy: "DESC",
     skip: 0,
     search: "",
@@ -57,8 +56,9 @@ const UserListings = () => {
     endDate: "",
   })
 
+  const [selectedRow, setSelectedRow] = useState("")
+
   useEffect(() => {
-    console.log({ userList })
     setUsersList(userList)
   }, [userList])
 
@@ -90,22 +90,30 @@ const UserListings = () => {
     setAddRemoveModelOpen(true)
     setAddRemoveModelType("add")
   }
-  const handleUpdate = useCallback(async (id, data) => {
-    setStatusLoading(true)
-    await accountService.update(id, data).then((res) => {
-      setStatusLoading(false)
-    })
-  }, [])
 
-  const changeStatus = useCallback(
-    (data) => {
-      data.isActive = !data.isActive
-      delete data.email
-      delete data.role
-      handleUpdate(data?._id, data)
-    },
-    [handleUpdate]
-  )
+  const changeActiveStatus = async (data, isChecked) => {
+    setStatusLoading(true)
+    setSelectedRow(data?._id)
+
+    await accountService
+      .changeStatusOfUser(data?._id, { isActive: isChecked })
+      .then((res) => {
+        setStatusLoading(false)
+        dispatch(getUserList(payloadData))
+      })
+  }
+
+  const changeVerifiactionStatus = async (data, isChecked) => {
+    setStatusLoading(true)
+    setSelectedRow(data?._id)
+
+    await accountService
+      .updateUserById(data?._id, { isVerified: isChecked })
+      .then((res) => {
+        setStatusLoading(false)
+        dispatch(getUserList(payloadData))
+      })
+  }
 
   const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
     switch (type) {
@@ -139,7 +147,6 @@ const UserListings = () => {
   }
 
   // const getUsersList = useCallback(() => {
-  //   console.log({ payloadData })
   //   dispatch(getUserList(payloadData))
   // }, [dispatch, payloadData])
 
@@ -147,12 +154,7 @@ const UserListings = () => {
     dispatch(getUserList(payloadData))
   }, [payloadData, dispatch])
 
-  // useEffect(() => {
-  //   getUsersList()
-  // }, [])
-
   useEffect(() => {
-    console.log({ sizePerPage, page })
     setPayloadData((previousData) => ({
       ...previousData,
       page: page,
@@ -172,7 +174,6 @@ const UserListings = () => {
   )
 
   const handleFilterData = () => {
-    console.log({ payloadData })
     setPayloadData((prev) => ({
       ...prev,
       page: page,
@@ -197,6 +198,30 @@ const UserListings = () => {
 
   const handleDelete = (cell, row) => {}
 
+  const GetIsActiveSwitch = (cell, row) => (
+    <Form.Check
+      type="switch"
+      id="isActiveSwitch"
+      className="cursor-pointer"
+      checked={row?.isActive}
+      onChange={(e) => {
+        changeActiveStatus(row, e.target.checked)
+      }}
+    />
+  )
+
+  const GetIsVerifySwitch = (cell, row) => (
+    <Form.Check
+      type="switch"
+      id="isVerifiedSwitch"
+      className="cursor-pointer"
+      checked={row?.isVerified}
+      onChange={(e) => {
+        changeVerifiactionStatus(row, e.target.checked)
+      }}
+    />
+  )
+
   const columns = useMemo(
     () => [
       {
@@ -210,7 +235,7 @@ const UserListings = () => {
         text: "Register Date",
         dataField: "createdAt",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{moment(row.createdAt).format("DD-MM-YYYY,HH:mm")}</div>
+          <div>{moment(row?.createdAt).format("DD-MM-YYYY,HH:mm")}</div>
         ),
       },
       {
@@ -225,7 +250,7 @@ const UserListings = () => {
         text: "State",
         dataField: "state",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle">{row.stateDetail.stateName}</div>
+          <div className="align-middle">{row?.stateDetail?.stateName}</div>
         ),
       },
       {
@@ -237,6 +262,19 @@ const UserListings = () => {
         dataField: "pincode",
       },
       {
+        text: "OTP",
+        dataField: "otp",
+      },
+      {
+        text: "refer code",
+        dataField: "referralDetails",
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <span className="d-flex align-items-center">
+            {row?.referralDetails?.referralCode}
+          </span>
+        ),
+      },
+      {
         text: "Balance",
         dataField: "walletBalance",
         formatter: (cell, row, rowIndex, formatExtraData) => (
@@ -245,23 +283,36 @@ const UserListings = () => {
           </span>
         ),
       },
+      // {
+      //   text: "Status",
+      //   dataField: "status",
+      //   formatter: (cell, row, rowIndex, formatExtraData) => (
+      //     <div style={{ cursor: "pointer" }} title="Click to change a status">
+      //       <Button
+      //         type="button"
+      //         disabled={statusLoading}
+      //         className={row?.isActive ? "active-btn" : "danger-btn"}
+      //         size="sm"
+      //         onClick={() => (!statusLoading ? changeStatus(row) : null)}
+      //       >
+      //         {statusLoading && selectedRow === row?._id
+      //           ? "Loading"
+      //           : row?.isActive
+      //           ? "Active"
+      //           : "Inactive"}
+      //       </Button>
+      //     </div>
+      //   ),
+      // },
       {
-        text: "Status",
-        dataField: "status",
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div style={{ cursor: "pointer" }} title="Click to change a status">
-            <Button
-              variant={row.isActive ? "success" : "danger"}
-              type="button"
-              disabled={statusLoading}
-              className="btn btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={!statusLoading ? () => changeStatus(row) : null}
-            >
-              {statusLoading ? "Loading" : row.isActive ? "Active" : "Inactive"}
-            </Button>
-          </div>
-        ),
+        text: "Is Active",
+        dataField: "isActive",
+        formatter: GetIsActiveSwitch,
+      },
+      {
+        text: "Is verify",
+        dataField: "isVerified",
+        formatter: GetIsVerifySwitch,
       },
       {
         text: "Action",
@@ -308,7 +359,7 @@ const UserListings = () => {
         ),
       },
     ],
-    [changeStatus, statusLoading]
+    [statusLoading]
   )
 
   return (
@@ -316,118 +367,113 @@ const UserListings = () => {
       <div className="container-fluid w-100 mt-3">
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="main-heading">User List</h2>
-          </div>
-        </div>
-
-        <div className="col-lg-12">
-          <div className="card mb-4">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex">
-                    {" "}
-                    <h4>Total Balance : {totalBalance}</h4>
-                  </div>
-                  <div className="col-md-6 d-flex justify-content-end">
-                    <div className="me-2">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search"
-                        onChange={handleSearch}
-                      />
+            <div className="card mb-4">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-12 d-flex">
+                    <div className="col-md-6 d-flex">
+                      {" "}
+                      <h4>Total Balance : {totalBalance}</h4>
                     </div>
-                    <CustomDateRangePicker
-                      rangeDate={dateRangeValue}
-                      setRangeDate={setDateRangeValue}
-                    />
-                    {/* <DateRangePick
+                    <div className="col-md-6 d-flex justify-content-end">
+                      <div className="me-2">
+                        <input
+                          type="text"
+                          className="form-control search-box"
+                          placeholder="Search"
+                          onChange={handleSearch}
+                        />
+                      </div>
+                      <CustomDateRangePicker
+                        rangeDate={dateRangeValue}
+                        setRangeDate={setDateRangeValue}
+                      />
+                      {/* <DateRangePick
                       setDateValue={(data) => setSelectedDates(data)}
                     /> */}
-                    <button
-                      className={`btn btn-primary ms-2`}
-                      onClick={() => handleFilterData()}
-                    >
-                      <AiOutlineSearch />
-                    </button>
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        onClick={() => handleFilterData()}
+                      >
+                        <AiOutlineSearch />
+                      </button>
 
-                    <button
-                      className={`ms-2 btn btn-secondary ${
-                        exportLoading ? "disabled" : ""
-                      }`}
-                      onClick={handleCSV}
-                    >
-                      {exportLoading ? (
-                        <div
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                        ></div>
-                      ) : (
-                        <AiOutlineDownload />
-                      )}
-                    </button>
+                      <button
+                        className={`ms-2 btn btn-secondary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        onClick={handleCSV}
+                      >
+                        {exportLoading ? (
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></div>
+                        ) : (
+                          <AiOutlineDownload />
+                        )}
+                      </button>
 
-                    <button
-                      className={`btn btn-primary ms-2`}
-                      onClick={resetValue}
-                    >
-                      Reset
-                    </button>
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        onClick={resetValue}
+                      >
+                        Reset
+                      </button>
 
-                    <button
-                      className={`btn btn-primary ms-2`}
-                      onClick={() => {
-                        setUserModelOpen({
-                          is_open: true,
-                          is_form_view_profile: false,
-                        })
-                        setUserData({})
-                      }}
-                    >
-                      <AiOutlinePlus />
-                    </button>
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        onClick={() => {
+                          setUserModelOpen({
+                            is_open: true,
+                            is_form_view_profile: false,
+                          })
+                          setUserData({})
+                        }}
+                      >
+                        <AiOutlinePlus />
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="col-md-12">
-                  <CustomTable
-                    showAddButton={false}
-                    pageOptions={pageOptions}
-                    keyField="_id"
-                    data={usersList || []}
-                    columns={columns}
-                    showSearch={false}
-                    onTableChange={onTableChange}
-                    withPagination={true}
-                    loading={loading}
-                    withCard={false}
-                  />
+                  <div className="col-md-12">
+                    <CustomTable
+                      showAddButton={false}
+                      pageOptions={pageOptions}
+                      keyField="_id"
+                      data={usersList || []}
+                      columns={columns}
+                      showSearch={false}
+                      onTableChange={onTableChange}
+                      withPagination={true}
+                      loading={loading}
+                      withCard={false}
+                    />
 
-                  <AddUpdateUserDialog
-                    setOpen={setUserModelOpen}
-                    open={userModelOpen}
-                    userData={userData}
-                    title={userModelTitle}
-                    setUserData={setUserData}
-                    getAllusers={() => {
-                      // getAllUsers()
-                    }}
-                    type={viewType}
-                  />
+                    <AddUpdateUserDialog
+                      setOpen={setUserModelOpen}
+                      open={userModelOpen}
+                      userData={userData}
+                      title={userModelTitle}
+                      setUserData={setUserData}
+                      getAllusers={() => {
+                        // getAllUsers()
+                      }}
+                      type={viewType}
+                    />
 
-                  <AddRemoveBalance
-                    setOpen={setAddRemoveModelOpen}
-                    open={addRemoveModelOpen}
-                    userData={userData}
-                    title={modelTitle}
-                    type={addRemoveModelType}
-                    getAllusers={() => {
-                      // getAllUsers()
-                    }}
-                  />
+                    <AddRemoveBalance
+                      setOpen={setAddRemoveModelOpen}
+                      open={addRemoveModelOpen}
+                      userData={userData}
+                      title={modelTitle}
+                      type={addRemoveModelType}
+                      getAllusers={() => {
+                        // getAllUsers()
+                      }}
+                    />
 
-                  {/* {isShowDiscountModal && (
+                    {/* {isShowDiscountModal && (
                     <RechargeViewModal
                       discountInfo={discountInfo}
                       isDiscountEdit={isDiscountEdit}
@@ -439,6 +485,7 @@ const UserListings = () => {
                       // discountModalSave={discountModalSave}
                     />
                   )} */}
+                  </div>
                 </div>
               </div>
             </div>

@@ -26,7 +26,6 @@ export const getAllOperators = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
     await operatorService.getAllOperator(data).then((res) => {
-      console.log({ res })
       dispatch(fetchOperatorSuccess(res.data.data))
       dispatch(setLoading(false))
     })

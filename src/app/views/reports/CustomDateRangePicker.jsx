@@ -2,6 +2,7 @@ import React from "react"
 import moment from "moment"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import "./table.css"
 
 const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   const getStartDate = (newValue, range) => {
@@ -38,7 +39,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
           label=""
           type="text"
           className="form-control custom-date-piker"
-          placeholderText="Select Start Date"
+          placeholderText="Start Date"
           selectsStart
           selected={rangeDate.start}
           onChange={(date) => {
@@ -59,7 +60,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
           label=""
           type="text"
           className="form-control custom-date-piker"
-          placeholderText="Select End Date"
+          placeholderText="End Date"
           selectsEnd
           selected={rangeDate.end}
           onChange={(date) => {

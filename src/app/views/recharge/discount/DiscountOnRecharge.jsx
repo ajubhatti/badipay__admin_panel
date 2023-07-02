@@ -1,6 +1,5 @@
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import React, { useEffect, useState } from "react"
-import DiscountModal from "./DiscountModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 
 import { discountServices } from "app/services/discount.service"
@@ -11,8 +10,19 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai"
 import CustomTable from "app/components/Tables/CustomTable"
+import { useDispatch, useSelector } from "react-redux"
+import { getServices } from "../../api-settings/services-listing/store/action"
+import { getApiList } from "app/views/api-settings/apis/store/action"
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { editDiscount, getDiscountList } from "./store/action"
+import DiscountModalNew from "./DiscountModalNew"
 
 const DiscountOnRecharge = () => {
+  const dispatch = useDispatch()
+  const { apisList } = useSelector((state) => state.apis)
+  const { serviceList } = useSelector((state) => state.servicesList)
+  const { discountList } = useSelector((state) => state.discount)
+
   const [isShowLoader, setIsShowLoader] = useState(false)
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [
@@ -28,10 +38,12 @@ const DiscountOnRecharge = () => {
   const [discountInfo, setdDiscountInfo] = useState([])
   const [discounts, setdDiscounts] = useState([])
 
-  const [providers, setProviders] = useState([])
+  const [apis, setApis] = useState([])
   const [services, setServices] = useState([])
-  const [isShowDiscountData, setIsShowDiscountData] = useState(false)
+  const [isShowDiscountData, setIsShowDiscountData] = useState(true)
   const [loading, setLoading] = useState(false)
+
+  const [searchData, setSearchData] = useState({})
 
   const columns = [
     {
@@ -45,39 +57,47 @@ const DiscountOnRecharge = () => {
       },
     },
     {
-      dataField: "companyName",
-      text: "Company Name",
+      dataField: "operatorData.operatorName",
+      text: "Operator Name",
     },
     {
-      dataField: "discountData.adminDiscount",
+      dataField: "serviceData.serviceName",
+      text: "service Name",
+    },
+    {
+      dataField: "apiData.apiName",
+      text: "Api Name",
+    },
+    {
+      dataField: "adminDiscount",
       text: "Admin Discount",
     },
     {
-      dataField: "discountData.adminDiscountType",
+      dataField: "adminDiscountType",
       text: "Discount Type",
     },
     {
-      dataField: "discountData.userDiscount",
+      dataField: "userDiscount",
       text: "User Discount",
     },
     {
-      dataField: "discountData.userDiscountLimit",
+      dataField: "userDiscountLimit",
       text: "Discount Limit",
     },
     {
-      dataField: "discountData.userDiscountType",
+      dataField: "userDiscountType",
       text: "Discount Type",
     },
     {
-      dataField: "discountData.referalDiscount",
+      dataField: "referalDiscount",
       text: "Referal Discount",
     },
     {
-      dataField: "discountData.referalDiscountLimit",
+      dataField: "referalDiscountLimit",
       text: "Discount Limit",
     },
     {
-      dataField: "discountData.referalDiscountType",
+      dataField: "referalDiscountType",
       text: "Discount Type",
     },
     {
@@ -107,38 +127,44 @@ const DiscountOnRecharge = () => {
     },
   ]
 
-  const getAllProviders = async () => {
-    setIsShowLoader(true)
-    await discountServices.getAllApisAndServices().then((res) => {
-      let provider = []
-      provider = res?.apisResponse?.data?.data?.data
-        .filter((provider) => {
-          return provider.isActive
-        })
-        .map(function (provider) {
-          return { value: provider._id, label: provider.apiName }
-        })
-      provider.unshift({ value: 0, label: "Select Provider" })
-      setProviders(provider)
-
-      let service = []
-      service = res?.serviceResponse?.data?.data
-        .filter((service) => {
-          return service.isActive
-        })
-        .map(function (service) {
-          return { value: service._id, label: service.serviceName }
-        })
-      service.unshift({ value: 0, label: "Select Service" })
-      setServices(service)
-
-      setIsShowLoader(false)
-    })
-  }
+  useEffect(() => {
+    dispatch(getDiscountList(searchData))
+  }, [searchData, dispatch])
 
   useEffect(() => {
-    getAllProviders()
-  }, [])
+    setdDiscounts(discountList)
+  }, [discountList])
+
+  useEffect(() => {
+    dispatch(getApiList())
+    dispatch(getServices())
+  }, [dispatch])
+
+  useEffect(() => {
+    let api = []
+    api = apisList
+      .filter((api) => {
+        return api.isActive
+      })
+      .map(function (api) {
+        return { value: api._id, label: api.apiName }
+      })
+    // api.unshift({ value: 0, label: "Select Api" })
+    setApis(api)
+  }, [apisList])
+
+  useEffect(() => {
+    let service = []
+    service = serviceList
+      .filter((service) => {
+        return service.isActive
+      })
+      .map(function (service) {
+        return { value: service._id, label: service.serviceName }
+      })
+    // service.unshift({ value: 0, label: "Select Service" })
+    setServices(service)
+  }, [serviceList])
 
   const getAllDiscounts = async (params) => {
     setIsShowLoader(true)
@@ -149,8 +175,10 @@ const DiscountOnRecharge = () => {
     })
   }
 
-  const handleAddDiscount = () => {
-    setIsShowDiscountModal(true)
+  const handleAddDiscount = async () => {
+    await discountServices.AddDiscountbyScan().then((res) => {
+      console.log({ res })
+    })
   }
 
   const handleDiscountClose = () => {
@@ -175,7 +203,7 @@ const DiscountOnRecharge = () => {
 
   const handleDelete = async () => {
     await discountServices.deleteDiscount(discountInfo._id).then((res) => {
-      if (res.status == "200") {
+      if (res.status === 200) {
         setIsShowDeleteDiscountConfirmModal(false)
         getAllDiscounts({
           apiId: selectedProviderIndex,
@@ -189,45 +217,15 @@ const DiscountOnRecharge = () => {
     setIsShowDeleteDiscountConfirmModal(false)
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === "selectedProviderIndex") {
-      setSelectedProviderIndex(value)
-    } else {
-      setSelectedServiceIndex(value)
-    }
-  }
-
-  const handleFilter = () => {
-    if (selectedProviderIndex !== "" && selectedServiceIndex !== "") {
-      getAllDiscounts({
-        apiId: selectedProviderIndex,
-        serviceId: selectedServiceIndex,
-      })
-    }
-  }
-
   const handleSaveDiscountModal = async (data) => {
     setIsShowLoader(true)
     setDiscountModalSave(true)
-    data.apiId = selectedProviderIndex
-    data.serviceId = selectedServiceIndex
-    if (isDiscountEdit && data?._id) {
-      await discountServices
-        .updateDiscount(data._id, data)
-        .then((res) => {
-          getAllDiscounts(data)
-          setIsShowLoader(false)
-        })
-        .catch((error) => {
-          setIsShowLoader(false)
-        })
-    } else {
-      await discountServices.addDiscount(data).then((res) => {
-        getAllDiscounts(data)
-        setIsShowLoader(false)
+
+    dispatch(
+      editDiscount(data._id, data, (cbData) => {
+        dispatch(getDiscountList(searchData))
       })
-    }
+    )
     setIsShowDiscountModal(false)
   }
 
@@ -237,8 +235,15 @@ const DiscountOnRecharge = () => {
 
       <div className="container-fluid w-100 mt-3">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-12 justify-content-between d-flex">
             <h2 className="main-heading">Discount List</h2>
+            <button
+              className={`ms-2 btn btn-secondary`}
+              type="button"
+              onClick={handleAddDiscount}
+            >
+              <AiOutlinePlus />
+            </button>
           </div>
         </div>
 
@@ -252,43 +257,41 @@ const DiscountOnRecharge = () => {
                 <div className="col-md-12 d-flex">
                   <div className="col-md-6 d-flex">
                     <div className="me-2">
-                      <select
-                        name="selectedProviderIndex"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="selectedProviderIndex"
-                      >
-                        {providers.map((provider) => {
-                          return (
-                            <option key={provider.value} value={provider.value}>
-                              {provider.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                      <ReactSelect
+                        isClearable
+                        placeHolder={"Select Api"}
+                        title={"Api"}
+                        handleChange={(e) => {
+                          setSearchData({
+                            ...searchData,
+                            apis: e,
+                          })
+                        }}
+                        options={apis}
+                        value={searchData?.apis}
+                      />
                     </div>
                     <div className="me-2">
-                      <select
-                        name="selectedServiceIndex"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="selectedServiceIndex"
-                      >
-                        {services.map((service) => {
-                          return (
-                            <option key={service.value} value={service.value}>
-                              {service.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                      <ReactSelect
+                        isClearable
+                        placeHolder={"Select Service"}
+                        title={"Service"}
+                        handleChange={(e) => {
+                          setSearchData({
+                            ...searchData,
+                            provider: e,
+                          })
+                        }}
+                        options={services}
+                        value={searchData.provider}
+                      />
                     </div>
-                    <button
+                    {/* <button
                       className={`btn btn-primary`}
                       onClick={handleFilter}
                     >
                       <AiOutlineSearch />
-                    </button>
+                    </button> */}
                   </div>
                   <div className="col-md-6"></div>
                 </div>
@@ -297,53 +300,48 @@ const DiscountOnRecharge = () => {
           </div>
         </div>
         <div className="col-lg-12">
-          {isShowDiscountData && (
-            <>
-              <div className="d-flex justify-content-end m-3">
-                <button
-                  className={`ms-2 btn btn-secondary`}
-                  type="button"
-                  onClick={handleAddDiscount}
-                >
-                  <AiOutlinePlus />
-                </button>
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12">
+                  {isShowDiscountData && (
+                    <CustomTable
+                      showAddButton={false}
+                      keyField="_id"
+                      data={discounts}
+                      columns={columns}
+                      showSearch={false}
+                      withPagination={false}
+                      loading={loading}
+                      withCard={false}
+                    ></CustomTable>
+                  )}
+                </div>
               </div>
-
-              <CustomTable
-                showAddButton={false}
-                keyField="_id"
-                data={discounts}
-                columns={columns}
-                showSearch={false}
-                withPagination={false}
-                loading={loading}
-                withCard={false}
-              ></CustomTable>
-
-              {isShowDiscountModal && (
-                <DiscountModal
-                  discountInfo={discountInfo}
-                  isDiscountEdit={isDiscountEdit}
-                  isShowDiscountModal={isShowDiscountModal}
-                  onCloseDiscountModal={handleDiscountClose}
-                  onSaveDiscountModal={handleSaveDiscountModal}
-                  selectedServiceIndex={selectedServiceIndex}
-                  discountModalSave={discountModalSave}
-                />
-              )}
-
-              {isShowDeleteDiscountConfirmModal && (
-                <ConfirmModal
-                  title="Are you sure ?"
-                  description="Are you sure you want to delete ?"
-                  handleDelete={handleDelete}
-                  isShowConfirmModal={isShowDeleteDiscountConfirmModal}
-                  onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
-                />
-              )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
+        {isShowDiscountModal && (
+          <DiscountModalNew
+            discountInfo={discountInfo}
+            isDiscountEdit={isDiscountEdit}
+            isShowDiscountModal={isShowDiscountModal}
+            onCloseDiscountModal={handleDiscountClose}
+            onSaveDiscountModal={handleSaveDiscountModal}
+            selectedServiceIndex={selectedServiceIndex}
+            discountModalSave={discountModalSave}
+          />
+        )}
+
+        {isShowDeleteDiscountConfirmModal && (
+          <ConfirmModal
+            title="Are you sure ?"
+            description="Are you sure you want to delete ?"
+            handleDelete={handleDelete}
+            isShowConfirmModal={isShowDeleteDiscountConfirmModal}
+            onCloseConfirmModal={onCloseDeleteDiscountConfirmModal}
+          />
+        )}
       </div>
     </div>
   )

@@ -39,6 +39,23 @@ export const navigations = [
     type: "label",
   },
   {
+    name: "User",
+    icon: "account_box",
+    badge: {},
+    children: [
+      // {
+      //   name: "user list",
+      //   path: "/user/list",
+      //   iconText: "UL",
+      // },
+      {
+        name: "Users",
+        path: "/user/lists",
+        iconText: "US",
+      },
+    ],
+  },
+  {
     name: "Recharge",
     icon: "send",
     badge: { color: "secondary" },
@@ -52,23 +69,6 @@ export const navigations = [
         name: "Transactions",
         path: "/recharge/transactions",
         iconText: "TRNS",
-      },
-    ],
-  },
-  {
-    name: "Discount",
-    icon: "library_add",
-    badge: { color: "black" },
-    children: [
-      {
-        name: "Discount",
-        path: "/recharge/discount",
-        iconText: "DS",
-      },
-      {
-        name: "Discount-new",
-        path: "/recharge/discount-new",
-        iconText: "DSNW",
       },
     ],
   },
@@ -126,34 +126,21 @@ export const navigations = [
         path: "/api-setting/operator-list",
         iconText: "COL",
       },
-
+      {
+        name: "Discount",
+        path: "/recharge/discount",
+        iconText: "DS",
+      },
       {
         name: "Operator Switching New",
         path: "/api-setting/operator/priority",
         iconText: "APILP",
       },
-      
+
       {
         name: "Operator config",
         path: "/api-setting/operators-configs",
         iconText: "Opcnfg",
-      },
-    ],
-  },
-  {
-    name: "User",
-    icon: "account_box",
-    badge: {},
-    children: [
-      {
-        name: "user list",
-        path: "/user/list",
-        iconText: "UL",
-      },
-      {
-        name: "Users",
-        path: "/user/lists",
-        iconText: "US",
       },
     ],
   },
@@ -201,84 +188,6 @@ export const navigations = [
       },
     ],
   },
-  {
-    name: "Components",
-    icon: "favorite",
-    badge: { value: "30+", color: "secondary" },
-    children: [
-      {
-        name: "Auto Complete",
-        path: "/material/autocomplete",
-        iconText: "A",
-      },
-      {
-        name: "Buttons",
-        path: "/material/buttons",
-        iconText: "B",
-      },
-      {
-        name: "Checkbox",
-        path: "/material/checkbox",
-        iconText: "C",
-      },
-      {
-        name: "Dialog",
-        path: "/material/dialog",
-        iconText: "D",
-      },
-      {
-        name: "Expansion Panel",
-        path: "/material/expansion-panel",
-        iconText: "E",
-      },
-      {
-        name: "Form",
-        path: "/material/form",
-        iconText: "F",
-      },
-      {
-        name: "Icons",
-        path: "/material/icons",
-        iconText: "I",
-      },
-      {
-        name: "Menu",
-        path: "/material/menu",
-        iconText: "M",
-      },
-      {
-        name: "Progress",
-        path: "/material/progress",
-        iconText: "P",
-      },
-      {
-        name: "Radio",
-        path: "/material/radio",
-        iconText: "R",
-      },
-      {
-        name: "Switch",
-        path: "/material/switch",
-        iconText: "S",
-      },
-      {
-        name: "Slider",
-        path: "/material/slider",
-        iconText: "S",
-      },
-      {
-        name: "Snackbar",
-        path: "/material/snackbar",
-        iconText: "S",
-      },
-      {
-        name: "Table",
-        path: "/material/table",
-        iconText: "T",
-      },
-    ],
-  },
-
   {
     name: "Documentation",
     icon: "launch",

@@ -307,9 +307,10 @@ const CashBackList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.rechargeData?.rechargeOperator?.companyName
-              ? row?.transactionData?.rechargeData?.rechargeOperator
-                  ?.companyName
+            {row?.transactionData?.rechargeData?.operatorConfig?.operatorData
+              ?.operatorName
+              ? row?.transactionData?.rechargeData?.operatorConfig?.operatorData
+                  ?.operatorName
               : "-"}
           </div>
         ),
@@ -320,8 +321,10 @@ const CashBackList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.rechargeData?.rechargeApi?.apiName
-              ? row?.transactionData?.rechargeData?.rechargeApi?.apiName
+            {row?.transactionData?.rechargeData?.operatorConfig?.apiData
+              ?.apiName
+              ? row?.transactionData?.rechargeData?.operatorConfig?.apiData
+                  ?.apiName
               : "-"}
           </div>
         ),
@@ -525,7 +528,7 @@ const CashBackList = () => {
     const getAllProviders = async () => {
       await discountServices.getAllApisAndServices().then((res) => {
         let provider = []
-        provider = res?.apisResponse?.data?.data?.data
+        provider = res?.apisResponse?.data?.data
           .filter((provider) => {
             return provider.isActive
           })
@@ -575,118 +578,115 @@ const CashBackList = () => {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="main-heading">Cashback List</h2>
-        </div>
-      </div>
-      <div className="col-lg-12">
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-md-12 d-flex">
-                <div className="col-md-6 d-flex ">
-                  <div className="me-2">
-                    <select
-                      name="provider"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="provider"
-                    >
-                      {providers.map((provider) => {
-                        return (
-                          <option key={provider.value} value={provider.value}>
-                            {provider.label}
-                          </option>
-                        )
-                      })}
-                    </select>
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 d-flex">
+                  <div className="col-md-6 d-flex ">
+                    <div className="me-2">
+                      <select
+                        name="provider"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="provider"
+                      >
+                        {providers.map((provider) => {
+                          return (
+                            <option key={provider.value} value={provider.value}>
+                              {provider.label}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                    <div className="me-2">
+                      <select
+                        name="services"
+                        onChange={handleChange}
+                        className="form-control"
+                        id="services"
+                      >
+                        {services.map((service) => {
+                          return (
+                            <option key={service.value} value={service.value}>
+                              {service.label}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </div>
                   </div>
-                  <div className="me-2">
-                    <select
-                      name="services"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="services"
-                    >
-                      {services.map((service) => {
-                        return (
-                          <option key={service.value} value={service.value}>
-                            {service.label}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-6 d-flex justify-content-end">
-                  <div className="me-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search"
-                      onChange={handleSearch}
+                  <div className="col-md-6 d-flex justify-content-end">
+                    <div className="me-2">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                        onChange={handleSearch}
+                      />
+                    </div>
+
+                    <CustomDateRangePicker
+                      rangeDate={dateRangeValue}
+                      setRangeDate={setDateRangeValue}
                     />
+
+                    <button
+                      className={`btn btn-primary ${
+                        exportLoading ? "disabled" : ""
+                      }`}
+                      type="button"
+                      onClick={handleFilterData}
+                    >
+                      <AiOutlineSearch />
+                    </button>
+
+                    <button
+                      className={`ms-2 btn btn-secondary ${
+                        exportLoading ? "disabled" : ""
+                      }`}
+                      type="button"
+                      onClick={handleCSV}
+                    >
+                      {exportLoading ? (
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        ></div>
+                      ) : (
+                        <AiOutlineDownload />
+                      )}
+                    </button>
                   </div>
-
-                  <CustomDateRangePicker
-                    rangeDate={dateRangeValue}
-                    setRangeDate={setDateRangeValue}
-                  />
-
-                  <button
-                    className={`btn btn-primary ${
-                      exportLoading ? "disabled" : ""
-                    }`}
-                    type="button"
-                    onClick={handleFilterData}
-                  >
-                    <AiOutlineSearch />
-                  </button>
-
-                  <button
-                    className={`ms-2 btn btn-secondary ${
-                      exportLoading ? "disabled" : ""
-                    }`}
-                    type="button"
-                    onClick={handleCSV}
-                  >
-                    {exportLoading ? (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      ></div>
-                    ) : (
-                      <AiOutlineDownload />
-                    )}
-                  </button>
                 </div>
-              </div>
 
-              <div className="col-md-12">
-                <CustomTable
-                  showAddButton={false}
-                  pageOptions={pageOptions}
-                  keyField="_id"
-                  data={cashBackListData}
-                  columns={columns}
-                  showSearch={false}
-                  onTableChange={onTableChange}
-                  withPagination={true}
-                  loading={loading}
-                  withCard={false}
-                ></CustomTable>
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    pageOptions={pageOptions}
+                    keyField="_id"
+                    data={cashBackListData}
+                    columns={columns}
+                    showSearch={false}
+                    onTableChange={onTableChange}
+                    withPagination={true}
+                    loading={loading}
+                    withCard={false}
+                  ></CustomTable>
 
-                {isShowDiscountModal && (
-                  <CashBackViewModal
-                    discountInfo={discountInfo}
-                    isDiscountEdit={isDiscountEdit}
-                    isShowDiscountModal={isShowDiscountModal}
-                    onCloseDiscountModal={handleDiscountClose}
-                    fetchCashBackList={getCashBackListData}
-                    // onSaveDiscountModal={handleSaveDiscountModal}
-                    // selectedServiceIndex={selectedServiceIndex}
-                    // discountModalSave={discountModalSave}
-                  />
-                )}
+                  {isShowDiscountModal && (
+                    <CashBackViewModal
+                      discountInfo={discountInfo}
+                      isDiscountEdit={isDiscountEdit}
+                      isShowDiscountModal={isShowDiscountModal}
+                      onCloseDiscountModal={handleDiscountClose}
+                      fetchCashBackList={getCashBackListData}
+                      // onSaveDiscountModal={handleSaveDiscountModal}
+                      // selectedServiceIndex={selectedServiceIndex}
+                      // discountModalSave={discountModalSave}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>

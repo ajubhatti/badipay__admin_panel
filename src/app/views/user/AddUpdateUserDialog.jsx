@@ -41,7 +41,6 @@ const AddUpdateUserDialog = (props) => {
   const [state, setState] = useState(null)
 
   const onSubmit = async (values) => {
-    console.log({ values })
     if (!!props?.open?.data) {
       let id = props?.open?.data?._id
       delete values.password

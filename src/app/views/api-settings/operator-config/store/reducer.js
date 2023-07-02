@@ -14,7 +14,7 @@ const initialState = {
   operatorConfigDetail: {},
   operatorConfigList: [],
   page: 1,
-  sizePerPage: 25,
+  // sizePerPage: 25,
   totalSize: 0,
   search: "",
   sortField: "created",

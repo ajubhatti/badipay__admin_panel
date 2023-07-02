@@ -22,6 +22,7 @@ export const accountService = {
   fetchState,
   updateUserById,
   delete: _delete,
+  changeStatusOfUser,
   user: userSubject.asObservable(),
   get userValue() {
     return userSubject.value
@@ -106,6 +107,14 @@ async function updateUserById(id, params) {
     // }
     return user
   })
+}
+
+async function changeStatusOfUser(id, params) {
+  return await fetchWrapper
+    .post(`${baseUrl}/changeStatus/${id}`, params)
+    .then((user) => {
+      return user
+    })
 }
 
 // prefixed with underscore because 'delete' is a reserved word in javascript

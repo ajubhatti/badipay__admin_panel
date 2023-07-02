@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { BsPlusLg } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux"
-import { getCompanies } from "../company-listing/store/action"
 import { getServices } from "../services-listing/store/action"
 import {
   addByScan,
@@ -19,15 +18,20 @@ import { sizePerPageList } from "../../../constants/table"
 import { AiOutlineEdit } from "react-icons/ai"
 import { getApiList } from "../apis/store/action"
 import AddUpdateOperatorConfigModal from "./AddUpdateOperatorConfigModal"
+import { getAllOperators } from "../operator-list/store/action"
 
 const OperatorConfigs = () => {
   const dispatch = useDispatch()
 
   const { apisList } = useSelector((state) => state.apis)
   const { serviceList } = useSelector((state) => state.servicesList)
-  const { companyList } = useSelector((state) => state.company)
+  const { operatorList } = useSelector((state) => state.operators)
   const { loading, page, sizePerPage, totalSize, operatorConfigList } =
     useSelector((state) => state.operatorConfig)
+
+  const [payload, setPayload] = useState({
+    serviceId: "",
+  })
 
   const [searchData, setSearchData] = useState({})
   const [apisDDData, setApisDDData] = useState([])
@@ -40,7 +44,7 @@ const OperatorConfigs = () => {
 
   const [payloadData, setPayloadData] = useState({
     page: 1,
-    limits: 20,
+    // limits: 25,
     sortBy: "created",
     orderBy: "DESC",
     skip: 0,
@@ -62,7 +66,6 @@ const OperatorConfigs = () => {
 
   useEffect(() => {
     dispatch(getServices())
-    dispatch(getCompanies())
     dispatch(getApiList())
     return () => {
       dispatch(fetchAllSPSlabs([]))
@@ -94,29 +97,25 @@ const OperatorConfigs = () => {
   }, [serviceList])
 
   useEffect(() => {
-    let filteredData = companyList.filter(
-      (x) => x.providerType === searchData.providerType
-    )
-    filteredData = filteredData.map((x) => ({
-      value: x._id,
-      label: x.companyName,
-    }))
+    const fetchOperator = () => {
+      dispatch(getAllOperators(payload))
+    }
+    fetchOperator()
+  }, [dispatch])
 
-    setOperatorDDData(filteredData)
-  }, [companyList, searchData])
+  useEffect(() => {
+    console.log(payloadData.service, { operatorList })
+    if (payloadData?.service && operatorList && operatorList.length) {
+      let filterOperator = operatorList.map((x) => ({
+        value: x._id,
+        label: x.operatorName,
+      }))
+      setOperatorDDData(filterOperator)
+    }
+  }, [operatorList, payloadData.service])
 
   const submitHandler = (e) => {
-    console.log({ searchData })
-
-    let filteredData = { ...payloadData, ...searchData }
-
-    // setPayloadData((previousData) => ({
-    //   ...previousData,
-    //   page: page,
-    //   limits: sizePerPage,
-    // }))
-    console.log("filteredData", filteredData)
-    setPayloadData(setPayloadData)
+    setPayloadData(payloadData)
     e.preventDefault()
   }
 
@@ -143,7 +142,6 @@ const OperatorConfigs = () => {
   }, [sizePerPage, page])
 
   const fetchRefreshData = () => {
-    console.log({ payloadData })
     dispatch(getOperatorConfigList(payloadData))
   }
 
@@ -154,7 +152,9 @@ const OperatorConfigs = () => {
         text: "No.",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
-            {sizePerPage * (page - 1) + rowIndex + 1}
+            {sizePerPage && page
+              ? sizePerPage * (page - 1) + rowIndex + 1
+              : rowIndex + 1}
           </div>
         ),
         sort: true,
@@ -273,7 +273,7 @@ const OperatorConfigs = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12">
-          <h6 className="main-heading">Operator slab setting</h6>
+          <h6 className="main-heading">Operator configuration</h6>
         </div>
         <div className="col-lg-12">
           <div className="card mb-4">
@@ -287,16 +287,21 @@ const OperatorConfigs = () => {
                     <div className="list-of-operator m-2">
                       <Form.Group controlId="formGridServic">
                         <ReactSelect
+                          isClearable={true}
                           title={"Apis"}
                           placeHolder={"select api"}
                           handleChange={(e) => {
+                            setPayloadData({
+                              ...payloadData,
+                              apis: e,
+                            })
                             setSearchData({
                               ...searchData,
                               apis: e,
                             })
                           }}
-                          isClearable={true}
                           options={apisDDData}
+                          value={searchData?.apis}
                         />
                       </Form.Group>
                     </div>
@@ -304,16 +309,21 @@ const OperatorConfigs = () => {
                     <div className="list-of-operator m-2">
                       <Form.Group controlId="formGridServic">
                         <ReactSelect
+                          isClearable={true}
                           placeHolder={"select services"}
                           title={"services"}
                           handleChange={(e) => {
+                            setPayloadData({
+                              ...payloadData,
+                              service: e,
+                            })
                             setSearchData({
                               ...searchData,
-                              providerType: e,
+                              service: e,
                             })
                           }}
-                          isClearable={true}
                           options={serviceDDData}
+                          value={searchData?.provider}
                         />
                       </Form.Group>
                     </div>
@@ -321,16 +331,21 @@ const OperatorConfigs = () => {
                     <div className="list-of-operator m-2">
                       <Form.Group controlId="formGridOperator">
                         <ReactSelect
+                          isClearable={true}
                           title={"Operator"}
                           placeHolder={"select operator"}
                           handleChange={(e) => {
+                            setPayloadData({
+                              ...payloadData,
+                              operator: e,
+                            })
                             setSearchData({
                               ...searchData,
                               operator: e,
                             })
                           }}
                           options={operatorDDData}
-                          isClearable={true}
+                          value={searchData?.operator}
                         />
                       </Form.Group>
                     </div>
@@ -350,7 +365,6 @@ const OperatorConfigs = () => {
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-header d-flex justify-content-between">
-              <h6> Operator List</h6>
               <Button variant="secondary" onClick={() => addSlab()}>
                 <BsPlusLg />
               </Button>
@@ -368,7 +382,7 @@ const OperatorConfigs = () => {
                     columns={columns}
                     showSearch={false}
                     onTableChange={onTableChange}
-                    withPagination={true}
+                    withPagination={false}
                     loading={loading}
                     withCard={false}
                   ></CustomTable>

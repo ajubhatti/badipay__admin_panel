@@ -18,7 +18,7 @@ const initialState = {
   sizePerPage: 25,
   totalSize: 0,
   search: "",
-  sortField: "created",
+  sortField: "createdAt",
   sortOrder: "DESC",
 }
 

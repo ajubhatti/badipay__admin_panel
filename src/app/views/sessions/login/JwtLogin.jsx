@@ -73,7 +73,6 @@ const JwtLogin = () => {
   const textPrimary = palette.primary.main
 
   const handleFormSubmit = async (event) => {
-    console.log(userInfo)
     dispatch(
       handleLogin(userInfo, (status) => {
         if (!!status) {
@@ -103,7 +102,7 @@ const JwtLogin = () => {
                   max={10}
                   min={10}
                   onChange={handleChange}
-                  type="number"
+                  type="text"
                   name="ph_number"
                   value={userInfo.ph_number}
                   validators={["required", "isNumber"]}

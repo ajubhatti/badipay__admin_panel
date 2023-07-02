@@ -43,7 +43,6 @@ export const getUserList = (data, cb) => async (dispatch) => {
     dispatch(setLoading(true))
     await accountService.getAll(data).then((res) => {
       if (res?.data) {
-        console.log(res?.data)
         dispatch(fetchUserList(res?.data))
         dispatch(setLoading(false))
         cb(res?.data)
