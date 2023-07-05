@@ -7,10 +7,15 @@ export const operatorService = {
   addOperator,
   updateOperator,
   deleteOperator,
+  getAllOperatorWithPagination,
 }
 
 function getAllOperator(data) {
   return fetchWrapper.post(`${Url}`, data)
+}
+
+function getAllOperatorWithPagination(data) {
+  return fetchWrapper.post(`${Url}/getOperator`, data)
 }
 
 function getOperatorById(id) {

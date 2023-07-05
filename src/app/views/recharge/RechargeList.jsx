@@ -14,6 +14,7 @@ import {
   AiFillEye,
   AiOutlineDownload,
   AiOutlineEdit,
+  AiOutlineReload,
   AiOutlineSearch,
 } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
@@ -526,6 +527,11 @@ const RechargeList = () => {
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h6 className="main-heading">Recharge List</h6>
+        </div>
+      </div>
+      <div className="row">
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
@@ -628,10 +634,12 @@ const RechargeList = () => {
                       className={`btn btn-primary ms-2`}
                       onClick={resetValue}
                     >
-                      Reset
+                      <AiOutlineReload />
                     </button>
                   </div>
                 </div>
+
+                <hr className="m-0" />
 
                 <div className="col-md-12">
                   <CustomTable

@@ -14,7 +14,7 @@ const initialState = {
   operatorConfigDetail: {},
   operatorConfigList: [],
   page: 1,
-  // sizePerPage: 25,
+  sizePerPage: 25,
   totalSize: 0,
   search: "",
   sortField: "created",
@@ -35,6 +35,7 @@ const operatorConfigReducer = (state = initialState, action) => {
         ...state,
         operatorConfigList: payload?.data || [],
         loading: false,
+        totalSize: payload?.total || 0,
       }
     case FETCH_BY_ID:
       return {

@@ -423,6 +423,11 @@ const WalletRequestListingTable = () => {
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h6 className="main-heading">Wallet Request List</h6>
+        </div>
+      </div>
+      <div className="row">
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
@@ -524,6 +529,8 @@ const WalletRequestListingTable = () => {
                     </button>
                   </div>
                 </div>
+
+                <hr className="m-0" />
 
                 <div className="col-md-12">
                   <CustomTable

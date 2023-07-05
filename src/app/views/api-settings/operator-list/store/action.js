@@ -4,6 +4,11 @@ import {
   FETCH_OPERATOR_SUCCESS,
   FETCH_OPERATOR_BY_ID,
   SET_LOADING,
+  SET_PAGE_OPERATOR,
+  SET_SIZE_PER_PAGE_OPERATOR,
+  SET_SEARCH_OPERATOR,
+  SET_SORT_FIELD_OPERATOR,
+  SET_SORT_ORDER_OPERATOR,
 } from "./actionTypes"
 import { toast } from "react-toastify"
 import { operatorService } from "app/services/operator.service"
@@ -25,8 +30,8 @@ export const getOperatorById = (data) => async (dispatch) => {
 export const getAllOperators = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await operatorService.getAllOperator(data).then((res) => {
-      dispatch(fetchOperatorSuccess(res.data.data))
+    await operatorService.getAllOperatorWithPagination(data).then((res) => {
+      dispatch(fetchOperatorSuccess(res.data))
       dispatch(setLoading(false))
     })
   } catch (err) {
@@ -91,5 +96,31 @@ export const fetchOperatorError = (data) => ({
 
 export const setLoading = (data) => ({
   type: SET_LOADING,
+  payload: data,
+})
+
+// ================== new =====================
+export const setPageOperator = (data) => ({
+  type: SET_PAGE_OPERATOR,
+  payload: data,
+})
+
+export const setSizePerPageOperator = (data) => ({
+  type: SET_SIZE_PER_PAGE_OPERATOR,
+  payload: data,
+})
+
+export const setSearchOperator = (data) => ({
+  type: SET_SEARCH_OPERATOR,
+  payload: data,
+})
+
+export const setSortFieldOfOperator = (data) => ({
+  type: SET_SORT_FIELD_OPERATOR,
+  payload: data,
+})
+
+export const setSortOrderOfOperator = (data) => ({
+  type: SET_SORT_ORDER_OPERATOR,
   payload: data,
 })

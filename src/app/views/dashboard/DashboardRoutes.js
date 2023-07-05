@@ -1,13 +1,13 @@
-import React, { lazy } from 'react'
-import Loadable from 'app/components/Loadable/Loadable';
+import React, { lazy } from "react"
+import Loadable from "app/components/Loadable/Loadable"
 
-const Analytics = Loadable(lazy(() => import("./Analytics")));
+const UserListings = Loadable(lazy(() => import("../user/UserListings")))
 
 const dashboardRoutes = [
-    {
-        path: '/dashboard/default',
-        element: <Analytics />,
-    },
+  {
+    path: "/dashboard/default",
+    element: <UserListings />,
+  },
 ]
 
 export default dashboardRoutes

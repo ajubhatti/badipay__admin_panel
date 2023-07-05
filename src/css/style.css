@@ -5,9 +5,9 @@
 
 }
 .main-heading{
-    margin-bottom: 20px;
-    font-size: 22px;
-    line-height: 28px;
+    /* margin-bottom: 20px; */
+    /* font-size: 22px; */
+    /* line-height: 28px; */
     font-weight: 700;
     color: #7c7373;
 }
@@ -88,4 +88,14 @@
 
 .cursor-pointer {
     cursor: pointer
+}
+
+.center-loader {
+    position: absolute;
+    display: flex;
+    top: 40%;
+    left: 45%;
+    z-index: 10;
+    display: flex;
+    
 }

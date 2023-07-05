@@ -7,6 +7,7 @@ const ReactSelect = ({
   handleChange,
   placeHolder,
   isClearable,
+  className,
 }) => {
   const [defaultValue, setDefaultValue] = useState("")
 
@@ -34,6 +35,7 @@ const ReactSelect = ({
       defaultValue={defaultValue}
       onChange={handleOnChange}
       options={options}
+      className={className}
     />
   )
 }

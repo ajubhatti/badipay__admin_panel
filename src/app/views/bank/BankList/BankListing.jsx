@@ -172,7 +172,7 @@ const BankListing = () => {
   }
 
   return (
-    <div>
+    <>
       {isShowLoader && <CustomLoader />}
 
       <div className="container-fluid w-100 mt-3">
@@ -181,37 +181,38 @@ const BankListing = () => {
             <h2 className="main-heading">Bank List</h2>
           </div>
         </div>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="card mb-4">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-12 d-flex">
+                    <div className="col-md-6 d-flex "></div>
+                    <div className="col-md-6 d-flex justify-content-end">
+                      <div className="me-2"></div>
 
-        <div className="col-lg-12">
-          <div className="card mb-4">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex "></div>
-                  <div className="col-md-6 d-flex justify-content-end">
-                    <div className="me-2"></div>
-
-                    <button
-                      className={`ms-2 btn btn-secondary`}
-                      type="button"
-                      onClick={handleAddBank}
-                    >
-                      <AiOutlinePlus />
-                    </button>
+                      <button
+                        className={`ms-2 btn btn-secondary`}
+                        type="button"
+                        onClick={handleAddBank}
+                      >
+                        <AiOutlinePlus />
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="col-md-12">
-                  <CustomTable
-                    showAddButton={false}
-                    keyField="_id"
-                    data={bankListData}
-                    columns={columns}
-                    showSearch={false}
-                    withPagination={false}
-                    loading={isShowLoader}
-                    withCard={false}
-                  ></CustomTable>
+                  <div className="col-md-12">
+                    <CustomTable
+                      showAddButton={false}
+                      keyField="_id"
+                      data={bankListData}
+                      columns={columns}
+                      showSearch={false}
+                      withPagination={false}
+                      loading={isShowLoader}
+                      withCard={false}
+                    ></CustomTable>
+                  </div>
                 </div>
               </div>
             </div>
@@ -237,7 +238,7 @@ const BankListing = () => {
           />
         )}
       </div>
-    </div>
+    </>
   )
 }
 

@@ -178,21 +178,20 @@ const ServiceList = () => {
   }
 
   return (
-    <div className="container w-100 ">
-      <div className="container-fluid w-100 mt-3">
-        <div className="row">
-          <div className="col-lg-12 justify-content-between d-flex">
-            <h2 className="main-heading">Service List</h2>
-            <button
-              className={`ms-2 btn btn-secondary`}
-              type="button"
-              onClick={addNewService}
-            >
-              <AiOutlinePlus />
-            </button>
-          </div>
+    <div className="container-fluid w-100 mt-3">
+      <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h6 className="main-heading">Service List</h6>
+          <button
+            className={`ms-2 btn btn-secondary btn-sm`}
+            type="button"
+            onClick={addNewService}
+          >
+            <AiOutlinePlus />
+          </button>
         </div>
-
+      </div>
+      <div className="row">
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
@@ -213,25 +212,26 @@ const ServiceList = () => {
             </div>
           </div>
         </div>
-        {modalShow && (
-          <AddUpdateServiceModal
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-            data={servicesData}
-            type={type}
-          />
-        )}
-
-        {isShowConfirmModal && (
-          <ConfirmModal
-            title="Are you sure?"
-            description="Are you sure you want to delete?"
-            handleDelete={handleOk}
-            isShowConfirmModal={isShowConfirmModal}
-            onCloseConfirmModal={() => setIsShowConfirmModal(false)}
-          />
-        )}
       </div>
+
+      {modalShow && (
+        <AddUpdateServiceModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          data={servicesData}
+          type={type}
+        />
+      )}
+
+      {isShowConfirmModal && (
+        <ConfirmModal
+          title="Are you sure?"
+          description="Are you sure you want to delete?"
+          handleDelete={handleOk}
+          isShowConfirmModal={isShowConfirmModal}
+          onCloseConfirmModal={() => setIsShowConfirmModal(false)}
+        />
+      )}
     </div>
   )
 }

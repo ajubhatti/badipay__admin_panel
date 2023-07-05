@@ -35,6 +35,7 @@ const discountReducer = (state = initialState, action) => {
         ...state,
         discountList: payload.data || [],
         discountLoading: false,
+        totalSize: payload?.total || 0,
       }
     case FETCH_BY_ID:
       return {

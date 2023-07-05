@@ -577,6 +577,9 @@ const CashBackList = () => {
       </div>
 
       <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h6 className="main-heading">Cashback List</h6>
+        </div>
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
@@ -659,7 +662,7 @@ const CashBackList = () => {
                     </button>
                   </div>
                 </div>
-
+                <hr className="m-0" />
                 <div className="col-md-12">
                   <CustomTable
                     showAddButton={false}

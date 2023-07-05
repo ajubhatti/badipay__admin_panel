@@ -14,6 +14,7 @@ import {
   AiOutlineEdit,
   AiOutlinePlus,
   AiOutlineSearch,
+  AiOutlineReload,
 } from "react-icons/ai"
 import { FaRupeeSign } from "react-icons/fa"
 import { Form } from "react-bootstrap"
@@ -56,8 +57,6 @@ const UserListings = () => {
     endDate: "",
   })
 
-  const [selectedRow, setSelectedRow] = useState("")
-
   useEffect(() => {
     setUsersList(userList)
   }, [userList])
@@ -93,7 +92,6 @@ const UserListings = () => {
 
   const changeActiveStatus = async (data, isChecked) => {
     setStatusLoading(true)
-    setSelectedRow(data?._id)
 
     await accountService
       .changeStatusOfUser(data?._id, { isActive: isChecked })
@@ -105,7 +103,6 @@ const UserListings = () => {
 
   const changeVerifiactionStatus = async (data, isChecked) => {
     setStatusLoading(true)
-    setSelectedRow(data?._id)
 
     await accountService
       .updateUserById(data?._id, { isVerified: isChecked })
@@ -155,8 +152,8 @@ const UserListings = () => {
   }, [payloadData, dispatch])
 
   useEffect(() => {
-    setPayloadData((previousData) => ({
-      ...previousData,
+    setPayloadData((prev) => ({
+      ...prev,
       page: page,
       limits: sizePerPage,
     }))
@@ -228,7 +225,11 @@ const UserListings = () => {
         text: "No",
         dataField: "no",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle">{rowIndex + 1}</div>
+          <div className="align-middle">
+            {sizePerPage && page
+              ? sizePerPage * (page - 1) + rowIndex + 1
+              : rowIndex + 1}
+          </div>
         ),
       },
       {
@@ -283,27 +284,6 @@ const UserListings = () => {
           </span>
         ),
       },
-      // {
-      //   text: "Status",
-      //   dataField: "status",
-      //   formatter: (cell, row, rowIndex, formatExtraData) => (
-      //     <div style={{ cursor: "pointer" }} title="Click to change a status">
-      //       <Button
-      //         type="button"
-      //         disabled={statusLoading}
-      //         className={row?.isActive ? "active-btn" : "danger-btn"}
-      //         size="sm"
-      //         onClick={() => (!statusLoading ? changeStatus(row) : null)}
-      //       >
-      //         {statusLoading && selectedRow === row?._id
-      //           ? "Loading"
-      //           : row?.isActive
-      //           ? "Active"
-      //           : "Inactive"}
-      //       </Button>
-      //     </div>
-      //   ),
-      // },
       {
         text: "Is Active",
         dataField: "isActive",
@@ -321,7 +301,7 @@ const UserListings = () => {
           <div className="d-flex">
             <button
               type="button"
-              className="btn text-primary btn-sm"
+              className="btn text-primary btn-sm p-1"
               title="Preview"
               size="sm"
               onClick={() => viewUser(row)}
@@ -330,7 +310,7 @@ const UserListings = () => {
             </button>
             <button
               type="button"
-              className="btn btn-sm"
+              className="btn btn-sm p-1"
               title="Edit"
               size="sm"
               onClick={() => editUser(row)}
@@ -339,7 +319,7 @@ const UserListings = () => {
             </button>
             <button
               type="button"
-              className="btn text-danger btn-sm"
+              className="btn text-danger btn-sm p-1"
               title="Delete"
               size="sm"
               onClick={() => handleDelete(row)}
@@ -348,7 +328,7 @@ const UserListings = () => {
             </button>
             <button
               type="button"
-              className="btn text-primary btn-sm"
+              className="btn text-primary btn-sm p-1"
               title="Preview"
               size="sm"
               onClick={() => addBalance(row)}
@@ -364,8 +344,11 @@ const UserListings = () => {
 
   return (
     <>
-      <div className="container-fluid w-100 mt-3">
+      <div className="container-fluid w-100 mt-2">
         <div className="row">
+          <div className="col-lg-12 justify-content-between d-flex">
+            <h6 className="main-heading">Users List</h6>
+          </div>
           <div className="col-lg-12">
             <div className="card mb-4">
               <div className="card-body">
@@ -418,7 +401,7 @@ const UserListings = () => {
                         className={`btn btn-primary ms-2`}
                         onClick={resetValue}
                       >
-                        Reset
+                        <AiOutlineReload />
                       </button>
 
                       <button
@@ -435,7 +418,7 @@ const UserListings = () => {
                       </button>
                     </div>
                   </div>
-
+                  <hr className="m-0" />
                   <div className="col-md-12">
                     <CustomTable
                       showAddButton={false}

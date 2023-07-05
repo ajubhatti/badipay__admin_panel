@@ -144,9 +144,9 @@ const ApiListings = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
-          <h2 className="main-heading">API List</h2>
+          <h6 className="main-heading">API List</h6>
           <button
-            className={`ms-2 btn btn-secondary`}
+            className={`ms-2 btn btn-secondary btn-sm`}
             type="button"
             onClick={addNewApi}
           >
@@ -155,21 +155,23 @@ const ApiListings = () => {
         </div>
       </div>
 
-      <div className="col-lg-12">
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-md-12">
-                <CustomTable
-                  showAddButton={false}
-                  keyField="_id"
-                  data={apiListData}
-                  columns={columns}
-                  showSearch={false}
-                  withPagination={false}
-                  loading={loading}
-                  withCard={false}
-                ></CustomTable>
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="card mb-4">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12">
+                  <CustomTable
+                    showAddButton={false}
+                    keyField="_id"
+                    data={apiListData}
+                    columns={columns}
+                    showSearch={false}
+                    withPagination={false}
+                    loading={loading}
+                    withCard={false}
+                  ></CustomTable>
+                </div>
               </div>
             </div>
           </div>

@@ -7,7 +7,12 @@ import {
   setSortFieldOfTransactions,
   setSortOrderOfTransactions,
 } from "./store/action"
-import { AiFillDelete, AiFillEye, AiOutlineSearch } from "react-icons/ai"
+import {
+  AiFillDelete,
+  AiFillEye,
+  AiOutlineReload,
+  AiOutlineSearch,
+} from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
 import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
@@ -54,15 +59,12 @@ const Transactions = () => {
 
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState([])
-
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
   const [filter, setFilter] = useState({ api: "", services: "" })
-
   const [exportLoading, setExportLoading] = useState(false)
   const [searchString, setSearchString] = useState("")
-
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 25,
@@ -530,6 +532,11 @@ const Transactions = () => {
   return (
     <div className="container-fluid w-100 mt-3">
       <div className="row">
+        <div className="col-lg-12 justify-content-between d-flex">
+          <h6 className="main-heading">Transaction List</h6>
+        </div>
+      </div>
+      <div className="row">
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
@@ -625,11 +632,11 @@ const Transactions = () => {
                       className={`btn btn-primary ms-2`}
                       onClick={resetValue}
                     >
-                      Reset
+                      <AiOutlineReload />
                     </button>
                   </div>
                 </div>
-
+                <hr className="m-0" />
                 <div className="col-md-12">
                   <CustomTable
                     showAddButton={false}
@@ -642,7 +649,7 @@ const Transactions = () => {
                     withPagination={true}
                     loading={loading}
                     withCard={false}
-                  ></CustomTable>
+                  />
 
                   {isShowDiscountModal && (
                     <TransactionViewModal
