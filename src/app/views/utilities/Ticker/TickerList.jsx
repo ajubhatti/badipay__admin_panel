@@ -6,7 +6,7 @@ import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import TickerModal from "./TickerModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
-import { Button } from "react-bootstrap"
+import { Form } from "react-bootstrap"
 import { getTickerList, removeTicker, updateTicker } from "../store/action"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -17,10 +17,8 @@ const TickerList = () => {
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
   const [isShowTickerModal, setIsShowTickerModal] = useState(false)
 
-  const [statusLoading, setStatusLoading] = useState(false)
-
   const [tickerInfo, setTickerInfo] = useState({})
-  const { tickerListData, loading } = useSelector((state) => state.utilities)
+  const { tickerListData } = useSelector((state) => state.utilities)
 
   const [type, setType] = useState("Add")
 
@@ -34,13 +32,6 @@ const TickerList = () => {
 
   const onCloseConfirmModal = () => {
     setIsShowConfirmModal(false)
-  }
-
-  const changeStatus = (data) => {
-    let payload = {
-      isActive: !data.isActive,
-    }
-    dispatch(updateTicker(data._id, payload))
   }
 
   const handleAddTicker = () => {
@@ -66,6 +57,22 @@ const TickerList = () => {
         setIsShowConfirmModal(false)
       })
     )
+  }
+
+  const GetIsActiveSwitch = (cell, row) => (
+    <Form.Check
+      type="switch"
+      id="isVerifiedSwitch"
+      className="cursor-pointer"
+      checked={row?.isActive}
+      onChange={(e) => {
+        changeVerifiactionStatus(row, e.target.checked)
+      }}
+    />
+  )
+
+  const changeVerifiactionStatus = async (data, isChecked) => {
+    dispatch(updateTicker(data?._id, { isActive: isChecked }))
   }
 
   const columns = useMemo(
@@ -98,33 +105,9 @@ const TickerList = () => {
         ),
       },
       {
-        text: "Status",
-        formatter: (cell, row) => (
-          <div>
-            <Button
-              variant={row?.isActive ? "success" : "danger"}
-              type="button"
-              disabled={statusLoading}
-              className="btn btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={
-                !statusLoading
-                  ? () => {
-                      //   changeStatus(row._id, !row?.isActive)
-                      changeStatus(row)
-                    }
-                  : null
-              }
-            >
-              {statusLoading
-                ? "Loading"
-                : row?.isActive
-                ? "Active"
-                : "Inactive"}
-            </Button>
-          </div>
-        ),
-        classes: "p-1",
+        text: "Is Active",
+        dataField: "isActive",
+        formatter: GetIsActiveSwitch,
       },
       {
         text: "Action",
@@ -161,9 +144,17 @@ const TickerList = () => {
     <>
       <div className="container-fluid w-100 mt-3">
         {isShowLoader && <CustomLoader />}
+
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
-            <h2 className="main-heading">Ticker List</h2>
+            <h6 className="main-heading">Ticker List</h6>
+            <button
+              className={`ms-2 btn btn-secondary btn-sm`}
+              type="button"
+              onClick={handleAddTicker}
+            >
+              <AiOutlinePlus />
+            </button>
           </div>
         </div>
 
@@ -172,21 +163,6 @@ const TickerList = () => {
             <div className="card mb-4">
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-12 d-flex">
-                    <div className="col-md-6 d-flex "></div>
-                    <div className="col-md-6 d-flex justify-content-end">
-                      <div className="me-2"></div>
-
-                      <button
-                        className={`ms-2 btn btn-secondary`}
-                        type="button"
-                        onClick={handleAddTicker}
-                      >
-                        <AiOutlinePlus />
-                      </button>
-                    </div>
-                  </div>
-
                   <div className="col-md-12">
                     <CustomTable
                       showAddButton={false}

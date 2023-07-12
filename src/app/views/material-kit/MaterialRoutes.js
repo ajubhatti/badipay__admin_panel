@@ -40,9 +40,7 @@ const OperatorSwitchingNew = Loadable(
     import("../api-settings/operator-switching-new/OperatorSwitchingNew")
   )
 )
-const AddUpdateService = Loadable(
-  lazy(() => import("../api-settings/services-listing/AddUpdateService"))
-)
+
 const DiscountOnRecharge = Loadable(
   lazy(() => import("../recharge/discount/DiscountOnRecharge"))
 )
@@ -82,43 +80,35 @@ const materialRoutes = [
     element: <WalletRequestListingTable />,
   },
   {
-    path: "/user/lists",
+    path: "/user-list",
     element: <UserListings />,
   },
   {
-    path: "/api-setting/api",
+    path: "/api-list",
     element: <ApiListings />,
   },
   {
-    path: "/api-setting/operator-list",
+    path: "/operator-list",
     element: <OperatorList />,
   },
   {
-    path: "/api-setting/operator/priority",
+    path: "/operator-priority",
     element: <OperatorSwitchingNew />,
   },
   {
-    path: "/api-setting/operators-configs",
+    path: "/operators-configs",
     element: <OperatorConfigs />,
   },
   {
-    path: "/api-setting/service",
+    path: "/service-list",
     element: <ServiceList />,
   },
   {
-    path: "/api-setting/service/add",
-    element: <AddUpdateService />,
-  },
-  {
-    path: "/api-setting/service/add/:id",
-    element: <AddUpdateService />,
-  },
-  {
-    path: "/recharge/discount",
+    path: "/recharge-discount-list",
     element: <DiscountOnRecharge />,
   },
   {
-    path: "/recharge/transactions",
+    path: "/transactions",
     element: <Transactions />,
   },
   {

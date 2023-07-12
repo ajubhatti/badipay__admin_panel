@@ -1,12 +1,10 @@
 import { bannerService } from "app/services/banner.service"
 import { tickerService } from "app/services/ticker.service"
-import { contactUsService } from "app/services/contactUs.service"
 import { utilityService } from "app/services/utility.services"
 import { uploadService } from "app/services/upload.service"
 import { toast } from "react-toastify"
 import {
   FETCH_BANNER,
-  FETCH_CONTACTUS,
   FETCH_STATE,
   FETCH_STATE_BY_ID,
   FETCH_TICKER,
@@ -39,10 +37,10 @@ export const getStateById = (data) => async (dispatch) => {
   }
 }
 
-export const getStateList = (data) => async (dispatch) => {
+export const getStateList = () => async (dispatch) => {
   try {
     dispatch(setLoading(true))
-    await utilityService.getAllState(data).then((res) => {
+    await utilityService.getAllState().then((res) => {
       if (res?.data) {
         dispatch(fetchStateList(res?.data))
         dispatch(setLoading(false))
@@ -70,6 +68,18 @@ export const createState = (data) => async (dispatch) => {
     dispatch(setLoading(true))
     await utilityService.addState(data).then((res) => {
       dispatch(getStateList())
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const removeState = (id, cb) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    await utilityService.deleteState(id).then((res) => {
+      dispatch(getStateList())
+      cb()
     })
   } catch (err) {
     dispatch(setLoading(false))
@@ -198,60 +208,6 @@ export const removeBanner = (data, cb) => async (dispatch) => {
     dispatch(setLoading(false))
   }
 }
-
-export const getContactUsList = (data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await contactUsService.getAllContactUs(data).then((res) => {
-      if (res?.data) {
-        dispatch(fetchContactUsList(res?.data))
-        dispatch(setLoading(false))
-      }
-    })
-  } catch (err) {
-    toast.error(err?.response?.data?.message || err?.message)
-    dispatch(setLoading(false))
-  }
-}
-
-export const updateContactUs = (id, data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await contactUsService.updateContactUs(id, data).then((res) => {
-      dispatch(getContactUsList())
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
-}
-
-export const createContatUs = (data) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await contactUsService.addContactUs(data).then((res) => {
-      dispatch(getContactUsList())
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
-}
-
-export const removeContactUs = (id, cb) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true))
-    await contactUsService.deleteContactUs(id).then((res) => {
-      dispatch(getContactUsList())
-      cb()
-    })
-  } catch (err) {
-    dispatch(setLoading(false))
-  }
-}
-
-export const fetchContactUsList = (data) => ({
-  type: FETCH_CONTACTUS,
-  payload: data,
-})
 
 export const fetchTickerList = (data) => ({
   type: FETCH_TICKER,

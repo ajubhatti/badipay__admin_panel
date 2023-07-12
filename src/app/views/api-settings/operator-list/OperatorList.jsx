@@ -89,7 +89,7 @@ const OperatorList = () => {
         className="btn btn-sm"
         title="Edit"
         size="sm"
-        onClick={() => handleEdit(cell, row)}
+        onClick={() => handleEdit(row)}
       >
         <AiOutlineEdit style={{ color: "green" }} />
       </button>
@@ -98,7 +98,7 @@ const OperatorList = () => {
         className="btn text-danger btn-sm"
         title="Delete"
         size="sm"
-        onClick={() => handleDelete(cell, row)}
+        onClick={() => handleDelete(row)}
       >
         <AiFillDelete />
       </button>
@@ -107,31 +107,31 @@ const OperatorList = () => {
         className="btn text-primary btn-sm"
         title="Preview"
         size="sm"
-        onClick={() => handleView(cell, row)}
+        onClick={() => handleView(row)}
       >
         <AiFillEye />
       </button>
     </div>
   )
 
-  const handleDelete = (cell, row) => {
+  const handleDelete = (row) => {
     setIsShowConfirmModal(true)
     setoperatorsData(row)
   }
 
-  const handleView = (cell, row) => {
+  const handleView = (row) => {
     setType("View")
     setoperatorsData(row)
     setModalShow(true)
   }
 
-  const handleEdit = (cell, row) => {
+  const handleEdit = (row) => {
     setType("Update")
     setoperatorsData(row)
     setModalShow(true)
   }
 
-  const GetIsActiveSwitch = (cell, row) => (
+  const GetIsActiveSwitch = (row) => (
     <div>
       <Form.Check
         type="switch"
@@ -147,7 +147,7 @@ const OperatorList = () => {
     </div>
   )
 
-  const GetIsVisibleSwitch = (cell, row) => (
+  const GetIsVisibleSwitch = (row) => (
     <div>
       <Form.Check
         type="switch"
@@ -163,7 +163,7 @@ const OperatorList = () => {
     </div>
   )
 
-  const GetTime = (cell, row) => moment(row.created).format("DD-MM-YYYY")
+  const GetTime = (row) => moment(row.created).format("DD-MM-YYYY")
 
   const columns = [
     {
@@ -215,7 +215,7 @@ const OperatorList = () => {
       text: "Created At",
       dataField: "created",
       formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{GetTime(cell, row) || "-"}</div>
+        <div>{GetTime(row) || "-"}</div>
       ),
     },
     {

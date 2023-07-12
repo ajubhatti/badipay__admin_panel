@@ -62,7 +62,6 @@ const UserListings = () => {
   }, [userList])
 
   const editUser = (data) => {
-    // setUserData(data)
     setUserModelOpen({
       is_open: true,
       is_form_view_profile: false,
@@ -73,7 +72,6 @@ const UserListings = () => {
   }
 
   const viewUser = (data) => {
-    // setUserData(data)
     setUserModelOpen({
       is_open: true,
       is_form_view_profile: true,
@@ -143,10 +141,6 @@ const UserListings = () => {
     setSearchString(e.target.value.trim())
   }
 
-  // const getUsersList = useCallback(() => {
-  //   dispatch(getUserList(payloadData))
-  // }, [dispatch, payloadData])
-
   useEffect(() => {
     dispatch(getUserList(payloadData))
   }, [payloadData, dispatch])
@@ -193,7 +187,7 @@ const UserListings = () => {
 
   const handleCSV = () => {}
 
-  const handleDelete = (cell, row) => {}
+  const handleDelete = (row) => {}
 
   const GetIsActiveSwitch = (cell, row) => (
     <Form.Check

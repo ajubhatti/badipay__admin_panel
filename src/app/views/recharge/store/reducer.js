@@ -3,6 +3,7 @@ import {
   FETCH_RECHARGES_BY_ID,
   FETCH_TRANSACTIONS,
   FETCH_TRANSACTIONS_BY_ID,
+  RESET_DATA,
   SET_PAGE_TRANSACTIONS,
   SET_RECHARGE_LOADING,
   SET_SEARCH_TRANSACTIONS,
@@ -98,6 +99,16 @@ const rechargeReducer = (state = initialState, action) => {
       return {
         ...state,
         sortOrder: payload,
+      }
+
+    case RESET_DATA:
+      return {
+        page: 1,
+        sizePerPage: 25,
+        totalSize: 0,
+        search: "",
+        sortField: "created",
+        sortOrder: "DESC",
       }
 
     default:

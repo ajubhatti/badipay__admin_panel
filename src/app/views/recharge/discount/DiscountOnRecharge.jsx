@@ -122,7 +122,7 @@ const DiscountOnRecharge = () => {
     },
     {
       text: "Action",
-      formatter: (cell, row) => (
+      formatter: (row) => (
         <div className="d-flex">
           <button
             type="button"

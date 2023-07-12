@@ -10,3 +10,11 @@ export const CONSTANT_STATUS = {
   SUCCESS: "success",
   REFUND: "refund",
 }
+
+export const rechargResponseType = [
+  { _id: "json", name: "JSON" },
+  { _id: "xml", name: "XML" },
+  { _id: "csv", name: "CSV" },
+  { _id: "text", name: "TEXT" },
+  { _id: "parser", name: "PARSER" },
+]

@@ -7,7 +7,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="danger">
@@ -29,7 +29,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="success">
@@ -51,7 +51,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="primary">
@@ -73,7 +73,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="danger">
@@ -95,7 +95,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="danger">
@@ -117,7 +117,7 @@ const ReportsCard = ({ cardData }) => {
       <div className="col-xl-2 col-sm-6 col-12">
         <div className="card text-center">
           <div className="card-content">
-            <div className="card-body p-2 m-1">
+            <div className="card-body p-1 m-1">
               <div className="media">
                 <div className="media-body text-left">
                   <h3 className="warning">

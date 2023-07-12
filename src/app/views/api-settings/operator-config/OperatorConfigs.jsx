@@ -136,7 +136,7 @@ const OperatorConfigs = () => {
     )
   }
 
-  const handleEdit = (cell, row) => {
+  const handleEdit = (row) => {
     setModalShow(true)
     setType("Update")
     setCompanysData(row)
@@ -146,7 +146,7 @@ const OperatorConfigs = () => {
     dispatch(getOperatorConfigList(payloadData))
   }
 
-  const GetIsVerifySwitch = (cell, row) => (
+  const GetIsActiveSwitch = (row) => (
     <Form.Check
       type="switch"
       id="isVerifiedSwitch"
@@ -236,7 +236,7 @@ const OperatorConfigs = () => {
       {
         text: "Is Active",
         dataField: "isActive",
-        formatter: GetIsVerifySwitch,
+        formatter: GetIsActiveSwitch,
       },
       {
         dataField: "",
@@ -249,7 +249,7 @@ const OperatorConfigs = () => {
               className="btn btn-sm"
               title="Edit"
               size="sm"
-              onClick={() => handleEdit(cell, row)}
+              onClick={() => handleEdit(row)}
             >
               <AiOutlineEdit style={{ color: "green" }} />
             </button>

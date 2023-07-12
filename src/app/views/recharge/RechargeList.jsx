@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  getAllRechargeList,
   getRechargeList,
   getRechargeListForPrint,
   setPageTransactions,
+  setResetData,
   setSizePerPageTransactions,
   setSortFieldOfTransactions,
   setSortOrderOfTransactions,
@@ -64,19 +64,13 @@ const RechargeList = () => {
   const [filter, setFilter] = useState({ api: "", services: "", status: "" })
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
-    start: new Date(),
-    end: new Date(),
+    start: new Date("07-08-2023"),
+    end: new Date("07-08-2023"),
   })
   const [exportLoading, setExportLoading] = useState(false)
   const [providers, setApis] = useState([])
   const [services, setServices] = useState([])
   const [payloadData, setPayloadData] = useState({
-    page: 1,
-    limits: 25,
-    sortBy: "created",
-    orderBy: "DESC",
-    skip: 0,
-    search: "",
     startDate: moment(dateRangeValue?.start).format("MM-DD-yyyy"), //"10-15-2022",
     endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
@@ -113,9 +107,9 @@ const RechargeList = () => {
     getAllProviders()
   }, [])
 
-  const handleDelete = (cell, row) => {}
+  const handleDelete = (row) => {}
 
-  const handleView = (cell, row) => {}
+  const handleView = (row) => {}
 
   const handleDiscountClose = () => {
     setdDiscountInfo({})
@@ -132,11 +126,16 @@ const RechargeList = () => {
   useEffect(() => {
     dispatch(getStateList())
     dispatch(getCompanies())
-    dispatch(getAllRechargeList())
+
+    return () => {
+      dispatch(setResetData())
+    }
   }, [dispatch])
 
   const getTransactionList = useCallback(() => {
-    dispatch(getRechargeList(payloadData))
+    if (payloadData?.page) {
+      dispatch(getRechargeList(payloadData))
+    }
   }, [dispatch, payloadData])
 
   useEffect(() => {
@@ -312,11 +311,11 @@ const RechargeList = () => {
       },
       {
         text: "Phone Number",
-        dataField: "phoneNumber",
+        dataField: "customerNo",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userDetail?.phoneNumber ? row?.userDetail?.phoneNumber : "-"}
+            {row?.customerNo ? row?.customerNo : "-"}
           </div>
         ),
       },
@@ -495,7 +494,7 @@ const RechargeList = () => {
               className="btn btn-sm"
               title="Edit"
               size="sm"
-              onClick={() => handleEdit(cell, row)}
+              onClick={() => handleEdit(row)}
             >
               <AiOutlineEdit />
             </button>
@@ -504,7 +503,7 @@ const RechargeList = () => {
               className="btn text-danger btn-sm"
               title="Delete"
               size="sm"
-              onClick={() => handleDelete(cell, row)}
+              onClick={() => handleDelete(row)}
             >
               <AiFillDelete />
             </button>
@@ -513,7 +512,7 @@ const RechargeList = () => {
               className="btn text-primary btn-sm"
               title="Preview"
               size="sm"
-              onClick={() => handleView(cell, row)}
+              onClick={() => handleView(row)}
             >
               <AiFillEye />
             </button>
@@ -646,7 +645,7 @@ const RechargeList = () => {
                     showAddButton={false}
                     pageOptions={pageOptions}
                     keyField="_id"
-                    data={rechargeList}
+                    data={rechargeList || []}
                     columns={columns}
                     showSearch={false}
                     onTableChange={onTableChange}
@@ -662,9 +661,6 @@ const RechargeList = () => {
                       isShowDiscountModal={isShowDiscountModal}
                       onCloseDiscountModal={handleDiscountClose}
                       fetchTransactionList={getTransactionList}
-                      // onSaveDiscountModal={handleSaveDiscountModal}
-                      // selectedServiceIndex={selectedServiceIndex}
-                      // discountModalSave={discountModalSave}
                     />
                   )}
                 </div>

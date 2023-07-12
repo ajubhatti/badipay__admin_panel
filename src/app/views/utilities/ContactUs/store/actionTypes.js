@@ -1,0 +1,10 @@
+export const SET_LOADING = "SET_LOADING"
+export const FETCH_CONTACTUS_BY_ID = "FETCH_CONTACTUS_BY_ID"
+export const FETCH_CONTACTUS = "FETCH_CONTACTUS"
+
+
+export const SET_SIZE_PER_PAGE = "SET_SIZE_PER_PAGE"
+export const SET_PAGE = "SET_PAGE"
+export const SET_SEARCH = "SET_SEARCH"
+export const SET_SORT_FIELD = "SET_SORT_FIELD"
+export const SET_SORT_ORDER = "SET_SORT_ORDER"

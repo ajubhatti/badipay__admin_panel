@@ -8,6 +8,10 @@ const getContactUsById = (id) => {
   return fetchWrapper.get(`${contactUsUrl}/${id}`)
 }
 
+const getContactWithPagination = (data) => {
+  return fetchWrapper.post(`${contactUsUrl}/getWithPagination`, data)
+}
+
 const addContactUs = (data) => {
   return fetchWrapper.post(contactUsUrl, data)
 }
@@ -26,4 +30,5 @@ export const contactUsService = {
   addContactUs,
   updateContactUs,
   deleteContactUs,
+  getContactWithPagination,
 }

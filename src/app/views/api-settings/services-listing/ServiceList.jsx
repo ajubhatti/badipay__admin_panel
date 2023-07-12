@@ -29,7 +29,7 @@ const ServiceList = () => {
         className="btn btn-sm"
         title="Edit"
         size="sm"
-        onClick={() => handleModelEdit(cell, row)}
+        onClick={() => handleModelEdit(row)}
       >
         <AiOutlineEdit style={{ color: "green" }} />
       </button>
@@ -38,7 +38,7 @@ const ServiceList = () => {
         className="btn text-danger btn-sm"
         title="Delete"
         size="sm"
-        onClick={() => handleModelDelete(cell, row)}
+        onClick={() => handleModelDelete(row)}
       >
         <AiFillDelete />
       </button>
@@ -47,7 +47,7 @@ const ServiceList = () => {
         className="btn text-primary btn-sm"
         title="Preview"
         size="sm"
-        onClick={() => handleView(cell, row)}
+        onClick={() => handleView(row)}
       >
         <AiFillEye />
       </button>
@@ -65,7 +65,7 @@ const ServiceList = () => {
     />
   )
 
-  const GetTime = (cell, row) => moment(row.created).format("DD-MM-YYYY")
+  const GetTime = (row) => moment(row.created).format("DD-MM-YYYY")
 
   const columns = [
     {
@@ -115,7 +115,7 @@ const ServiceList = () => {
       text: "Created At",
       dataField: "created",
       formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{GetTime(cell, row) || "-"}</div>
+        <div>{GetTime(row) || "-"}</div>
       ),
     },
     {
@@ -138,18 +138,18 @@ const ServiceList = () => {
     dispatch(getServices())
   }
 
-  const handleModelDelete = (cell, row) => {
+  const handleModelDelete = (row) => {
     setIsShowConfirmModal(true)
     setServicesData(row)
   }
 
-  const handleModelEdit = (cell, row) => {
+  const handleModelEdit = (row) => {
     setType("Update")
     setServicesData(row)
     setModalShow(true)
   }
 
-  const handleView = (cell, row) => {
+  const handleView = (row) => {
     setType("View")
     setServicesData(row)
     setModalShow(true)

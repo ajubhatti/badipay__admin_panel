@@ -5,7 +5,7 @@ import CustomTable from "app/components/Tables/CustomTable"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import BannerModal from "./BannerModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
-import { Button, Image } from "react-bootstrap"
+import { Button, Form, Image } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getBannerList, removeBanner, updateBanner } from "../store/action"
 
@@ -76,6 +76,22 @@ const BannerList = () => {
     return <Image src={data} width={150} height={100} alt="" fluid />
   }
 
+  const GetIsActiveSwitch = (cell, row) => (
+    <Form.Check
+      type="switch"
+      id="isVerifiedSwitch"
+      className="cursor-pointer"
+      checked={row?.isActive}
+      onChange={(e) => {
+        changeVerifiactionStatus(row, e.target.checked)
+      }}
+    />
+  )
+
+  const changeVerifiactionStatus = async (data, isChecked) => {
+    dispatch(updateBanner(data?._id, { isActive: isChecked }))
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -112,32 +128,9 @@ const BannerList = () => {
         ),
       },
       {
-        text: "Status",
-        formatter: (cell, row) => (
-          <div>
-            <Button
-              variant={row?.isActive ? "success" : "danger"}
-              type="button"
-              disabled={statusLoading}
-              className="btn btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={
-                !statusLoading
-                  ? () => {
-                      changeStatus(row)
-                    }
-                  : null
-              }
-            >
-              {statusLoading
-                ? "Loading"
-                : row?.isActive
-                ? "Active"
-                : "Inactive"}
-            </Button>
-          </div>
-        ),
-        classes: "p-1",
+        text: "Is Active",
+        dataField: "isActive",
+        formatter: GetIsActiveSwitch,
       },
       {
         text: "Action",
@@ -173,30 +166,25 @@ const BannerList = () => {
   return (
     <div className="container-fluid w-100 mt-3">
       {isShowLoader && <CustomLoader />}
+
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
-          <h2 className="main-heading">Banner List</h2>
+          <h6 className="main-heading">Banner List</h6>
+          <button
+            className={`ms-2 btn btn-secondary btn-sm`}
+            type="button"
+            onClick={handleAddBanner}
+          >
+            <AiOutlinePlus />
+          </button>
         </div>
       </div>
+
       <div className="row">
         <div className="col-lg-12">
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex "></div>
-                  <div className="col-md-6 d-flex justify-content-end">
-                    <div className="me-2"></div>
-                    <button
-                      className={`ms-2 btn btn-secondary`}
-                      type="button"
-                      onClick={handleAddBanner}
-                    >
-                      <AiOutlinePlus />
-                    </button>
-                  </div>
-                </div>
-
                 <div className="col-md-12">
                   <CustomTable
                     showAddButton={false}

@@ -16,7 +16,7 @@ const ApiListings = () => {
   const { apisList, loading } = useSelector((state) => state.apis)
   const [apiListData, setApiListData] = useState([])
 
-  const [modalShow, setModalShow] = useState(false)
+  const [modalShow, setModalShow] = useState(true)
   const [apiData, setApiData] = useState({})
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
   const [type, setType] = useState("Add")
@@ -28,7 +28,7 @@ const ApiListings = () => {
         className="btn btn-sm"
         title="Edit"
         size="sm"
-        onClick={() => handleEdit(cell, row)}
+        onClick={() => handleEdit(row)}
       >
         <AiOutlineEdit style={{ color: "green" }} />
       </button>
@@ -37,7 +37,7 @@ const ApiListings = () => {
         className="btn text-danger btn-sm"
         title="Delete"
         size="sm"
-        onClick={() => handleRemove(cell, row)}
+        onClick={() => handleRemove(row)}
       >
         <AiFillDelete />
       </button>
@@ -46,7 +46,7 @@ const ApiListings = () => {
         className="btn text-primary btn-sm"
         title="Preview"
         size="sm"
-        onClick={() => handleView(cell, row)}
+        onClick={() => handleView(row)}
       >
         <AiFillEye />
       </button>
@@ -97,18 +97,18 @@ const ApiListings = () => {
     },
   ]
 
-  const handleRemove = (cell, row) => {
+  const handleRemove = (row) => {
     setIsShowConfirmModal(true)
     setApiData(row)
   }
 
-  const handleView = (cell, row) => {
+  const handleView = (row) => {
     setType("View")
     setApiData(row)
     setModalShow(true)
   }
 
-  const handleEdit = (cell, row) => {
+  const handleEdit = (row) => {
     setType("Update")
     setApiData(row)
     setModalShow(true)

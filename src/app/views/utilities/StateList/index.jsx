@@ -1,92 +1,58 @@
-import React, { useEffect, useMemo, useState } from "react"
-import moment from "moment"
-import CustomTable from "app/components/Tables/CustomTable"
-import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
-import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
+import CustomLoader from "app/components/CustomLoader/CustomLoader"
+import CustomTable from "app/components/Tables/CustomTable"
+import moment from "moment"
+import React, { useEffect, useMemo, useState } from "react"
 import { Form } from "react-bootstrap"
+import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
 import { useDispatch, useSelector } from "react-redux"
-import ContactUsModal from "./ContactUsModal"
-import { sizePerPageList } from "../../../constants/table"
-import {
-  getContactUsList,
-  removeContactUs,
-  setPageContactUs,
-  setSizePerPageContactUs,
-  setSortFieldOfContactUs,
-  setSortOrderOfContactUs,
-  updateContactUs,
-} from "./store/action"
+import StateModal from "./StateModal"
+import { getStateList, removeState, updateStates } from "../store/action"
 
-const ContactUsList = () => {
+const StateList = () => {
   const dispatch = useDispatch()
-  const [contactUsList, setContactUsList] = useState([])
+  const [tickerList, setTickerList] = useState([])
   const [isShowLoader, setIsShowLoader] = useState(false)
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
-  const [isShowContactUsModal, setIsShowContactUsModal] = useState(false)
+  const [isShowTickerModal, setIsShowTickerModal] = useState(false)
 
-  const [contactUsInfo, setContactUsInfo] = useState({})
-  const { contactUsListData, loading, page, sizePerPage, totalSize } =
-    useSelector((state) => state.contactUs)
+  const [tickerInfo, setTickerInfo] = useState({})
+  const { stateList } = useSelector((state) => state.utilities)
 
   const [type, setType] = useState("Add")
 
-  const [payloadData, setPayloadData] = useState({
-    page: 1,
-    limits: 25,
-    sortBy: "createdAt",
-    orderBy: "DESC",
-    skip: 0,
-    search: "",
-    startDate: "", //"10-15-2022",
-    endDate: "",
-  })
+  useEffect(() => {
+    dispatch(getStateList())
+  }, [dispatch])
 
   useEffect(() => {
-    dispatch(getContactUsList(payloadData))
-  }, [dispatch, payloadData])
-
-  useEffect(() => {
-    setPayloadData((prev) => ({
-      ...prev,
-      page: page,
-      limits: sizePerPage,
-    }))
-  }, [sizePerPage, page])
-
-  const pageOptions = useMemo(
-    () => ({
-      page,
-      sizePerPage,
-      totalSize,
-      custom: true,
-      sizePerPageList,
-    }),
-    [sizePerPage, totalSize, page]
-  )
-
-  useEffect(() => {
-    setContactUsList(contactUsListData)
-  }, [contactUsListData])
+    setTickerList(stateList)
+  }, [stateList])
 
   const onCloseConfirmModal = () => {
     setIsShowConfirmModal(false)
   }
 
-  const handleAdd = () => {
-    setContactUsInfo({})
-    setIsShowContactUsModal(true)
+  const handleAddTicker = () => {
+    setTickerInfo({})
+    setIsShowTickerModal(true)
     setType("Add")
+  }
+
+  const handleEdit = (data) => {
+    setTickerInfo(data)
+    setType("Update")
+    setIsShowTickerModal(true)
   }
 
   const handleRemove = (row) => {
     setIsShowConfirmModal(true)
-    setContactUsInfo(row)
+    setTickerInfo(row)
   }
 
   const handleDelete = async () => {
     dispatch(
-      removeContactUs(contactUsInfo._id, () => {
+      removeState(tickerInfo._id, () => {
         setIsShowConfirmModal(false)
       })
     )
@@ -105,7 +71,7 @@ const ContactUsList = () => {
   )
 
   const changeVerifiactionStatus = async (data, isChecked) => {
-    dispatch(updateContactUs(data?._id, { isActive: isChecked }))
+    dispatch(updateStates(data?._id, { isActive: isChecked }))
   }
 
   const columns = useMemo(
@@ -115,46 +81,22 @@ const ContactUsList = () => {
         dataField: "no",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle">
-            {sizePerPage && page
-              ? sizePerPage * (page - 1) + rowIndex + 1
-              : rowIndex + 1}
-          </div>
+          <div className="align-middle">{rowIndex + 1}</div>
         ),
       },
       {
-        text: "Description",
-        dataField: "description",
+        text: "text",
+        dataField: "stateName",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.description || "-"}</div>
+          <div className="align-middle ">{row?.stateName || "-"}</div>
         ),
       },
+
       {
-        text: "Email",
-        dataField: "email",
+        text: "text",
+        dataField: "stateCode",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.email || "-"}</div>
-        ),
-      },
-      {
-        text: "Name",
-        dataField: "fullName",
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.fullName || "-"}</div>
-        ),
-      },
-      {
-        text: "Mobile No",
-        dataField: "mobileNo",
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.mobileNo || "-"}</div>
-        ),
-      },
-      {
-        text: "Subject",
-        dataField: "subject",
-        formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.subject || "-"}</div>
+          <div className="align-middle ">{row?.stateCode || "-"}</div>
         ),
       },
       {
@@ -180,6 +122,15 @@ const ContactUsList = () => {
           <div className="d-flex">
             <button
               type="button"
+              className="btn btn-sm"
+              title="Edit"
+              size="sm"
+              onClick={() => handleEdit(row)}
+            >
+              <AiOutlineEdit />
+            </button>
+            <button
+              type="button"
               className="btn text-danger btn-sm"
               title="Delete"
               size="sm"
@@ -195,21 +146,6 @@ const ContactUsList = () => {
     []
   )
 
-  const onTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
-    switch (type) {
-      case "sort":
-        dispatch(setSortFieldOfContactUs(sortField))
-        dispatch(setSortOrderOfContactUs(sortOrder.toUpperCase()))
-        break
-      case "pagination":
-        dispatch(setPageContactUs(page))
-        dispatch(setSizePerPageContactUs(sizePerPage))
-        break
-      default:
-        break
-    }
-  }
-
   return (
     <>
       <div className="container-fluid w-100 mt-3">
@@ -217,11 +153,11 @@ const ContactUsList = () => {
 
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
-            <h6 className="main-heading">Contact Us List</h6>
+            <h6 className="main-heading">State List</h6>
             <button
               className={`ms-2 btn btn-secondary btn-sm`}
               type="button"
-              onClick={handleAdd}
+              onClick={handleAddTicker}
             >
               <AiOutlinePlus />
             </button>
@@ -236,15 +172,13 @@ const ContactUsList = () => {
                   <div className="col-md-12">
                     <CustomTable
                       showAddButton={false}
-                      pageOptions={pageOptions}
                       keyField="_id"
-                      data={contactUsList}
+                      data={tickerList}
                       columns={columns}
                       showSearch={false}
-                      withPagination={true}
+                      withPagination={false}
                       loading={isShowLoader}
                       withCard={false}
-                      onTableChange={onTableChange}
                     ></CustomTable>
                   </div>
                 </div>
@@ -253,11 +187,11 @@ const ContactUsList = () => {
           </div>
         </div>
 
-        {isShowContactUsModal && (
-          <ContactUsModal
-            show={isShowContactUsModal}
-            onHide={() => setIsShowContactUsModal(false)}
-            data={contactUsInfo}
+        {isShowTickerModal && (
+          <StateModal
+            show={isShowTickerModal}
+            onHide={() => setIsShowTickerModal(false)}
+            data={tickerInfo}
             type={type}
           />
         )}
@@ -276,4 +210,4 @@ const ContactUsList = () => {
   )
 }
 
-export default ContactUsList
+export default StateList

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { createContatUs, updateContactUs } from "./store/action"
+import { createTicker, updateTicker } from "../store/action"
 
-const ContactUsModal = ({ show, onHide, type, data }) => {
+const StateModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
 
   const [modalData, setModalData] = useState({
@@ -27,10 +27,10 @@ const ContactUsModal = ({ show, onHide, type, data }) => {
 
   const handleSaveOrUpdate = async () => {
     if (modalData?._id) {
-      dispatch(updateContactUs(modalData?._id, modalData))
+      dispatch(updateTicker(modalData?._id, modalData))
       clearData()
     } else {
-      dispatch(createContatUs(modalData))
+      dispatch(createTicker(modalData))
       clearData()
     }
   }
@@ -57,7 +57,7 @@ const ContactUsModal = ({ show, onHide, type, data }) => {
   //   //  obj.email = email
   //   //  let id = props.userData.id
   //   if (bannerData && bannerData?._id) {
-  //     await tickerService.updateContactUs(bannerData?._id, payload).then((res) => {
+  //     await tickerService.updateTicker(bannerData?._id, payload).then((res) => {
   //       handleClose()
   //       getAllTicker()
   //     })
@@ -130,4 +130,4 @@ const ContactUsModal = ({ show, onHide, type, data }) => {
   )
 }
 
-export default ContactUsModal
+export default StateModal

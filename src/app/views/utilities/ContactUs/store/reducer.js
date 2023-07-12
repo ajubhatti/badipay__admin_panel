@@ -1,19 +1,8 @@
-import {
-  FETCH_USERS,
-  FETCH_USERS_BY_ID,
-  SET_PAGE_USERS,
-  SET_LOADING,
-  SET_SEARCH_USERS,
-  SET_SIZE_PER_PAGE_USERS,
-  SET_SORT_FIELD_USERS,
-  SET_SORT_ORDER_USERS,
-} from "./actionTypes"
+import { FETCH_CONTACTUS, SET_LOADING, SET_PAGE, SET_SEARCH, SET_SIZE_PER_PAGE, SET_SORT_FIELD, SET_SORT_ORDER } from "./actionTypes"
 
 const initialState = {
   loading: false,
-  userList: [],
-  userDetail: {},
-  totalBalance: 0,
+  contactUsListData: [],
   page: 1,
   sizePerPage: 25,
   totalSize: 0,
@@ -22,7 +11,7 @@ const initialState = {
   sortOrder: "DESC",
 }
 
-const accountReducer = (state = initialState, action) => {
+const contactUsReducer = (state = initialState, action) => {
   const { type, payload } = action
 
   switch (type) {
@@ -32,49 +21,39 @@ const accountReducer = (state = initialState, action) => {
         loading: payload,
       }
 
-    case FETCH_USERS:
+    case FETCH_CONTACTUS:
       return {
         ...state,
-        userList: payload?.data,
+        contactUsListData: payload?.data,
         loading: false,
         totalSize: payload?.total || 0,
-        totalBalance: payload?.totalBalance || 0,
       }
 
-    case FETCH_USERS_BY_ID:
-      return {
-        ...state,
-        userDetail: payload,
-        loading: false,
-      }
-
-    //  ===================== new ============================
-
-    case SET_SIZE_PER_PAGE_USERS:
+    case SET_SIZE_PER_PAGE:
       return {
         ...state,
         sizePerPage: payload,
       }
 
-    case SET_PAGE_USERS:
+    case SET_PAGE:
       return {
         ...state,
         page: payload,
       }
 
-    case SET_SEARCH_USERS:
+    case SET_SEARCH:
       return {
         ...state,
         search: payload,
       }
 
-    case SET_SORT_FIELD_USERS:
+    case SET_SORT_FIELD:
       return {
         ...state,
         sortField: payload,
       }
 
-    case SET_SORT_ORDER_USERS:
+    case SET_SORT_ORDER:
       return {
         ...state,
         sortOrder: payload,
@@ -85,4 +64,4 @@ const accountReducer = (state = initialState, action) => {
   }
 }
 
-export default accountReducer
+export default contactUsReducer

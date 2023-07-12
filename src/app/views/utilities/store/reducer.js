@@ -5,7 +5,6 @@ import {
   FETCH__BANNER_BY_ID,
   SET_LOADING,
   FETCH_STATE,
-  FETCH_CONTACTUS,
 } from "./actionTypes"
 
 const initialState = {
@@ -15,7 +14,6 @@ const initialState = {
   bannerListData: [],
   bannerInfoData: {},
 
-  contactUsListData: [],
   stateList: [],
 }
 
@@ -56,11 +54,6 @@ const utilityReducer = (state = initialState, action) => {
       return {
         ...state,
         bannerInfoData: payload,
-      }
-    case FETCH_CONTACTUS:
-      return {
-        ...state,
-        contactUsListData: payload,
       }
 
     default:

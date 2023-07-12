@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   getTransactionsList,
   setPageTransactions,
+  setResetData,
   setSizePerPageTransactions,
   setSortFieldOfTransactions,
   setSortOrderOfTransactions,
@@ -341,17 +342,17 @@ const Transactions = () => {
             </button> */}
             <button
               type="button"
-              className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
+              className="btn text-danger btn-sm p-1"
               size="sm"
-              onClick={() => handleDelete(cell, row)}
+              onClick={() => handleDelete(row)}
             >
               <AiFillDelete />
             </button>
             <button
               type="button"
-              className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
+              className="btn text-primary btn-sm p-1"
               size="sm"
-              onClick={() => handleView(cell, row)}
+              onClick={() => handleView(row)}
             >
               <AiFillEye />
             </button>
@@ -362,9 +363,9 @@ const Transactions = () => {
     [page, sizePerPage]
   )
 
-  const handleDelete = (cell, row) => {}
+  const handleDelete = (row) => {}
 
-  const handleView = (cell, row) => {}
+  const handleView = (row) => {}
 
   const handleDiscountClose = () => {
     setdDiscountInfo([])
@@ -384,6 +385,9 @@ const Transactions = () => {
   useEffect(() => {
     dispatch(getStateList())
     dispatch(getCompanies())
+    return () => {
+      dispatch(setResetData())
+    }
   }, [dispatch])
 
   const getTransactionList = useCallback(() => {
@@ -642,7 +646,7 @@ const Transactions = () => {
                     showAddButton={false}
                     pageOptions={pageOptions}
                     keyField="_id"
-                    data={transactionList}
+                    data={transactionList || []}
                     columns={columns}
                     showSearch={false}
                     onTableChange={onTableChange}

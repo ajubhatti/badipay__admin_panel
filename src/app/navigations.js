@@ -43,14 +43,9 @@ export const navigations = [
     icon: "account_box",
     badge: {},
     children: [
-      // {
-      //   name: "user list",
-      //   path: "/user/list",
-      //   iconText: "UL",
-      // },
       {
         name: "Users",
-        path: "/user/lists",
+        path: "/user-list",
         iconText: "US",
       },
     ],
@@ -67,7 +62,7 @@ export const navigations = [
       },
       {
         name: "Transactions",
-        path: "/recharge/transactions",
+        path: "/transactions",
         iconText: "TRNS",
       },
     ],
@@ -100,7 +95,7 @@ export const navigations = [
     badge: { color: "black" },
     children: [
       {
-        name: "Wallet list",
+        name: "Wallets",
         path: "/wallet-request",
         iconText: "WL",
       },
@@ -112,34 +107,34 @@ export const navigations = [
     badge: { color: "secondary" },
     children: [
       {
-        name: "API list",
-        path: "/api-setting/api",
+        name: "APIs",
+        path: "/api-list",
         iconText: "APIL",
       },
       {
         name: "Services",
-        path: "/api-setting/service",
+        path: "/service-list",
         iconText: "SR",
       },
       {
-        name: "Operator list",
-        path: "/api-setting/operator-list",
+        name: "Operators",
+        path: "/operator-list",
         iconText: "COL",
       },
       {
-        name: "Discount",
-        path: "/recharge/discount",
+        name: "Discounts",
+        path: "/recharge-discount-list",
         iconText: "DS",
       },
       {
-        name: "Operator Switching New",
-        path: "/api-setting/operator/priority",
+        name: "Operator Priority",
+        path: "/operator-priority",
         iconText: "APILP",
       },
 
       {
-        name: "Operator config",
-        path: "/api-setting/operators-configs",
+        name: "Operator configs",
+        path: "/operators-configs",
         iconText: "Opcnfg",
       },
     ],
@@ -150,39 +145,39 @@ export const navigations = [
     badge: "",
     children: [
       {
-        name: "banner list",
+        name: "Bannerss",
         path: "/banner/list",
         iconText: "BL",
       },
       {
-        name: "ticker list",
+        name: "Tickers",
         path: "/ticker/list",
         iconText: "BL",
       },
       {
-        name: "state",
+        name: "States",
         path: "/utility/state",
         iconText: "STT",
       },
       {
-        name: "contactus",
+        name: "Contact Us",
         path: "/contact/list",
         iconText: "cntct",
       },
     ],
   },
   {
-    name: "Bank",
+    name: "Banks",
     icon: "location_city",
     badge: false,
     children: [
       {
-        name: "bank list",
+        name: "Banks",
         path: "/bank/list",
         iconText: "BL",
       },
       {
-        name: "bank account list",
+        name: "Bank Accounts",
         path: "/bank/account",
         iconText: "BAL",
       },

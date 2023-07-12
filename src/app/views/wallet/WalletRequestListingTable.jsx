@@ -225,7 +225,7 @@ const WalletRequestListingTable = () => {
       {
         text: "Remarks",
         dataField: "remark",
-        formatters: (cell, row) => <div>{row?.remark ? row?.remark : "-"}</div>,
+        formatters: (row) => <div>{row?.remark ? row?.remark : "-"}</div>,
       },
       {
         text: "Mode",
@@ -242,7 +242,7 @@ const WalletRequestListingTable = () => {
         text: "Approve Date",
         dataField: "statusChangeDate",
         headerStyle: { width: "10%" },
-        formatter: (cell, row) => (
+        formatter: (row) => (
           <div>
             {row?.statusChangeDate
               ? moment(row?.statusChangeDate).format("DD-MM-YYYY HH:mm:ss")
@@ -264,7 +264,7 @@ const WalletRequestListingTable = () => {
         headerStyle: () => {
           return { width: "10%" }
         },
-        formatter: (cell, row) => (
+        formatter: (row) => (
           <div className="d-flex">
             <div>
               <Button
@@ -307,7 +307,7 @@ const WalletRequestListingTable = () => {
       //         type="button"
       //         className="btn btn-outline-danger btn-sm ml-2 ts-buttom m-1"
       //         size="sm"
-      //         onClick={() => handleDelete(cell, row)}
+      //         onClick={() => handleDelete( row)}
       //       >
       //         <AiFillDelete />
       //       </button>
@@ -315,7 +315,7 @@ const WalletRequestListingTable = () => {
       //         type="button"
       //         className="btn btn-outline-primary btn-sm ml-2 ts-buttom m-1"
       //         size="sm"
-      //         onClick={() => handleView(cell, row)}
+      //         onClick={() => handleView( row)}
       //       >
       //         <AiFillEye />
       //       </button>

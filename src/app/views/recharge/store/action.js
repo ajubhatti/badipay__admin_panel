@@ -6,6 +6,7 @@ import {
   FETCH_RECHARGES_BY_ID,
   FETCH_TRANSACTIONS,
   FETCH_TRANSACTIONS_BY_ID,
+  RESET_DATA,
   SET_PAGE_TRANSACTIONS,
   SET_RECHARGE_LOADING,
   SET_SEARCH_TRANSACTIONS,
@@ -193,4 +194,8 @@ export const setSortFieldOfTransactions = (data) => ({
 export const setSortOrderOfTransactions = (data) => ({
   type: SET_SORT_ORDER_TRANSACTIONS,
   payload: data,
+})
+
+export const setResetData = () => ({
+  type: RESET_DATA,
 })

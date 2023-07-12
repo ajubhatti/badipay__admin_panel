@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { bankService } from "app/services/bank.service"
 import moment from "moment"
 import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
-import { Button } from "react-bootstrap"
+import { Button, Form } from "react-bootstrap"
 import BankModal from "./BankModal"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
@@ -46,6 +46,30 @@ const BankListing = () => {
     setIsShowDeleteBankConfirmModal(false)
   }
 
+  const GetIsActiveSwitch = (cell, row) => (
+    <Form.Check
+      type="switch"
+      id="isVerifiedSwitch"
+      className="cursor-pointer"
+      checked={row?.isActive}
+      onChange={(e) => {
+        changeVerifiactionStatus(row, e.target.checked)
+      }}
+    />
+  )
+
+  const changeVerifiactionStatus = async (data, isChecked) => {
+    setStatusLoading(true)
+    await bankService
+      .updateBank(data?._id, { isActive: isChecked })
+      .then((res) => {
+        if (res.status === 200) {
+          setStatusLoading(false)
+          getAllbanks()
+        }
+      })
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -82,30 +106,9 @@ const BankListing = () => {
         ),
       },
       {
-        text: "Active/Inactive",
-        formatter: (cell, row) => (
-          <div>
-            <Button
-              variant={row?.isActive ? "success" : "danger"}
-              type="button"
-              disabled={statusLoading}
-              className="btn btn-sm ml-2 ts-buttom m-1"
-              size="sm"
-              onClick={
-                !statusLoading
-                  ? () => handleChangeStatus(row._id, !row?.isActive)
-                  : null
-              }
-            >
-              {statusLoading
-                ? "Loading"
-                : row?.isActive
-                ? "Active"
-                : "Inactive"}
-            </Button>
-          </div>
-        ),
-        classes: "p-1",
+        text: "Is Active",
+        dataField: "isActive",
+        formatter: GetIsActiveSwitch,
       },
       {
         text: "Action",
@@ -178,29 +181,22 @@ const BankListing = () => {
       <div className="container-fluid w-100 mt-3">
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
-            <h2 className="main-heading">Bank List</h2>
+            <h6 className="main-heading">Bank List</h6>
+            <button
+              className={`ms-2 btn btn-secondary btn-sm`}
+              type="button"
+              onClick={handleAddBank}
+            >
+              <AiOutlinePlus />
+            </button>
           </div>
         </div>
+
         <div className="row">
           <div className="col-lg-12">
             <div className="card mb-4">
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-12 d-flex">
-                    <div className="col-md-6 d-flex "></div>
-                    <div className="col-md-6 d-flex justify-content-end">
-                      <div className="me-2"></div>
-
-                      <button
-                        className={`ms-2 btn btn-secondary`}
-                        type="button"
-                        onClick={handleAddBank}
-                      >
-                        <AiOutlinePlus />
-                      </button>
-                    </div>
-                  </div>
-
                   <div className="col-md-12">
                     <CustomTable
                       showAddButton={false}
