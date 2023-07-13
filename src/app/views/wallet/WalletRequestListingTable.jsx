@@ -242,7 +242,7 @@ const WalletRequestListingTable = () => {
         text: "Approve Date",
         dataField: "statusChangeDate",
         headerStyle: { width: "10%" },
-        formatter: (row) => (
+        formatter: (cell, row) => (
           <div>
             {row?.statusChangeDate
               ? moment(row?.statusChangeDate).format("DD-MM-YYYY HH:mm:ss")
@@ -264,7 +264,7 @@ const WalletRequestListingTable = () => {
         headerStyle: () => {
           return { width: "10%" }
         },
-        formatter: (row) => (
+        formatter: (cell, row) => (
           <div className="d-flex">
             <div>
               <Button

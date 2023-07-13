@@ -311,11 +311,11 @@ const RechargeList = () => {
       },
       {
         text: "Phone Number",
-        dataField: "customerNo",
+        dataField: "phoneNumber",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.customerNo ? row?.customerNo : "-"}
+            {row?.userDetail?.phoneNumber ? row?.userDetail?.phoneNumber : "-"}
           </div>
         ),
       },

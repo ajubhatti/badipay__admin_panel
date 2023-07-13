@@ -99,9 +99,6 @@ const ServiceList = () => {
     {
       text: "Is Active",
       dataField: "isActive",
-      // formatter: (cell, row, rowIndex, formatExtraData) => (
-      //   <div>{row?.isActive ? "Active" : "false"}</div>
-      // ),
       formatter: GetIsActiveSwitch,
     },
     {

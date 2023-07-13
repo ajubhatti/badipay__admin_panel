@@ -146,7 +146,7 @@ const OperatorConfigs = () => {
     dispatch(getOperatorConfigList(payloadData))
   }
 
-  const GetIsActiveSwitch = (row) => (
+  const GetIsActiveSwitch = (cell, row) => (
     <Form.Check
       type="switch"
       id="isVerifiedSwitch"

@@ -131,7 +131,7 @@ const OperatorList = () => {
     setModalShow(true)
   }
 
-  const GetIsActiveSwitch = (row) => (
+  const GetIsActiveSwitch = (cell, row) => (
     <div>
       <Form.Check
         type="switch"
@@ -147,7 +147,7 @@ const OperatorList = () => {
     </div>
   )
 
-  const GetIsVisibleSwitch = (row) => (
+  const GetIsVisibleSwitch = (cell, row) => (
     <div>
       <Form.Check
         type="switch"

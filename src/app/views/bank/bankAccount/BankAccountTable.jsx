@@ -96,7 +96,7 @@ const BankAccountTable = () => {
         headerStyle: () => {
           return { width: "5%" }
         },
-        formatter: (cellContent, row, index) => {
+        formatter: (cell, row, index) => {
           return <span>{index + 1}</span>
         },
       },
@@ -131,7 +131,7 @@ const BankAccountTable = () => {
       },
       {
         text: "Action",
-        formatter: (row) => (
+        formatter: (cell, row) => (
           <div className="d-flex">
             <button
               type="button"
