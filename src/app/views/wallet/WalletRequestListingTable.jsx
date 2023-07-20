@@ -70,7 +70,7 @@ const WalletRequestListingTable = () => {
     }
   }
 
-  const handleSaveUpdate2 = async (data) => {
+  const handleSaveUpdate = async (data) => {
     setLoad(true)
     let payload = {
       id: idForChange,
@@ -556,7 +556,7 @@ const WalletRequestListingTable = () => {
         show={show}
         onHide={() => setShow(false)}
         handleSave={(data) => {
-          handleSaveUpdate2(data)
+          handleSaveUpdate(data)
         }}
         isLoading={load}
       />

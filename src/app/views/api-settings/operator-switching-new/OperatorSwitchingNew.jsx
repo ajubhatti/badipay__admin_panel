@@ -136,6 +136,7 @@ const OperatorSwitchingNew = () => {
                             })
                             setIsSubmit(false)
                           }}
+                          selectedValue={searchData?.serviceId}
                           options={serviceMenuData}
                         />
                       </Form.Group>
@@ -152,7 +153,7 @@ const OperatorSwitchingNew = () => {
                               operator: e,
                             })
                           }}
-                          value={searchData.operator}
+                          selectedValue={searchData?.operator}
                           options={operatorMenuData}
                         />
                       </Form.Group>

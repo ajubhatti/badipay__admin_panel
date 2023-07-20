@@ -244,7 +244,6 @@ const AddUpdateOperatorModal = ({
             <ReactSelect
               title={"Provider Type"}
               handleChange={(e) => {
-                // setSelectedValue(e)
                 setCompanyData({
                   ...companyData,
                   providerType: e,

@@ -47,28 +47,6 @@ const TickerModal = ({ show, onHide, type, data }) => {
     })
   }
 
-  // const handleSubmit = async () => {
-  //   let payload = {
-  //     description: bannerDesc,
-  //   }
-  //   //  let obj = props.userData
-  //   //  obj.userName = userName
-  //   //  obj.phoneNumber = phone
-  //   //  obj.email = email
-  //   //  let id = props.userData.id
-  //   if (bannerData && bannerData?._id) {
-  //     await tickerService.updateTicker(bannerData?._id, payload).then((res) => {
-  //       handleClose()
-  //       getAllTicker()
-  //     })
-  //   } else {
-  //     await tickerService.addTicker(payload).then((res) => {
-  //       handleClose()
-  //       getAllTicker()
-  //     })
-  //   }
-  // }
-
   return (
     <>
       <Modal show={show} onHide={onHide} centered>

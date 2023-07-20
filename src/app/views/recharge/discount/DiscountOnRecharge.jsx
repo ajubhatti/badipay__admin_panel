@@ -292,7 +292,7 @@ const DiscountOnRecharge = () => {
                               })
                             }}
                             options={apis}
-                            value={searchData?.apis}
+                            selectedValue={searchData?.apis}
                           />
                         </div>
                         <div className="me-2">
@@ -308,7 +308,7 @@ const DiscountOnRecharge = () => {
                               })
                             }}
                             options={services}
-                            value={searchData.provider}
+                            selectedValue={searchData?.provider}
                           />
                         </div>
                       </div>

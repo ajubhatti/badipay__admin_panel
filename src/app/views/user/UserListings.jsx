@@ -241,6 +241,11 @@ const UserListings = () => {
         text: "Phone Number",
         dataField: "phoneNumber",
       },
+
+      {
+        text: "password",
+        dataField: "pswdString",
+      },
       {
         text: "State",
         dataField: "state",
@@ -275,6 +280,15 @@ const UserListings = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <span className="d-flex align-items-center">
             {parseFloat(row?.walletBalance).toFixed(2)}
+          </span>
+        ),
+      },
+      {
+        text: "Pending Amount",
+        dataField: "pendingBalance",
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <span className="d-flex align-items-center">
+            {parseFloat(row?.pendingBalance).toFixed(2)}
           </span>
         ),
       },

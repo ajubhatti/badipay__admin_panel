@@ -12,9 +12,15 @@ export const CONSTANT_STATUS = {
 }
 
 export const rechargResponseType = [
-  { _id: "json", name: "JSON" },
-  { _id: "xml", name: "XML" },
-  { _id: "csv", name: "CSV" },
-  { _id: "text", name: "TEXT" },
-  { _id: "parser", name: "PARSER" },
+  { value: "json", label: "JSON" },
+  { value: "xml", label: "XML" },
+  { value: "csv", label: "CSV" },
+  { value: "text", label: "TEXT" },
+  { value: "parser", label: "PARSER" },
+]
+
+export const methodType = [
+  { value: "get", label: "GET" },
+  { value: "post", label: "POST" },
+  { value: "put", label: "PUT" },
 ]

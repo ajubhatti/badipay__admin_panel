@@ -6,7 +6,6 @@ import { updateRecharge } from "./store/action"
 import { useDispatch } from "react-redux"
 
 const RechargeViewModal = (props) => {
-  console.log({ props })
   const dispatch = useDispatch()
 
   const [discountInfo, setDiscountInfo] = useState({
@@ -18,7 +17,6 @@ const RechargeViewModal = (props) => {
   const [saveLoading, setSaveLoading] = useState(false)
 
   useEffect(() => {
-    console.log(props.discountInfo)
     setDiscountInfo({
       requestAmount: props?.discountInfo?.transactionData?.requestAmount,
       remark: props?.discountInfo?.transactionData?.remark,

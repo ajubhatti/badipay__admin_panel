@@ -10,13 +10,14 @@ import {
 import CustomTable from "app/components/Tables/CustomTable"
 import AddUpdateApiModal from "./AddUpdateApiModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
+import moment from "moment"
 
 const ApiListings = () => {
   const dispatch = useDispatch()
   const { apisList, loading } = useSelector((state) => state.apis)
   const [apiListData, setApiListData] = useState([])
 
-  const [modalShow, setModalShow] = useState(true)
+  const [modalShow, setModalShow] = useState(false)
   const [apiData, setApiData] = useState({})
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
   const [type, setType] = useState("Add")
@@ -86,7 +87,7 @@ const ApiListings = () => {
       text: "Created At",
       dataField: "created",
       formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{row?.created || "-"}</div>
+        <div>{moment(row?.created).format("DD-MM-YYYY")}</div>
       ),
     },
     {

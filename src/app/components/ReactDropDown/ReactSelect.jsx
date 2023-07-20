@@ -8,6 +8,7 @@ const ReactSelect = ({
   placeHolder,
   isClearable,
   className,
+  width,
 }) => {
   const [defaultValue, setDefaultValue] = useState("")
 
@@ -22,7 +23,7 @@ const ReactSelect = ({
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width: 200,
+      width: width || 200,
     }),
   }
 

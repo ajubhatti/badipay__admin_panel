@@ -64,8 +64,10 @@ const RechargeList = () => {
   const [filter, setFilter] = useState({ api: "", services: "", status: "" })
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
-    start: new Date("07-08-2023"),
-    end: new Date("07-08-2023"),
+    // start: new Date("07-08-2023"),
+    // end: new Date("07-08-2023"),
+    start: new Date(),
+    end: new Date(),
   })
   const [exportLoading, setExportLoading] = useState(false)
   const [providers, setApis] = useState([])

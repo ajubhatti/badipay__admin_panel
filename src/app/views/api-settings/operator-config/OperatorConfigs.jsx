@@ -293,7 +293,7 @@ const OperatorConfigs = () => {
                         })
                       }}
                       options={apisDDData}
-                      value={payloadData?.apis}
+                      selectedValue={payloadData?.apis}
                     />
                   </div>
 
@@ -309,7 +309,7 @@ const OperatorConfigs = () => {
                         })
                       }}
                       options={serviceDDData}
-                      value={payloadData?.provider}
+                      selectedValue={payloadData?.provider}
                     />
                   </div>
 
@@ -325,7 +325,7 @@ const OperatorConfigs = () => {
                         })
                       }}
                       options={operatorDDData}
-                      value={payloadData?.operator}
+                      selectedValue={payloadData?.operator}
                     />
                   </div>
                 </div>
