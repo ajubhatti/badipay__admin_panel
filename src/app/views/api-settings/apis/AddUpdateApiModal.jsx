@@ -15,6 +15,7 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
     responseType: "",
     method: "",
     requestURL: "",
+    requestId: "",
     responseStatus: "",
     responseTransactionId: "",
     responseOperatorId: "",
@@ -22,6 +23,7 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
     successValue: "",
     failureValue: "",
     pendingValue: "",
+    refundedValue: "",
     balanceApiURL: "",
     balanceResponseValue: "",
     checkStatusURL: "",
@@ -67,6 +69,7 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
       responseType: "",
       method: "",
       requestURL: "",
+      requestId: "",
       responseStatus: "",
       responseTransactionId: "",
       responseOperatorId: "",
@@ -74,6 +77,7 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
       successValue: "",
       failureValue: "",
       pendingValue: "",
+      refundedValue: "",
       balanceApiURL: "",
       balanceResponseValue: "",
       checkStatusURL: "",
@@ -221,6 +225,23 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
             <Row className="m-3">
               <Col>
                 <Form.Group>
+                  <Form.Label>Request ID</Form.Label>
+                  <Form.Control
+                    defaultValue={modalData?.requestId}
+                    type="text"
+                    placeholder="Enter Request ID"
+                    disabled={type === "View"}
+                    onChange={(e) =>
+                      setModalData({
+                        ...modalData,
+                        requestId: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
                   <Form.Label>Response Status</Form.Label>
                   <Form.Control
                     defaultValue={modalData?.responseStatus}
@@ -335,6 +356,23 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
                       setModalData({
                         ...modalData,
                         pendingValue: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Refund Value</Form.Label>
+                  <Form.Control
+                    defaultValue={modalData?.refundedValue}
+                    type="text"
+                    placeholder="Enter Pending Value"
+                    disabled={type === "View"}
+                    onChange={(e) =>
+                      setModalData({
+                        ...modalData,
+                        refundedValue: e.target.value,
                       })
                     }
                   />
