@@ -229,12 +229,10 @@ const WalletRequestListingTable = () => {
       },
       {
         text: "Mode",
-        dataField: "paymnetModeData.modeName",
+        dataField: "paymentMode.modeName",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div>
-            {row?.paymnetModeData?.modeName
-              ? row?.paymnetModeData?.modeName
-              : "-"}
+            {row?.paymentMode?.modeName ? row?.paymentMode?.modeName : "-"}
           </div>
         ),
       },
@@ -397,7 +395,7 @@ const WalletRequestListingTable = () => {
                 "Approve Amount": item?.approveAmount || "-",
                 "Debit Amount": item?.debitAmount || "-",
                 Remarks: item?.remark || "-",
-                "Paymnet Mode": item?.paymnetModeData?.modeName || "-",
+                "Paymnet Mode": item?.paymentMode?.modeName || "-",
                 "Approve Date": item?.statusChangeDate || "-",
                 "Approve By": item?.approveBy || "-",
               }))

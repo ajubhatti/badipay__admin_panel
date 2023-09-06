@@ -3,9 +3,9 @@ import { methodType, rechargResponseType } from "app/constants/constant"
 import React, { useEffect, useState } from "react"
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { updateApis, createApi } from "./store/action"
+import { updatePaymentGateways, createPaymentGateway } from "./store/action"
 
-const AddUpdateApiModal = ({ show, onHide, type, data }) => {
+const AddUpdatePaymentGatewayModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
 
   const [modalData, setModalData] = useState({
@@ -47,10 +47,10 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
 
   const handleSaveOrUpdate = async () => {
     if (modalData?._id) {
-      dispatch(updateApis(modalData?._id, modalData))
+      dispatch(updatePaymentGateways(modalData?._id, modalData))
       clearData()
     } else {
-      dispatch(createApi(modalData))
+      dispatch(createPaymentGateway(modalData))
       clearData()
     }
   }
@@ -95,7 +95,9 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title>{data._id ? "Update" : "Add"} API </Modal.Title>
+        <Modal.Title>
+          {data._id ? "Update" : "Add"} Payment Gateway{" "}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate>
@@ -451,44 +453,6 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
                 </Form.Group>
               </Col>
             </Row>
-
-            <Row className="m-3">
-              <Col>
-                <Form.Group>
-                  <Form.Label>Dispute Request URL</Form.Label>
-                  <Form.Control
-                    defaultValue={modalData?.disputeRequestURL}
-                    type="text"
-                    placeholder="Enter Dispute Request URL"
-                    disabled={type === "View"}
-                    onChange={(e) =>
-                      setModalData({
-                        ...modalData,
-                        disputeRequestURL: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <Form.Label>Dispute Request Response Value</Form.Label>
-                  <Form.Control
-                    defaultValue={modalData?.disputeRequestResponseValue}
-                    type="text"
-                    placeholder="Enter Dispute Request Response Value"
-                    disabled={type === "View"}
-                    onChange={(e) =>
-                      setModalData({
-                        ...modalData,
-                        disputeRequestResponseValue: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
             <Row className="m-3">
               <Col>
                 <Form.Group controlId="formGridApiIsActive" className="d-flex">
@@ -525,4 +489,4 @@ const AddUpdateApiModal = ({ show, onHide, type, data }) => {
   )
 }
 
-export default AddUpdateApiModal
+export default AddUpdatePaymentGatewayModal

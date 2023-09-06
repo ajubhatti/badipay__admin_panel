@@ -1,4 +1,5 @@
 import { rechargesService } from "app/services/recharge.service"
+import { rechargeComplaintService } from "app/services/rechargeComplaint.service"
 import { transactionsService } from "app/services/transactions.service"
 import { toast } from "react-toastify"
 import {
@@ -58,6 +59,20 @@ export const getRechargeList = (data, cb) => async (dispatch) => {
   }
 }
 
+export const rechargeComplaints = (data, cb) => async (dispatch) => {
+  try {
+    await rechargeComplaintService
+      .createRechargeComplaints(data)
+      .then((res) => {
+        if (res?.data) {
+          cb(res)
+        }
+      })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
 export const getRechargeListForPrint = (data, cb) => async (dispatch) => {
   try {
     await rechargesService.getRecharges(data).then((res) => {
@@ -74,6 +89,20 @@ export const updateRecharge = (id, data, cb) => async (dispatch) => {
   try {
     dispatch(setLoading(true))
     await rechargesService.updateRechargeById(id, data).then((res) => {
+      // dispatch(getRechargeList())
+      if (res?.data) {
+        cb(res.data)
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const updateComplaints = (data, cb) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    await rechargeComplaintService.updateComplaintsStatus(data).then((res) => {
       // dispatch(getRechargeList())
       if (res?.data) {
         cb(res.data)

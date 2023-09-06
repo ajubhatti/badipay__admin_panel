@@ -4,6 +4,13 @@ export const statusOfApi = [
   { _id: "failed", name: "failed" },
 ]
 
+export const statusOfComplaints = [
+  { _id: "success", name: "success" },
+  { _id: "pending", name: "pending" },
+  { _id: "refund", name: "refund" },
+  { _id: "failed", name: "failed" },
+]
+
 export const CONSTANT_STATUS = {
   PENDING: "pending",
   FAILED: "failed",

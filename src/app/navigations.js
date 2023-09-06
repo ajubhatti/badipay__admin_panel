@@ -65,6 +65,16 @@ export const navigations = [
         path: "/transactions",
         iconText: "TRNS",
       },
+      {
+        name: "Recharge Complaints",
+        path: "/recharge-complaints",
+        iconText: "CMPLT",
+      },
+      {
+        name: "call Back",
+        path: "/callback",
+        iconText: "CLBK",
+      },
     ],
   },
   {
@@ -106,6 +116,11 @@ export const navigations = [
     icon: "build",
     badge: { color: "secondary" },
     children: [
+      {
+        name: "Payment Gateway",
+        path: "/payment-gateway-list",
+        iconText: "PGL",
+      },
       {
         name: "APIs",
         path: "/api-list",

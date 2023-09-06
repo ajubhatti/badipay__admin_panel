@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   getRechargeList,
   getRechargeListForPrint,
+  rechargeComplaints,
   setPageTransactions,
   setResetData,
   setSizePerPageTransactions,
@@ -17,6 +18,7 @@ import {
   AiOutlineReload,
   AiOutlineSearch,
 } from "react-icons/ai"
+import { BsChatSquareQuote } from "react-icons/bs"
 import { getStateList } from "../utilities/store/action"
 import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
@@ -29,6 +31,7 @@ import RechargeViewModal from "./RechargeViewModal"
 import { ExportToCsv } from "export-to-csv"
 import { CONSTANT_STATUS } from "app/constants/constant"
 import { useParams } from "react-router-dom"
+import ComplaintEditModal from "./ComplaintEditModal"
 
 const statusList = [
   { value: "", name: "Select Status" },
@@ -59,7 +62,9 @@ const RechargeList = () => {
     (state) => state.recharge
   )
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
-  const [discountInfo, setdDiscountInfo] = useState({})
+
+  const [isShowComplainModal, setIsShowComplainModal] = useState(false)
+  const [discountInfo, setDiscountInfo] = useState({})
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
   const [filter, setFilter] = useState({ api: "", services: "", status: "" })
   const [searchString, setSearchString] = useState("")
@@ -113,16 +118,45 @@ const RechargeList = () => {
 
   const handleView = (row) => {}
 
+  const handleComplaints = (row) => {
+    if (!row.complainStatus) {
+      dispatch(
+        rechargeComplaints(row, (cb) => {
+          console.log({ cb })
+          if (cb?.status === 200) {
+            if (cb?.data?.STATUSCODE !== "0" || cb?.data?.status !== "2")
+              toast.error(cb.data.STATUSMSG || cb.data.msg)
+            else toast.success(cb.data.STATUSMSG || cb.data.msg)
+          }
+        })
+      )
+      getTransactionList()
+    } else {
+      toast.error("Already complained!")
+    }
+  }
+
   const handleDiscountClose = () => {
-    setdDiscountInfo({})
+    setDiscountInfo({})
     setIsDiscountEdit(false)
     setIsShowDiscountModal(false)
   }
 
   const handleEdit = (info) => {
-    setdDiscountInfo(info)
+    setDiscountInfo(info)
     setIsDiscountEdit(true)
     setIsShowDiscountModal(true)
+  }
+
+  const handleComplaintEdit = (info) => {
+    console.log({ info })
+    setDiscountInfo(info)
+    setIsShowComplainModal(true)
+  }
+
+  const handleComplainModalClose = () => {
+    setDiscountInfo({})
+    setIsShowComplainModal(false)
   }
 
   useEffect(() => {
@@ -485,12 +519,38 @@ const RechargeList = () => {
           </div>
         ),
       },
+      {
+        text: "Complain Status",
+        dataField: "complainStatus",
+        sort: false,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div
+            className={`align-middle text-warning`}
+            onClick={() => handleComplaintEdit(row)}
+          >
+            <span
+              className={`text-capitalize text-white p-1 rounded bg-warning`}
+            >
+              {row?.complainStatus ? row?.complainStatus : "Complaint"}
+            </span>
+          </div>
+        ),
+      },
       !reportType && {
         text: "Action",
         dataField: "edit",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="d-flex">
+            <button
+              type="button"
+              className="btn btn-sm"
+              title="Complaint"
+              size="sm"
+              onClick={() => handleComplaints(row)}
+            >
+              <BsChatSquareQuote />
+            </button>
             <button
               type="button"
               className="btn btn-sm"
@@ -662,6 +722,15 @@ const RechargeList = () => {
                       isDiscountEdit={isDiscountEdit}
                       isShowDiscountModal={isShowDiscountModal}
                       onCloseDiscountModal={handleDiscountClose}
+                      fetchTransactionList={getTransactionList}
+                    />
+                  )}
+
+                  {isShowComplainModal && (
+                    <ComplaintEditModal
+                      discountInfo={discountInfo}
+                      isShowComplainModal={isShowComplainModal}
+                      onCloseDiscountModal={handleComplainModalClose}
                       fetchTransactionList={getTransactionList}
                     />
                   )}

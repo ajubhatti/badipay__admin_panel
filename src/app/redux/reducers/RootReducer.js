@@ -16,6 +16,7 @@ import operatorReducer from "app/views/api-settings/operator-list/store/reducer"
 import operatorConfigReducer from "app/views/api-settings/operator-config/store/reducer"
 import discountReducer from "app/views/recharge/discount/store/reducer"
 import contactUsReducer from "app/views/utilities/ContactUs/store/reducer"
+import paymentGateWayReducer from "app/views/api-settings/payment-gateway/store/reducer"
 
 const RootReducer = combineReducers({
   notifications: NotificationReducer,
@@ -24,6 +25,7 @@ const RootReducer = combineReducers({
   ecommerce: EcommerceReducer,
   company: companyReducer,
   apis: apisReducer,
+  paymentGateway: paymentGateWayReducer,
   servicesList: servicesListReducer,
   recharge: rechargeReducer,
   reports: reportsReducer,

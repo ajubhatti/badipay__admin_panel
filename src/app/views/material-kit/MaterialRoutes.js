@@ -1,10 +1,15 @@
 import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
+import CallBackList from "../recharge/CallBackList"
 
 const OperatorConfigs = Loadable(
   lazy(() => import("../api-settings/operator-config/OperatorConfigs"))
 )
 const Transactions = Loadable(lazy(() => import("../recharge/Transactions")))
+const CallBack = Loadable(lazy(() => import("../recharge/CallBackList")))
+const RechargeComplaintList = Loadable(
+  lazy(() => import("../recharge/RechargeComplaintList"))
+)
 const RechargeList = Loadable(lazy(() => import("../recharge/RechargeList")))
 const OperatorList = Loadable(
   lazy(() => import("../api-settings/operator-list/OperatorList"))
@@ -40,7 +45,6 @@ const OperatorSwitchingNew = Loadable(
     import("../api-settings/operator-switching-new/OperatorSwitchingNew")
   )
 )
-
 const DiscountOnRecharge = Loadable(
   lazy(() => import("../recharge/discount/DiscountOnRecharge"))
 )
@@ -49,6 +53,9 @@ const UserRegister = Loadable(
 )
 const CashBackList = Loadable(lazy(() => import("../reports/CashBackList")))
 const StateList = Loadable(lazy(() => import("../utilities/StateList")))
+const PaymentGatewayListings = Loadable(
+  lazy(() => import("../api-settings/payment-gateway/PaymentGatewayListings"))
+)
 
 const materialRoutes = [
   {
@@ -83,6 +90,11 @@ const materialRoutes = [
     path: "/user-list",
     element: <UserListings />,
   },
+
+  {
+    path: "/payment-gateway-list",
+    element: <PaymentGatewayListings />,
+  },
   {
     path: "/api-list",
     element: <ApiListings />,
@@ -106,6 +118,14 @@ const materialRoutes = [
   {
     path: "/recharge-discount-list",
     element: <DiscountOnRecharge />,
+  },
+  {
+    path: "/callback",
+    element: <CallBackList />,
+  },
+  {
+    path: "/recharge-complaints",
+    element: <RechargeComplaintList />,
   },
   {
     path: "/transactions",
