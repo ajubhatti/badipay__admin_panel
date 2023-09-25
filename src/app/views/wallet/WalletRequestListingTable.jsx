@@ -20,13 +20,8 @@ import { AiOutlineDownload, AiOutlineSearch } from "react-icons/ai"
 import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import { ExportToCsv } from "export-to-csv"
 import { useParams } from "react-router-dom"
-
-const statusList = [
-  { value: "", name: "Select Status" },
-  { value: "approve", name: "approve" },
-  { value: "pending", name: "pending" },
-  { value: "reject", name: "reject" },
-]
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { statusList } from "app/constants/constant"
 
 const options = {
   fieldSeparator: ",",
@@ -465,23 +460,21 @@ const WalletRequestListingTable = () => {
                     </select>
                   </div> */}
                     {!reportType && (
-                      <div className="me-2">
-                        <select
-                          name="status"
-                          onChange={handleChange}
-                          className="form-control"
-                          id="status"
-                          value={filter.status || ""}
-                        >
-                          {statusList.map((stts) => {
-                            return (
-                              <option key={stts.value} value={stts.value}>
-                                {stts.name}
-                              </option>
-                            )
-                          })}
-                        </select>
-                      </div>
+                      <ReactSelect
+                        isClearable={true}
+                        title={"status"}
+                        name="status"
+                        placeHolder={"select status"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            status: e,
+                          }))
+                        }}
+                        options={statusList}
+                        selectedValue={filter.status || ""}
+                        width={160}
+                      />
                     )}
                   </div>
                   <div className="col-md-6 d-flex justify-content-end">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 
 const DiscountModalNew = (props) => {
+  console.log({ props })
   const [discountInfo, setDiscountInfo] = useState({})
 
   useEffect(() => {
@@ -81,7 +82,12 @@ const DiscountModalNew = (props) => {
               onChange={handleChange}
               className="form-control"
               id="adminDiscountType"
+              value={discountInfo?.adminDiscountType}
+              defaultValue={discountInfo?.adminDiscountType}
             >
+              <option value="" disabled>
+                Select Admin Discount
+              </option>
               <option value="number">Number</option>
               <option value="percentage">Percentage</option>
             </select>
@@ -113,7 +119,12 @@ const DiscountModalNew = (props) => {
               onChange={handleChange}
               className="form-control"
               id="userDiscountType"
+              value={discountInfo?.userDiscountType}
+              defaultValue={discountInfo?.userDiscountType}
             >
+              <option value="" disabled>
+                Select User Discount
+              </option>
               <option value="number">Number</option>
               <option value="percentage">Percentage</option>
             </select>
@@ -161,10 +172,14 @@ const DiscountModalNew = (props) => {
           <div className="col-sm-10">
             <select
               name="referalDiscountType"
-              value={discountInfo?.referalDiscountType}
               onChange={handleChange}
               className="form-control"
+              value={discountInfo?.referalDiscountType}
+              defaultValue={discountInfo?.referalDiscountType}
             >
+              <option value="" disabled>
+                Select Referral Discount
+              </option>
               <option value="number">Number</option>
               <option value="percentage">Percentage</option>
             </select>

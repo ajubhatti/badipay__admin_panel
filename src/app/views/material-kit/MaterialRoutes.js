@@ -35,6 +35,10 @@ const WalletRequestListingTable = Loadable(
 const ApiListings = Loadable(
   lazy(() => import("../api-settings/apis/ApiListings"))
 )
+
+const ApiTimeFrame = Loadable(
+  lazy(() => import("../api-settings/apis/ApiTimeFrame"))
+)
 const BankListing = Loadable(lazy(() => import("../bank/BankList/BankListing")))
 
 const ServiceList = Loadable(
@@ -98,6 +102,10 @@ const materialRoutes = [
   {
     path: "/api-list",
     element: <ApiListings />,
+  },
+  {
+    path: "/api-time",
+    element: <ApiTimeFrame />,
   },
   {
     path: "/operator-list",

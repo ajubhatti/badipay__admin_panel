@@ -21,6 +21,7 @@ import { cashBackService } from "app/services/cashback.service"
 import ReportsCard from "./ReportsCard"
 import { AiOutlineSearch, AiOutlineDownload } from "react-icons/ai"
 import { CONSTANT_STATUS } from "app/constants/constant"
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 
 const options = {
   fieldSeparator: ",",
@@ -535,7 +536,7 @@ const CashBackList = () => {
           .map(function (provider) {
             return { value: provider._id, label: provider.apiName }
           })
-        provider.unshift({ value: 0, label: "Select Provider" })
+
         setProviders(provider)
 
         let service = []
@@ -546,27 +547,12 @@ const CashBackList = () => {
           .map(function (service) {
             return { value: service._id, label: service.serviceName }
           })
-        service.unshift({ value: 0, label: "Select Service" })
+
         setServices(service)
       })
     }
     getAllProviders()
   }, [])
-
-  const handleChange = (e) => {
-    const { value, name } = e.target
-    if (name === "provider") {
-      setFilter((prev) => ({
-        ...prev,
-        provider: value,
-      }))
-    } else {
-      setFilter((prev) => ({
-        ...prev,
-        services: value,
-      }))
-    }
-  }
 
   return (
     <div className="container-fluid w-100 mt-3">
@@ -587,43 +573,45 @@ const CashBackList = () => {
                 <div className="col-md-12 d-flex">
                   <div className="col-md-6 d-flex ">
                     <div className="me-2">
-                      <select
+                      <ReactSelect
+                        isClearable={true}
+                        title={"Provider"}
                         name="provider"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="provider"
-                      >
-                        {providers.map((provider) => {
-                          return (
-                            <option key={provider.value} value={provider.value}>
-                              {provider.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                        placeHolder={"select provider"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            provider: e,
+                          }))
+                        }}
+                        options={providers}
+                        selectedValue={filter.provider || ""}
+                        width={165}
+                      />
                     </div>
                     <div className="me-2">
-                      <select
+                      <ReactSelect
+                        isClearable={true}
+                        title={"Services"}
                         name="services"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="services"
-                      >
-                        {services.map((service) => {
-                          return (
-                            <option key={service.value} value={service.value}>
-                              {service.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                        placeHolder={"select services"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            services: e,
+                          }))
+                        }}
+                        options={services}
+                        selectedValue={filter.services || ""}
+                        width={165}
+                      />
                     </div>
                   </div>
-                  <div className="col-md-6 d-flex justify-content-end">
+                  <div className="col-md-6 d-flex">
                     <div className="me-2">
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control search-text-box"
                         placeholder="Search"
                         onChange={handleSearch}
                       />

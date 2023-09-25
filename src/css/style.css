@@ -99,3 +99,27 @@
     display: flex;
     
 }
+
+.search-text-box {
+    float: right;
+    width: 70%;
+}
+
+/* Set the background color of body to tan */
+box-flex {
+    direction: flex;
+}
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 992px) {
+    box-flex {
+        background-color: blue;
+    }
+}
+
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+    box-flex {
+        background-color: olive;
+    }
+}

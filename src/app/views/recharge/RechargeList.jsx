@@ -29,16 +29,10 @@ import { toast } from "react-toastify"
 import { discountServices } from "app/services/discount.service"
 import RechargeViewModal from "./RechargeViewModal"
 import { ExportToCsv } from "export-to-csv"
-import { CONSTANT_STATUS } from "app/constants/constant"
+import { CONSTANT_STATUS, statusList } from "app/constants/constant"
 import { useParams } from "react-router-dom"
 import ComplaintEditModal from "./ComplaintEditModal"
-
-const statusList = [
-  { value: "", name: "Select Status" },
-  { value: "success", name: "success" },
-  { value: "pending", name: "pending" },
-  { value: "failed", name: "failed" },
-]
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 
 const options = {
   fieldSeparator: ",",
@@ -96,7 +90,6 @@ const RechargeList = () => {
           .map(function (apis) {
             return { value: apis._id, label: apis.apiName }
           })
-        apis.unshift({ value: 0, label: "Select API" })
         setApis(apis)
 
         let service = []
@@ -107,7 +100,6 @@ const RechargeList = () => {
           .map(function (service) {
             return { value: service._id, label: service.serviceName }
           })
-        service.unshift({ value: 0, label: "Select Service" })
         setServices(service)
       })
     }
@@ -119,7 +111,7 @@ const RechargeList = () => {
   const handleView = (row) => {}
 
   const handleComplaints = (row) => {
-    if (!row.complainStatus) {
+    if (!row.complaintStatus) {
       dispatch(
         rechargeComplaints(row, (cb) => {
           console.log({ cb })
@@ -290,26 +282,6 @@ const RechargeList = () => {
     } catch (err) {
       setExportLoading(false)
       toast.err("something want's wrong!!")
-    }
-  }
-
-  const handleChange = (e) => {
-    const { value, name } = e.target
-    if (name === "api") {
-      setFilter((prev) => ({
-        ...prev,
-        api: value,
-      }))
-    } else if (name === "services") {
-      setFilter((prev) => ({
-        ...prev,
-        services: value,
-      }))
-    } else {
-      setFilter((prev) => ({
-        ...prev,
-        status: value,
-      }))
     }
   }
 
@@ -521,7 +493,7 @@ const RechargeList = () => {
       },
       {
         text: "Complain Status",
-        dataField: "complainStatus",
+        dataField: "complaintStatus",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div
@@ -531,7 +503,7 @@ const RechargeList = () => {
             <span
               className={`text-capitalize text-white p-1 rounded bg-warning`}
             >
-              {row?.complainStatus ? row?.complainStatus : "Complaint"}
+              {row?.complaintStatus ? row?.complaintStatus : "Complaint"}
             </span>
           </div>
         ),
@@ -600,65 +572,63 @@ const RechargeList = () => {
                 <div className="col-md-12 d-flex">
                   <div className="col-md-6 d-flex ">
                     <div className="me-2">
-                      <select
+                      <ReactSelect
+                        isClearable={true}
+                        title={"Apis"}
                         name="api"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="api"
-                        value={filter.api || ""}
-                      >
-                        {providers.map((api) => {
-                          return (
-                            <option key={api.value} value={api.value}>
-                              {api.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                        placeHolder={"select api"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            api: e,
+                          }))
+                        }}
+                        options={providers}
+                        selectedValue={filter.api || ""}
+                        width={160}
+                      />
                     </div>
                     <div className="me-2">
-                      <select
+                      <ReactSelect
+                        isClearable={true}
+                        title={"services"}
                         name="services"
-                        onChange={handleChange}
-                        className="form-control"
-                        id="services"
-                        value={filter.services || ""}
-                      >
-                        {services.map((service) => {
-                          return (
-                            <option key={service.value} value={service.value}>
-                              {service.label}
-                            </option>
-                          )
-                        })}
-                      </select>
+                        placeHolder={"select service"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            services: e,
+                          }))
+                        }}
+                        options={services}
+                        selectedValue={filter.services || ""}
+                        width={160}
+                      />
                     </div>
 
                     {!reportType && (
-                      <div className="me-2">
-                        <select
-                          name="status"
-                          onChange={handleChange}
-                          className="form-control"
-                          id="status"
-                          value={filter.status || ""}
-                        >
-                          {statusList.map((stts) => {
-                            return (
-                              <option key={stts.value} value={stts.value}>
-                                {stts.name}
-                              </option>
-                            )
-                          })}
-                        </select>
-                      </div>
+                      <ReactSelect
+                        isClearable={true}
+                        title={"status"}
+                        name="status"
+                        placeHolder={"select status"}
+                        handleChange={(e) => {
+                          setFilter((prev) => ({
+                            ...prev,
+                            status: e,
+                          }))
+                        }}
+                        options={statusList}
+                        selectedValue={filter.status || ""}
+                        width={160}
+                      />
                     )}
                   </div>
-                  <div className="col-md-6 d-flex justify-content-end">
+                  <div className="col-md-6 d-flex">
                     <div className="me-2">
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control search-text-box"
                         placeholder="Search"
                         onChange={handleSearch}
                       />

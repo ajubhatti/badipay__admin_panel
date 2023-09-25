@@ -31,3 +31,9 @@ export const methodType = [
   { value: "post", label: "POST" },
   { value: "put", label: "PUT" },
 ]
+
+export const statusList = [
+  { value: "approve", label: "approve" },
+  { value: "pending", label: "pending" },
+  { value: "reject", label: "reject" },
+]

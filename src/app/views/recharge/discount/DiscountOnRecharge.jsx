@@ -77,48 +77,81 @@ const DiscountOnRecharge = () => {
       ),
     },
     {
-      dataField: "operatorData.operatorName",
+      dataField: "operatorName",
       text: "Operator Name",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.operatorData.operatorName}</div>
+      ),
     },
     {
-      dataField: "serviceData.serviceName",
+      dataField: "serviceName",
       text: "service Name",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.serviceData.serviceName}</div>
+      ),
     },
     {
-      dataField: "apiData.apiName",
+      dataField: "apiName",
       text: "Api Name",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.apiData.apiName}</div>
+      ),
     },
     {
       dataField: "adminDiscount",
       text: "Admin Discount",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.adminDiscount}</div>
+      ),
     },
     {
       dataField: "adminDiscountType",
       text: "Discount Type",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.adminDiscountType}</div>
+      ),
     },
     {
       dataField: "userDiscount",
       text: "User Discount",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.userDiscount}</div>
+      ),
     },
     {
       dataField: "userDiscountLimit",
       text: "Discount Limit",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.userDiscountLimit}</div>
+      ),
     },
     {
       dataField: "userDiscountType",
       text: "Discount Type",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.userDiscountType}</div>
+      ),
     },
     {
       dataField: "referalDiscount",
       text: "Referal Discount",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.referalDiscount}</div>
+      ),
     },
     {
       dataField: "referalDiscountLimit",
       text: "Discount Limit",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.referalDiscountLimit}</div>
+      ),
     },
     {
       dataField: "referalDiscountType",
       text: "Discount Type",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div className="align-middle">{row.referalDiscountType}</div>
+      ),
     },
     {
       text: "Action",
@@ -315,20 +348,18 @@ const DiscountOnRecharge = () => {
                     </div>
                     <hr className="m-0" />
                     <div className="col-md-12">
-                      {
-                        <CustomTable
-                          pageOptions={pageOptions}
-                          showAddButton={false}
-                          keyField="_id"
-                          data={discounts}
-                          columns={columns}
-                          showSearch={false}
-                          withPagination={true}
-                          onTableChange={onTableChange}
-                          loading={isShowLoader}
-                          withCard={false}
-                        ></CustomTable>
-                      }
+                      <CustomTable
+                        pageOptions={pageOptions}
+                        showAddButton={false}
+                        keyField="_id"
+                        data={discounts}
+                        columns={columns}
+                        showSearch={false}
+                        withPagination={true}
+                        onTableChange={onTableChange}
+                        loading={isShowLoader}
+                        withCard={false}
+                      />
                     </div>
                   </div>
                 </div>

@@ -126,6 +126,7 @@ export const navigations = [
         path: "/api-list",
         iconText: "APIL",
       },
+      { name: "API Call time", path: "/api-time", iconText: "TM" },
       {
         name: "Services",
         path: "/service-list",
