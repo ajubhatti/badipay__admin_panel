@@ -25,6 +25,10 @@ const deleteRecharge = (id) => {
   return fetchWrapper.delete(`${url}/${id}`)
 }
 
+const getRechargeReport = (data) => {
+  return fetchWrapper.post(`${url}/getRechargeReports`, data)
+}
+
 export const rechargesService = {
   getAllRecharge,
   getRecharges,
@@ -32,4 +36,5 @@ export const rechargesService = {
   addRecharge,
   updateRechargeById,
   deleteRecharge,
+  getRechargeReport,
 }

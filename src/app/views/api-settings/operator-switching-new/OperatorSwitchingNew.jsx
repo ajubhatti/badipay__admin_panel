@@ -119,7 +119,7 @@ const OperatorSwitchingNew = () => {
             <div className="card-body">
               <div className="row">
                 <div className="col-md-12">
-                  <Form className="select-operator">
+                  <Form className="select-operator flex-wrap">
                     <div className="me-2">
                       <Form.Group controlId="formGridServic">
                         <ReactSelect

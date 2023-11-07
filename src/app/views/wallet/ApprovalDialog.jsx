@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 
-const ApprovalDialog = ({ show, onHide, id, handleSave, isLoading }) => {
+const ApprovalDialog = ({ show, onHide, handleSave, isLoading }) => {
   const [modalData, setModalData] = useState({
     password: "",
     reason: "",
@@ -11,6 +11,7 @@ const ApprovalDialog = ({ show, onHide, id, handleSave, isLoading }) => {
   const [error, setError] = useState({})
   const [validated, setValidated] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -22,6 +23,7 @@ const ApprovalDialog = ({ show, onHide, id, handleSave, isLoading }) => {
     setValidated(true)
   }
   const submitSave = (type, data) => {
+    setLoading(true)
     if (!isLoading) {
       if (!data.password) {
         setError({
@@ -111,12 +113,14 @@ const ApprovalDialog = ({ show, onHide, id, handleSave, isLoading }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button
+          disabled={loading}
           variant="primary"
           onClick={() => submitSave("approve", modalData)}
         >
           Approve
         </Button>
         <Button
+          disabled={loading}
           variant="primary"
           onClick={() => submitSave("reject", modalData)}
         >

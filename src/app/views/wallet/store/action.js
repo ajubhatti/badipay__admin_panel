@@ -54,7 +54,19 @@ export const getWalletList = (data, cb) => async (dispatch) => {
   }
 }
 
-export const getAllWalletList = (data, cb) => async (dispatch) => {
+export const getWalletReport = (data, cb) => async (dispatch) => {
+  try {
+    await walletServices.getAllWalletReport(data).then((res) => {
+      if (res?.data) {
+        cb(res?.data)
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const getAllWalletReport = (data, cb) => async (dispatch) => {
   try {
     await walletServices.getWallet(data).then((res) => {
       if (res?.data) {

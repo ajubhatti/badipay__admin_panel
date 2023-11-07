@@ -5,6 +5,10 @@ const getAllCashBacks = (data) => {
   return fetchWrapper.post(`${url}/getAll`, data)
 }
 
+const getAllCashBacksReport = (data) => {
+  return fetchWrapper.post(`${url}/getForReport`, data)
+}
+
 const getCashBackById = (id) => {
   return fetchWrapper.get(`${url}/${id}`)
 }
@@ -37,4 +41,5 @@ export const cashBackService = {
   deleteCashBack,
   adminloyalty,
   getCashBackReports,
+  getAllCashBacksReport,
 }

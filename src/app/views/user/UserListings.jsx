@@ -230,7 +230,7 @@ const UserListings = () => {
         text: "Register Date",
         dataField: "createdAt",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{moment(row?.createdAt).format("DD-MM-YYYY,HH:mm")}</div>
+          <div>{moment(row?.createdAt).format("DD/MM/YYYY, HH:mm:ss")}</div>
         ),
       },
       {
@@ -361,13 +361,12 @@ const UserListings = () => {
             <div className="card mb-4">
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-12 d-flex">
-                    <div className="col-md-6 d-flex">
-                      {" "}
+                  <div className=" d-flex flex-wrap justify-content-between mb-2">
+                    <div className="mt-2">
                       <h4>Total Balance : {totalBalance}</h4>
                     </div>
-                    <div className="col-md-6 d-flex justify-content-end">
-                      <div className="me-2">
+                    <div className="d-flex flex-wrap">
+                      <div className="me-2 mt-2">
                         <input
                           type="text"
                           className="form-control search-box"
@@ -379,51 +378,50 @@ const UserListings = () => {
                         rangeDate={dateRangeValue}
                         setRangeDate={setDateRangeValue}
                       />
-                      {/* <DateRangePick
-                      setDateValue={(data) => setSelectedDates(data)}
-                    /> */}
-                      <button
-                        className={`btn btn-primary ms-2`}
-                        onClick={() => handleFilterData()}
-                      >
-                        <AiOutlineSearch />
-                      </button>
+                      <div className="d-flex mt-2">
+                        <button
+                          className={`btn btn-primary ms-2`}
+                          onClick={() => handleFilterData()}
+                        >
+                          <AiOutlineSearch />
+                        </button>
 
-                      <button
-                        className={`ms-2 btn btn-secondary ${
-                          exportLoading ? "disabled" : ""
-                        }`}
-                        onClick={handleCSV}
-                      >
-                        {exportLoading ? (
-                          <div
-                            className="spinner-border spinner-border-sm"
-                            role="status"
-                          ></div>
-                        ) : (
-                          <AiOutlineDownload />
-                        )}
-                      </button>
+                        <button
+                          className={`ms-2 btn btn-secondary ${
+                            exportLoading ? "disabled" : ""
+                          }`}
+                          onClick={handleCSV}
+                        >
+                          {exportLoading ? (
+                            <div
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                            ></div>
+                          ) : (
+                            <AiOutlineDownload />
+                          )}
+                        </button>
 
-                      <button
-                        className={`btn btn-primary ms-2`}
-                        onClick={resetValue}
-                      >
-                        <AiOutlineReload />
-                      </button>
+                        <button
+                          className={`btn btn-primary ms-2`}
+                          onClick={resetValue}
+                        >
+                          <AiOutlineReload />
+                        </button>
 
-                      <button
-                        className={`btn btn-primary ms-2`}
-                        onClick={() => {
-                          setUserModelOpen({
-                            is_open: true,
-                            is_form_view_profile: false,
-                          })
-                          setUserData({})
-                        }}
-                      >
-                        <AiOutlinePlus />
-                      </button>
+                        <button
+                          className={`btn btn-primary ms-2`}
+                          onClick={() => {
+                            setUserModelOpen({
+                              is_open: true,
+                              is_form_view_profile: false,
+                            })
+                            setUserData({})
+                          }}
+                        >
+                          <AiOutlinePlus />
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <hr className="m-0" />

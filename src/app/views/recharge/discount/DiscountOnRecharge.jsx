@@ -310,40 +310,37 @@ const DiscountOnRecharge = () => {
               <div className="card mb-4">
                 <div className="card-body">
                   <div className="row">
-                    <div className="col-md-12 d-flex">
-                      <div className="col-md-6 d-flex">
-                        <div className="me-2">
-                          <ReactSelect
-                            isClearable
-                            className="mb-2"
-                            placeHolder={"Select Api"}
-                            title={"Api"}
-                            handleChange={(e) => {
-                              setSearchData({
-                                ...searchData,
-                                apis: e,
-                              })
-                            }}
-                            options={apis}
-                            selectedValue={searchData?.apis}
-                          />
-                        </div>
-                        <div className="me-2">
-                          <ReactSelect
-                            className="mb-2"
-                            isClearable
-                            placeHolder={"Select Service"}
-                            title={"Service"}
-                            handleChange={(e) => {
-                              setSearchData({
-                                ...searchData,
-                                provider: e,
-                              })
-                            }}
-                            options={services}
-                            selectedValue={searchData?.provider}
-                          />
-                        </div>
+                    <div className="col-md-12 d-flex mb-2">
+                      <div className="col-md-6 d-flex flex-wrap">
+                        <ReactSelect
+                          isClearable
+                          placeHolder={"Select Api"}
+                          title={"Api"}
+                          handleChange={(e) => {
+                            setSearchData({
+                              ...searchData,
+                              apis: e,
+                            })
+                          }}
+                          options={apis}
+                          selectedValue={searchData?.apis}
+                          className="filter-select"
+                        />
+
+                        <ReactSelect
+                          className="filter-select"
+                          isClearable
+                          placeHolder={"Select Service"}
+                          title={"Service"}
+                          handleChange={(e) => {
+                            setSearchData({
+                              ...searchData,
+                              provider: e,
+                            })
+                          }}
+                          options={services}
+                          selectedValue={searchData?.provider}
+                        />
                       </div>
                     </div>
                     <hr className="m-0" />

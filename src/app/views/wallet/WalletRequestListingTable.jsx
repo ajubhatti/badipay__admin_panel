@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {
   getAllWalletList,
   getWalletList,
+  getWalletReport,
   setPageWallet,
   setSizePerPageWallet,
   setSortFieldOfWallet,
@@ -16,7 +17,11 @@ import { Button } from "react-bootstrap"
 import ApprovalDialog from "./ApprovalDialog"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
-import { AiOutlineDownload, AiOutlineSearch } from "react-icons/ai"
+import {
+  AiOutlineDownload,
+  AiOutlineReload,
+  AiOutlineSearch,
+} from "react-icons/ai"
 import CustomDateRangePicker from "../reports/CustomDateRangePicker"
 import { ExportToCsv } from "export-to-csv"
 import { useParams } from "react-router-dom"
@@ -29,10 +34,11 @@ const options = {
   decimalSeparator: ".",
   showLabels: true,
   showTitle: true,
-  title: "Activities",
+  title: "Wallet Report",
   useTextFile: false,
   useBom: true,
   useKeysAsHeaders: true,
+  filename: "wallet",
 }
 
 const csvExporter = new ExportToCsv(options)
@@ -93,7 +99,7 @@ const WalletRequestListingTable = () => {
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 25,
-    sortBy: "created",
+    sortBy: "createdAt",
     orderBy: "DESC",
     skip: 0,
     search: "",
@@ -120,6 +126,14 @@ const WalletRequestListingTable = () => {
     dispatch(getWalletList(payloadData))
   }
 
+  const resetValue = () => {
+    setSearchString("")
+    setDateRangeValue({
+      start: new Date(),
+      end: new Date(),
+    })
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -139,14 +153,14 @@ const WalletRequestListingTable = () => {
       },
       {
         text: "Date",
-        dataField: "created",
+        dataField: "createdAt",
         sort: true,
         headerStyle: { width: "50px" },
         style: { height: "30px" },
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
-            {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY hh:mm:ss")
+            {row?.createdAt
+              ? moment(row?.createdAt).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -238,7 +252,7 @@ const WalletRequestListingTable = () => {
         formatter: (cell, row) => (
           <div>
             {row?.statusChangeDate
-              ? moment(row?.statusChangeDate).format("DD-MM-YYYY HH:mm:ss")
+              ? moment(row?.statusChangeDate).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -374,23 +388,23 @@ const WalletRequestListingTable = () => {
         limits: totalSize,
       }
       dispatch(
-        getAllWalletList(payload, (status) => {
+        getWalletReport(payload, (status) => {
           if (status) {
             const exportData = status?.data
               ?.filter((item) => item.statusOfWalletRequest === "approve")
               ?.map((item, index) => ({
                 No: index + 1,
                 Date:
-                  moment(item?.created).format("DD/MM/YYYY, hh:mm:ss") || "-",
+                  moment(item?.createdAt).format("DD/MM/YYYY, HH:mm:ss") || "-",
                 "User Name": item?.userDetail?.userName || "-",
                 "Phone Number": item?.userDetail?.phoneNumber || "-",
-                "Slip No": item?.slipNo || "",
+                "Slip No": item?.slipNo || "-",
                 "Deposit Bank": item?.bankData?.bankdetails?.bankName || "-",
-                "Request Amount": item?.requestAmount || "-",
-                "Approve Amount": item?.approveAmount || "-",
-                "Debit Amount": item?.debitAmount || "-",
+                "Request Amount": item?.requestAmount || 0,
+                "Approve Amount": item?.approveAmount || 0,
+                "Debit Amount": item?.debitAmount || 0,
                 Remarks: item?.remark || "-",
-                "Paymnet Mode": item?.paymentMode?.modeName || "-",
+                "Payment Mode": item?.paymentMode?.modeName || "-",
                 "Approve Date": item?.statusChangeDate || "-",
                 "Approve By": item?.approveBy || "-",
               }))
@@ -425,46 +439,14 @@ const WalletRequestListingTable = () => {
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex ">
-                    {/* <div className="me-2">
-                    <select
-                      name="provider"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="provider"
-                    >
-                      {providers.map((provider) => {
-                        return (
-                          <option key={provider.value} value={provider.value}>
-                            {provider.label}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </div>
-                  <div className="me-2">
-                    <select
-                      name="services"
-                      onChange={handleChange}
-                      className="form-control"
-                      id="services"
-                    >
-                      {services.map((service) => {
-                        return (
-                          <option key={service.value} value={service.value}>
-                            {service.label}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </div> */}
+                <div className="filter-flex-wrap justify-content-between mb-2">
+                  <div className="filter-flex filter-flex-wrap">
                     {!reportType && (
                       <ReactSelect
                         isClearable={true}
-                        title={"status"}
+                        title={"Status"}
                         name="status"
-                        placeHolder={"select status"}
+                        placeHolder={"Select Status"}
                         handleChange={(e) => {
                           setFilter((prev) => ({
                             ...prev,
@@ -473,51 +455,60 @@ const WalletRequestListingTable = () => {
                         }}
                         options={statusList}
                         selectedValue={filter.status || ""}
-                        width={160}
+                        className="filter-select"
                       />
                     )}
                   </div>
-                  <div className="col-md-6 d-flex justify-content-end">
-                    <div className="me-2">
+                  <div className="d-flex filter-flex-wrap">
+                    <div className="me-2 mt-2">
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control search-text-box"
                         placeholder="Search"
                         onChange={handleSearch}
                       />
                     </div>
-
                     <CustomDateRangePicker
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}
                     />
-
-                    <button
-                      className={`btn btn-primary ${
-                        exportLoading ? "disabled" : ""
-                      }`}
-                      type="button"
-                      onClick={handleFilterData}
-                    >
-                      <AiOutlineSearch />
-                    </button>
-
-                    <button
-                      className={`ms-2 btn btn-secondary ${
-                        exportLoading ? "disabled" : ""
-                      }`}
-                      type="button"
-                      onClick={handleCSV}
-                    >
-                      {exportLoading ? (
-                        <div
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                        ></div>
-                      ) : (
-                        <AiOutlineDownload />
+                    <div className="d-flex mt-2">
+                      <button
+                        className={`btn btn-primary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        type="button"
+                        onClick={() => handleFilterData()}
+                      >
+                        <AiOutlineSearch />
+                      </button>
+                      {reportType && (
+                        <button
+                          className={`ms-2 btn btn-secondary ${
+                            exportLoading ? "disabled" : ""
+                          }`}
+                          type="button"
+                          onClick={handleCSV}
+                        >
+                          {exportLoading ? (
+                            <div
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                            ></div>
+                          ) : (
+                            <AiOutlineDownload />
+                          )}
+                        </button>
                       )}
-                    </button>
+
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        type="button"
+                        // onClick={resetValue}
+                      >
+                        <AiOutlineReload />
+                      </button>
+                    </div>
                   </div>
                 </div>
 

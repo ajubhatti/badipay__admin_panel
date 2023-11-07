@@ -99,7 +99,7 @@ const TickerList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY hh:mm:ss")
+              ? moment(row?.created).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),

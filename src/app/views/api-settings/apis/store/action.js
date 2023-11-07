@@ -1,7 +1,12 @@
-import { FETCH_APIS, FETCH_API_BY_ID, SET_APIS_LOADING } from "./actionTypes"
+import {
+  FETCH_APIS,
+  FETCH_API_BY_ID,
+  SET_APIS_LOADING,
+  FETCH_API_RESPONSES,
+} from "./actionTypes"
 import { toast } from "react-toastify"
 import { axiosAdmin } from "app/services/api"
-import { GET_APIS } from "app/constants/urls"
+import { GET_APIS, GET_API_RESPONSE } from "app/constants/urls"
 import { apisService } from "app/services/apis.service"
 
 export const getApiById = (data) => async (dispatch) => {
@@ -65,6 +70,20 @@ export const createApi = (data) => async (dispatch) => {
   }
 }
 
+export const getApiResponseList = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    const res = await axiosAdmin.get(GET_API_RESPONSE)
+    if (res.data?.data) {
+      dispatch(fetchApiResponses(res?.data?.data))
+      dispatch(setLoading(false))
+    }
+  } catch (err) {
+    toast.error(err?.response?.data?.message || err?.message)
+    dispatch(setLoading(false))
+  }
+}
+
 export const fetchApiList = (data) => ({
   type: FETCH_APIS,
   payload: data,
@@ -77,5 +96,10 @@ export const fetchApiById = (data) => ({
 
 export const setLoading = (data) => ({
   type: SET_APIS_LOADING,
+  payload: data,
+})
+
+export const fetchApiResponses = (data) => ({
+  type: FETCH_API_RESPONSES,
   payload: data,
 })

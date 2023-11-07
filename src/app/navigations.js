@@ -153,6 +153,11 @@ export const navigations = [
         path: "/operators-configs",
         iconText: "Opcnfg",
       },
+      {
+        name: "API Response",
+        path: "/api-response-list",
+        iconText: "APRIL",
+      },
     ],
   },
   {

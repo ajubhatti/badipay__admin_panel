@@ -75,7 +75,7 @@ export const rechargeComplaints = (data, cb) => async (dispatch) => {
 
 export const getRechargeListForPrint = (data, cb) => async (dispatch) => {
   try {
-    await rechargesService.getRecharges(data).then((res) => {
+    await rechargesService.getRechargeReport(data).then((res) => {
       if (res?.data) {
         cb(res?.data)
       }

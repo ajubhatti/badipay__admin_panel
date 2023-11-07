@@ -152,9 +152,10 @@ const OperatorConfigs = () => {
       id="isVerifiedSwitch"
       className="cursor-pointer"
       checked={row?.isActive}
-      onChange={(e) => {
-        changeVerifiactionStatus(row, e.target.checked)
-      }}
+      disabled
+      // onChange={(e) => {
+      //   changeVerifiactionStatus(row, e.target.checked)
+      // }}
     />
   )
 
@@ -280,12 +281,12 @@ const OperatorConfigs = () => {
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-12 col-md-12 d-flex">
-                  <div className="list-of-operator m-2">
+                <div className="filter-flex-wrap justify-content-between mb-2">
+                  <div className="filter-flex filter-flex-wrap">
                     <ReactSelect
                       isClearable={true}
                       title={"Apis"}
-                      placeHolder={"select api"}
+                      placeHolder={"API"}
                       handleChange={(e) => {
                         setPayloadData({
                           ...payloadData,
@@ -294,13 +295,12 @@ const OperatorConfigs = () => {
                       }}
                       options={apisDDData}
                       selectedValue={payloadData?.apis}
+                      className="filter-select"
                     />
-                  </div>
 
-                  <div className="list-of-operator m-2">
                     <ReactSelect
                       isClearable={true}
-                      placeHolder={"select services"}
+                      placeHolder={"Services"}
                       title={"services"}
                       handleChange={(e) => {
                         setPayloadData({
@@ -310,14 +310,13 @@ const OperatorConfigs = () => {
                       }}
                       options={serviceDDData}
                       selectedValue={payloadData?.provider}
+                      className="filter-select"
                     />
-                  </div>
 
-                  <div className="list-of-operator m-2">
                     <ReactSelect
                       isClearable={true}
                       title={"Operator"}
-                      placeHolder={"select operator"}
+                      placeHolder={"Operator"}
                       handleChange={(e) => {
                         setPayloadData({
                           ...payloadData,
@@ -326,6 +325,7 @@ const OperatorConfigs = () => {
                       }}
                       options={operatorDDData}
                       selectedValue={payloadData?.operator}
+                      className="filter-select"
                     />
                   </div>
                 </div>

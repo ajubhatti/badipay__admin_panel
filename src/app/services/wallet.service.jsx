@@ -18,10 +18,15 @@ export const walletServices = {
   updateBalance,
   updateWalletStatus,
   getWallet,
+  getAllWalletReport,
 }
 
 function getAll(payload) {
   return fetchWrapper.post(`${baseUrl}/getAll`, payload)
+}
+
+function getAllWalletReport(payload) {
+  return fetchWrapper.post(`${baseUrl}/getwalletReports`, payload)
 }
 
 function getWallet(payload) {

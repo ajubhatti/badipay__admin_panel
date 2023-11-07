@@ -310,7 +310,7 @@ const AddUpdateUserDialog = (props) => {
                 <span>
                   Created At :{" "}
                   {moment(props.open?.data?.referedUser?.createdAt).format(
-                    "YYYY-MM-DD hh:mm:ss"
+                    "DD/MM/YYYY, HH:mm:ss"
                   )}
                 </span>
               </>

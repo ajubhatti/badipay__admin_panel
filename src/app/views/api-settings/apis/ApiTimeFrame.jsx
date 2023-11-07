@@ -79,7 +79,7 @@ const ApiTimeFrame = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
-          <h6 className="main-heading">API TIME FRAME</h6>
+          <h6 className="main-heading">API Time Frame</h6>
         </div>
       </div>
 
@@ -88,35 +88,29 @@ const ApiTimeFrame = () => {
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-12">
-                  <Form className="select-operator">
-                    <div className="me-2">
-                      <Form.Group controlId="formGridServic">
-                        <ReactSelect
-                          placeHolder={"Select Time"}
-                          title={"Time"}
-                          handleChange={(e) => {
-                            setTimeLimit(e)
-                          }}
-                          selectedValue={timeLimit}
-                          options={timeFrameList}
-                        />
-                      </Form.Group>
-                    </div>
+                <div className="filter-flex-wrap mb-2">
+                  <div className="filter-flex filter-flex-wrap">
+                    <ReactSelect
+                      placeHolder={"Select Time"}
+                      title={"Time"}
+                      handleChange={(e) => {
+                        setTimeLimit(e)
+                      }}
+                      selectedValue={timeLimit}
+                      options={timeFrameList}
+                      className="filter-select"
+                    />
 
-                    <div className="me-2">
-                      <Form.Group controlId="formGridOperator">
-                        <ReactSelect
-                          placeHolder={"Select Type"}
-                          title={"Type"}
-                          handleChange={(e) => {
-                            setTimeType(e)
-                          }}
-                          selectedValue={timeType}
-                          options={timeTypeList}
-                        />
-                      </Form.Group>
-                    </div>
+                    <ReactSelect
+                      placeHolder={"Select Type"}
+                      title={"Type"}
+                      handleChange={(e) => {
+                        setTimeType(e)
+                      }}
+                      selectedValue={timeType}
+                      options={timeTypeList}
+                      className="filter-select"
+                    />
 
                     <Button
                       type="button"
@@ -125,7 +119,7 @@ const ApiTimeFrame = () => {
                     >
                       Set
                     </Button>
-                  </Form>
+                  </div>
                 </div>
               </div>
             </div>

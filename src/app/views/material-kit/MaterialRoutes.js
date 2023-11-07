@@ -36,6 +36,10 @@ const ApiListings = Loadable(
   lazy(() => import("../api-settings/apis/ApiListings"))
 )
 
+const ApiResponseList = Loadable(
+  lazy(() => import("../api-settings/apis/ApiResponses"))
+)
+
 const ApiTimeFrame = Loadable(
   lazy(() => import("../api-settings/apis/ApiTimeFrame"))
 )
@@ -102,6 +106,10 @@ const materialRoutes = [
   {
     path: "/api-list",
     element: <ApiListings />,
+  },
+  {
+    path: "/api-response-list",
+    element: <ApiResponseList />,
   },
   {
     path: "/api-time",

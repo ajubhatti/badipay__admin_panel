@@ -94,7 +94,6 @@ const DiscountModalNew = (props) => {
           </div>
         </div>
 
-        {/* ========= */}
         <div className="mt-3 form-group row">
           <label className="col-sm-2 col-form-label" htmlFor="userDiscount">
             User Discount
@@ -212,15 +211,6 @@ const DiscountModalNew = (props) => {
         <Button
           type="button"
           variant="primary"
-          disabled={
-            !discountInfo?.userDiscount ||
-            !discountInfo?.userDiscountLimit ||
-            !discountInfo?.userDiscountType ||
-            !discountInfo?.referalDiscount ||
-            !discountInfo?.referalDiscountLimit ||
-            !discountInfo?.referalDiscountType ||
-            !discountInfo?.adminDiscount
-          }
           onClick={handleSaveDiscountModal}
         >
           Save changes

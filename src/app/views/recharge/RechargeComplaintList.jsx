@@ -139,7 +139,7 @@ const RechargeComplaintList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.createdAt
-              ? moment(row?.createdAt).format("DD/MM/YYYY hh:mm:ss")
+              ? moment(row?.createdAt).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
   getCashBackList,
+  getCashBackReport,
   setPageCashBack,
   setSizePerPageCashBack,
   setSortFieldOfCashBack,
@@ -29,10 +30,11 @@ const options = {
   decimalSeparator: ".",
   showLabels: true,
   showTitle: true,
-  title: "Activities",
+  title: "Cashback Report",
   useTextFile: false,
   useBom: true,
   useKeysAsHeaders: true,
+  filename: "cashback",
 }
 
 const csvExporter = new ExportToCsv(options)
@@ -153,7 +155,7 @@ const CashBackList = () => {
         limits: totalSize,
       }
       dispatch(
-        getCashBackList(payload, (status) => {
+        getCashBackReport(payload, (status) => {
           if (status) {
             const exportData = status?.data
               ?.filter(
@@ -162,10 +164,10 @@ const CashBackList = () => {
               )
               ?.map((item) => ({
                 Date:
-                  moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
+                  moment(item?.created).format("DD/MM/YYYY, HH:mm:ss") || "-",
                 "User Name": item?.userDetail?.userName || "-",
                 "Phone Number": item?.userDetail?.phoneNumber || "-",
-                "Transaction No": item?.transactionData?.transactionId || "",
+                "Transaction No": item?.transactionData?.transactionId || "-",
                 "Operator Id":
                   item?.transactionData?.rechargeData?.OPRID ||
                   item?.transactionData?.rechargeData?.opid ||
@@ -184,25 +186,25 @@ const CashBackList = () => {
                   : "-",
                 "User Balance": item?.transactionData?.userBalance
                   ? item?.transactionData?.userBalance
-                  : "-",
+                  : 0,
                 "Request Amount": item?.transactionData?.requestAmount
                   ? item?.transactionData?.requestAmount
-                  : "-",
+                  : 0,
                 "CashBack Amount": item?.transactionData?.cashBackAmount
                   ? item?.transactionData?.cashBackAmount
-                  : "-",
+                  : 0,
                 "Recharge Amount": item?.transactionData?.rechargeAmount
                   ? item?.transactionData?.rechargeAmount
-                  : "-",
+                  : 0,
                 "User FinalBalance": item?.transactionData?.userFinalBalance
                   ? item?.transactionData?.userFinalBalance
-                  : "-",
+                  : 0,
                 "CashBack Receive": item?.cashBackReceive
                   ? item?.cashBackReceive
-                  : "-",
-                "User CashBack": item?.userCashBack ? item?.userCashBack : "-",
-                "Referral CashBack": item?.referralCashBack,
-                "Net CashBack": item?.netCashBack ? item?.netCashBack : "-",
+                  : 0,
+                "User CashBack": item?.userCashBack ? item?.userCashBack : 0,
+                "Referral CashBack": item?.referralCashBack || 0,
+                "Net CashBack": item?.netCashBack ? item?.netCashBack : 0,
                 Remark: !!item?.transactionData?.remark
                   ? item?.transactionData?.remark
                   : "-",
@@ -247,7 +249,7 @@ const CashBackList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY HH:mm:ss")
+              ? moment(row?.created).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -352,7 +354,7 @@ const CashBackList = () => {
           <div className="align-middle ">
             {row?.transactionData?.userBalance
               ? row?.transactionData?.userBalance
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -364,7 +366,7 @@ const CashBackList = () => {
           <div className="align-middle ">
             {row?.transactionData?.requestAmount
               ? row?.transactionData?.requestAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -376,7 +378,7 @@ const CashBackList = () => {
           <div className="align-middle ">
             {row?.transactionData?.cashBackAmount
               ? row?.transactionData?.cashBackAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -388,63 +390,73 @@ const CashBackList = () => {
           <div className="align-middle ">
             {row?.transactionData?.rechargeAmount
               ? row?.transactionData?.rechargeAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
       {
-        text: "FinalBalance",
+        text: "Final Balance",
         dataField: "userFinalBalance",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
             {row?.transactionData?.userFinalBalance
               ? row?.transactionData?.userFinalBalance
-              : "-"}
+              : 0}
           </div>
         ),
       },
       {
-        text: "cashBack Receive",
+        text: "CashBack Receive",
         dataField: "cashBackReceive",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.cashBackReceive ? row?.cashBackReceive : "-"}
+            {row?.cashBackReceive ? row?.cashBackReceive : 0}
           </div>
         ),
       },
       {
-        text: "user CashBack",
+        text: "User CashBack",
         dataField: "userCashBack",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userCashBack ? row?.userCashBack : "-"}
+            {row?.userCashBack ? row?.userCashBack : 0}
           </div>
         ),
       },
       {
-        text: "referral CashBack",
+        text: "Referral CashBack",
         dataField: "referralCashBack",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">{row?.referralCashBack}</div>
+          <div className="align-middle ">{row?.referralCashBack || 0}</div>
         ),
       },
       {
-        text: "net CashBack",
+        text: "Net CashBack",
         dataField: "netCashBack",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.netCashBack ? row?.netCashBack : "-"}
+            {row?.netCashBack ? row?.netCashBack : 0}
+          </div>
+        ),
+      },
+      {
+        text: "Final Amount",
+        dataField: "finalAmount",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">
+            {row?.finalAmount ? row?.finalAmount : 0}
           </div>
         ),
       },
 
       {
-        text: "remark",
+        text: "Remark",
         dataField: "remark",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
@@ -457,7 +469,7 @@ const CashBackList = () => {
         ),
       },
       {
-        text: "status",
+        text: "Status",
         dataField: "status",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div

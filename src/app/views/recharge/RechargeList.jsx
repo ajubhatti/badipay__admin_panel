@@ -40,7 +40,7 @@ const options = {
   decimalSeparator: ".",
   showLabels: true,
   showTitle: true,
-  title: "Activities",
+  title: "Recharge Report",
   useTextFile: false,
   useBom: true,
   useKeysAsHeaders: true,
@@ -231,48 +231,56 @@ const RechargeList = () => {
       const payload = {
         ...payloadData,
         limits: totalSize,
+        page: 1,
       }
       dispatch(
         getRechargeListForPrint(payload, (status) => {
           if (status) {
             const exportData = status?.data
-              ?.filter((item) => item.status === CONSTANT_STATUS.SUCCESS)
-              ?.map((item) => ({
-                Date:
-                  moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
-                "User Name": item?.userDetail?.userName || "-",
-                "Phone Number": item?.userDetail?.phoneNumber || "-",
-                "Transaction No": item?.transactionData?.transactionId || "",
-                // "service type": item?.transactionData?.serviceTypeName || "-",
-                "Operator Id":
-                  item?.transactionData?.rechargeData?.OPRID ||
-                  item?.transactionData?.rechargeData?.opid ||
-                  "-",
-                "Operator Name": item?.transactionData?.rechargeData
-                  ?.rechargeOperator?.companyName
-                  ? item?.transactionData?.rechargeData?.rechargeOperator
-                      ?.companyName
-                  : "-",
-                "Api Name": item?.transactionData?.rechargeData?.rechargeApi
-                  ?.apiName
-                  ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
-                  : "-",
-                "Customer Number": item?.transactionData?.customerNo
-                  ? item?.transactionData?.customerNo
-                  : "-",
-                "User Balance": item?.transactionData?.userBalance
-                  ? item?.transactionData?.userBalance
-                  : "-",
-                "Request Amount": item?.transactionData?.requestAmount
-                  ? item?.transactionData?.requestAmount
-                  : "-",
-                "User CashBack": item?.transactionData?.cashBackAmount || "-",
-                "Net CashBack": item?.transactionData?.netCashBack || "-",
-                "Recharge Amount": item?.transactionData?.rechargeAmount || "-",
-                "Final Balance": item?.transactionData?.userFinalBalance || "-",
-                Remark: item?.transactionData?.remark || "-",
-                Status: item?.transactionData?.status,
-              }))
+              ?.filter((item) => {
+                console.log({ item })
+                return item.status === CONSTANT_STATUS.SUCCESS
+              })
+              ?.map((item) => {
+                return {
+                  Date:
+                    moment(item?.created).format("DD/MM/YYYY, HH:mm:ss") || "-",
+                  "User Name": item?.userDetail?.userName || "-",
+                  "Phone Number": item?.userDetail?.phoneNumber || "-",
+                  "Transaction No": item?.transactionData?.transactionId || "",
+                  // "service type": item?.transactionData?.serviceTypeName || "-",
+                  "Operator Id":
+                    item?.transactionData?.rechargeData?.OPRID ||
+                    item?.transactionData?.rechargeData?.opid ||
+                    "-",
+                  "Operator Name": item?.transactionData?.rechargeData
+                    ?.rechargeOperator?.companyName
+                    ? item?.transactionData?.rechargeData?.rechargeOperator
+                        ?.companyName
+                    : "-",
+                  "Api Name": item?.transactionData?.rechargeData?.rechargeApi
+                    ?.apiName
+                    ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
+                    : "-",
+                  "Customer Number": item?.transactionData?.customerNo
+                    ? item?.transactionData?.customerNo
+                    : "-",
+                  "User Balance": item?.transactionData?.userBalance
+                    ? item?.transactionData?.userBalance
+                    : 0,
+                  "Request Amount": item?.transactionData?.requestAmount
+                    ? item?.transactionData?.requestAmount
+                    : 0,
+                  "User CashBack": item?.transactionData?.cashBackAmount || 0,
+                  "Net CashBack": item?.transactionData?.netCashBack || 0,
+                  "Recharge Amount": item?.transactionData?.rechargeAmount || 0,
+                  "Final Balance": item?.transactionData?.userFinalBalance || 0,
+                  Remark: item?.transactionData?.remark || "-",
+                  Status: item?.transactionData?.status
+                    ? item?.transactionData?.status
+                    : item?.status,
+                }
+              })
 
             setExportLoading(false)
             csvExporter.generateCsv(exportData)
@@ -312,7 +320,7 @@ const RechargeList = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY hh:mm:ss")
+              ? moment(row?.created).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -395,7 +403,7 @@ const RechargeList = () => {
           <div className="align-middle ">
             {row?.transactionData?.userBalance
               ? row?.transactionData?.userBalance
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -408,7 +416,7 @@ const RechargeList = () => {
           <div className="align-middle ">
             {row?.transactionData?.requestAmount
               ? row?.transactionData?.requestAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -420,7 +428,7 @@ const RechargeList = () => {
           <div className="align-middle ">
             {row?.transactionData?.cashBackAmount
               ? row?.transactionData?.cashBackAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -433,7 +441,7 @@ const RechargeList = () => {
           <div className="align-middle ">
             {row?.transactionData?.rechargeAmount
               ? row?.transactionData?.rechargeAmount
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -446,7 +454,7 @@ const RechargeList = () => {
           <div className="align-middle ">
             {row?.transactionData?.userFinalBalance
               ? row?.transactionData?.userFinalBalance
-              : "-"}
+              : 0}
           </div>
         ),
       },
@@ -569,49 +577,46 @@ const RechargeList = () => {
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex ">
-                    <div className="me-2">
-                      <ReactSelect
-                        isClearable={true}
-                        title={"Apis"}
-                        name="api"
-                        placeHolder={"select api"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            api: e,
-                          }))
-                        }}
-                        options={providers}
-                        selectedValue={filter.api || ""}
-                        width={160}
-                      />
-                    </div>
-                    <div className="me-2">
-                      <ReactSelect
-                        isClearable={true}
-                        title={"services"}
-                        name="services"
-                        placeHolder={"select service"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            services: e,
-                          }))
-                        }}
-                        options={services}
-                        selectedValue={filter.services || ""}
-                        width={160}
-                      />
-                    </div>
+                <div className="filter-flex-wrap justify-content-between mb-2">
+                  <div className="filter-flex filter-flex-wrap">
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Apis"}
+                      name="api"
+                      placeHolder={"Select Api"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          api: e,
+                        }))
+                      }}
+                      options={providers}
+                      selectedValue={filter.api || ""}
+                      className="filter-select"
+                    />
+
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Services"}
+                      name="services"
+                      placeHolder={"Select Service"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          services: e,
+                        }))
+                      }}
+                      options={services}
+                      selectedValue={filter.services || ""}
+                      className="filter-select"
+                    />
 
                     {!reportType && (
                       <ReactSelect
                         isClearable={true}
-                        title={"status"}
+                        title={"Status"}
                         name="status"
-                        placeHolder={"select status"}
+                        placeHolder={"Select Status"}
                         handleChange={(e) => {
                           setFilter((prev) => ({
                             ...prev,
@@ -620,12 +625,12 @@ const RechargeList = () => {
                         }}
                         options={statusList}
                         selectedValue={filter.status || ""}
-                        width={160}
+                        className="filter-select"
                       />
                     )}
                   </div>
-                  <div className="col-md-6 d-flex">
-                    <div className="me-2">
+                  <div className="d-flex filter-flex-wrap">
+                    <div className="me-2 mt-2">
                       <input
                         type="text"
                         className="form-control search-text-box"
@@ -637,36 +642,41 @@ const RechargeList = () => {
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}
                     />
-                    <button
-                      className={`btn btn-primary`}
-                      onClick={() => handleFilterData()}
-                    >
-                      <AiOutlineSearch />
-                    </button>
-                    {reportType && (
+                    <div className="d-flex mt-2">
                       <button
-                        className={`ms-2 btn btn-secondary ${
-                          exportLoading ? "disabled" : ""
-                        }`}
-                        onClick={handleCSV}
+                        className={`btn btn-primary`}
+                        type="button"
+                        onClick={() => handleFilterData()}
                       >
-                        {exportLoading ? (
-                          <div
-                            className="spinner-border spinner-border-sm"
-                            role="status"
-                          ></div>
-                        ) : (
-                          <AiOutlineDownload />
-                        )}
+                        <AiOutlineSearch />
                       </button>
-                    )}
+                      {reportType && (
+                        <button
+                          className={`ms-2 btn btn-secondary ${
+                            exportLoading ? "disabled" : ""
+                          }`}
+                          type="button"
+                          onClick={handleCSV}
+                        >
+                          {exportLoading ? (
+                            <div
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                            ></div>
+                          ) : (
+                            <AiOutlineDownload />
+                          )}
+                        </button>
+                      )}
 
-                    <button
-                      className={`btn btn-primary ms-2`}
-                      onClick={resetValue}
-                    >
-                      <AiOutlineReload />
-                    </button>
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        type="button"
+                        onClick={resetValue}
+                      >
+                        <AiOutlineReload />
+                      </button>
+                    </div>
                   </div>
                 </div>
 

@@ -88,5 +88,6 @@ export const UPDATE_SHIPBOB_USER_ADDRESS = "/updateShipbobUserAddress"
 
 export const GET_COMPANY_BY_ID = "/company"
 export const GET_APIS = "/apis"
+export const GET_API_RESPONSE = "/apiResponse"
 
 export const GET_OPERATOR_BY_ID = "/operator"

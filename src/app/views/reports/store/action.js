@@ -25,6 +25,20 @@ export const getCashBackList = (data, cb) => async (dispatch) => {
   }
 }
 
+export const getCashBackReport = (data, cb) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    await cashBackService.getAllCashBacksReport(data).then((res) => {
+      if (res?.data) {
+        cb(res?.data)
+        dispatch(setLoading(false))
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
 export const getCashBackById = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))

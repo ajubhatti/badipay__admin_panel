@@ -64,7 +64,7 @@ const Transactions = () => {
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 25,
-    sortBy: "created",
+    sortBy: "updatedAt",
     orderBy: "DESC",
     skip: 0,
     search: "",
@@ -142,7 +142,7 @@ const Transactions = () => {
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
             {row?.created
-              ? moment(row?.created).format("DD/MM/YYYY hh:mm:ss")
+              ? moment(row?.created).format("DD/MM/YYYY, HH:mm:ss")
               : "-"}
           </div>
         ),
@@ -234,14 +234,13 @@ const Transactions = () => {
           </div>
         ),
       },
-
       {
         text: "Balance",
         dataField: "userBalance",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userBalance ? row?.userBalance : "-"}
+            {row?.userBalance ? row?.userBalance : 0}
           </div>
         ),
       },
@@ -251,7 +250,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.requestAmount ? row?.requestAmount : "-"}
+            {row?.requestAmount ? row?.requestAmount : 0}
           </div>
         ),
       },
@@ -261,7 +260,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.cashBackAmount ? row?.cashBackAmount : "-"}
+            {row?.cashBackAmount ? row?.cashBackAmount : 0}
           </div>
         ),
       },
@@ -271,7 +270,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeAmount ? row?.rechargeAmount : "-"}
+            {row?.rechargeAmount ? row?.rechargeAmount : 0}
           </div>
         ),
       },
@@ -281,7 +280,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userFinalBalance ? row?.userFinalBalance : "-"}
+            {row?.userFinalBalance ? row?.userFinalBalance : 0}
           </div>
         ),
       },
@@ -520,62 +519,58 @@ const Transactions = () => {
           <div className="card mb-4">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-12 d-flex">
-                  <div className="col-md-6 d-flex">
-                    <div className="me-2">
-                      <ReactSelect
-                        width={160}
-                        isClearable={true}
-                        title={"Apis"}
-                        name="api"
-                        placeHolder={"select api"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            api: e,
-                          }))
-                        }}
-                        options={providers}
-                        selectedValue={filter.api || ""}
-                      />
-                    </div>
-                    <div className="me-2">
-                      <ReactSelect
-                        width={160}
-                        isClearable={true}
-                        title={"Services"}
-                        name="services"
-                        placeHolder={"select service"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            services: e,
-                          }))
-                        }}
-                        options={services}
-                        selectedValue={filter.services || ""}
-                      />
-                    </div>
-                    <div className="me-2">
-                      <ReactSelect
-                        width={160}
-                        isClearable={true}
-                        title={"Status"}
-                        name="status"
-                        placeHolder={"select status"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            status: e,
-                          }))
-                        }}
-                        options={statusList}
-                        selectedValue={filter.status || ""}
-                      />
-                    </div>
+                <div className="filter-flex-wrap justify-content-between mb-2">
+                  <div className="filter-flex filter-flex-wrap">
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Apis"}
+                      name="api"
+                      placeHolder={"Select Api"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          api: e,
+                        }))
+                      }}
+                      options={providers}
+                      selectedValue={filter.api || ""}
+                      className="filter-select"
+                    />
+
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Services"}
+                      name="services"
+                      placeHolder={"Select Service"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          services: e,
+                        }))
+                      }}
+                      options={services}
+                      selectedValue={filter.services || ""}
+                      className="filter-select"
+                    />
+
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Status"}
+                      name="status"
+                      placeHolder={"Select Status"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          status: e,
+                        }))
+                      }}
+                      options={statusList}
+                      selectedValue={filter.status || ""}
+                      className="filter-select"
+                    />
                   </div>
-                  <div className="col-md-6 d-flex">
-                    <div className="me-2">
+                  <div className="d-flex filter-flex-wrap">
+                    <div className="me-2 mt-2">
                       <input
                         type="text"
                         className="form-control search-text-box"
@@ -587,14 +582,15 @@ const Transactions = () => {
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}
                     />
-                    <button
-                      className={`btn btn-primary`}
-                      onClick={handleFilterData}
-                    >
-                      <AiOutlineSearch />
-                    </button>
+                    <div className="d-flex mt-2">
+                      <button
+                        className={`btn btn-primary`}
+                        onClick={() => handleFilterData()}
+                      >
+                        <AiOutlineSearch />
+                      </button>
 
-                    {/* <button
+                      {/* <button
                     className={`ms-2 btn btn-secondary ${
                       exportLoading ? "disabled" : ""
                     }`}
@@ -609,15 +605,18 @@ const Transactions = () => {
                       <AiOutlineDownload />
                     )}
                   </button> */}
-                    <button
-                      className={`btn btn-primary ms-2`}
-                      onClick={resetValue}
-                    >
-                      <AiOutlineReload />
-                    </button>
+                      <button
+                        className={`btn btn-primary ms-2`}
+                        onClick={resetValue}
+                      >
+                        <AiOutlineReload />
+                      </button>
+                    </div>
                   </div>
                 </div>
+
                 <hr className="m-0" />
+
                 <div className="col-md-12">
                   <CustomTable
                     showAddButton={false}

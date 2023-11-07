@@ -114,13 +114,14 @@ const AddUpdateOperatorConfigModal = ({
             <Col sm="8">
               <Form.Check
                 type="switch"
+                disabled
                 checked={slabValue?.isActive}
-                onChange={(e) => {
-                  setSlabValue({
-                    ...slabValue,
-                    isActive: e.target.checked,
-                  })
-                }}
+                // onChange={(e) => {
+                //   setSlabValue({
+                //     ...slabValue,
+                //     isActive: e.target.checked,
+                //   })
+                // }}
               />
             </Col>
           </Form.Group>

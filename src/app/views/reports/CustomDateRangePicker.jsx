@@ -30,7 +30,7 @@ const CustomDateRangePicker = ({ rangeDate, setRangeDate }) => {
   }
 
   return (
-    <div className="d-flex">
+    <div className="d-flex mt-2">
       <div className="me-2">
         <DatePicker
           name="startDate"
