@@ -209,6 +209,7 @@ const RechargeList = () => {
   }
 
   const handleFilterData = () => {
+    setExportLoading(false)
     setPayloadData((prev) => ({
       ...prev,
       page: page,
@@ -254,13 +255,14 @@ const RechargeList = () => {
                     item?.transactionData?.rechargeData?.opid ||
                     "-",
                   "Operator Name": item?.transactionData?.rechargeData
-                    ?.rechargeOperator?.companyName
-                    ? item?.transactionData?.rechargeData?.rechargeOperator
-                        ?.companyName
+                    ?.operatorConfig?.operatorData?.operatorName
+                    ? item?.transactionData?.rechargeData?.operatorConfig
+                        ?.operatorData?.operatorName
                     : "-",
-                  "Api Name": item?.transactionData?.rechargeData?.rechargeApi
-                    ?.apiName
-                    ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
+                  "Api Name": item?.transactionData?.rechargeData
+                    ?.operatorConfig?.apiData?.apiName
+                    ? item?.transactionData?.rechargeData?.operatorConfig
+                        ?.apiData?.apiName
                     : "-",
                   "Customer Number": item?.transactionData?.customerNo
                     ? item?.transactionData?.customerNo
@@ -287,6 +289,7 @@ const RechargeList = () => {
           }
         })
       )
+      setExportLoading(false)
     } catch (err) {
       setExportLoading(false)
       toast.err("something want's wrong!!")

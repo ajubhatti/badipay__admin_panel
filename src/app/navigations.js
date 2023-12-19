@@ -158,6 +158,7 @@ export const navigations = [
         path: "/api-response-list",
         iconText: "APRIL",
       },
+      { name: "Service Category", path: "/service-category", iconText: "SC" },
     ],
   },
   {

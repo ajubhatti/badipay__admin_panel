@@ -173,13 +173,15 @@ const CashBackList = () => {
                   item?.transactionData?.rechargeData?.opid ||
                   "-",
                 "Operator Name": item?.transactionData?.rechargeData
-                  ?.rechargeOperator?.companyName
-                  ? item?.transactionData?.rechargeData?.rechargeOperator
-                      ?.companyName
+                  ?.operatorConfig?.operatorData?.operatorName
+                  ? item?.transactionData?.rechargeData?.operatorConfig
+                      ?.operatorData?.operatorName
                   : "-",
-                "Api Name": item?.transactionData?.rechargeData?.rechargeApi
-                  ?.apiName
-                  ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
+
+                "Api Name": item?.transactionData?.rechargeData?.operatorConfig
+                  ?.apiData?.apiName
+                  ? item?.transactionData?.rechargeData?.operatorConfig?.apiData
+                      ?.apiName
                   : "-",
                 "Customer Number": item?.transactionData?.customerNo
                   ? item?.transactionData?.customerNo
@@ -205,6 +207,7 @@ const CashBackList = () => {
                 "User CashBack": item?.userCashBack ? item?.userCashBack : 0,
                 "Referral CashBack": item?.referralCashBack || 0,
                 "Net CashBack": item?.netCashBack ? item?.netCashBack : 0,
+                "Final Recharge Amount": item?.finalAmount,
                 Remark: !!item?.transactionData?.remark
                   ? item?.transactionData?.remark
                   : "-",

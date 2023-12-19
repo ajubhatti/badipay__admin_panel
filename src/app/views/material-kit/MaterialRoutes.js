@@ -44,6 +44,9 @@ const ApiTimeFrame = Loadable(
   lazy(() => import("../api-settings/apis/ApiTimeFrame"))
 )
 const BankListing = Loadable(lazy(() => import("../bank/BankList/BankListing")))
+const ServiceCategoryListing = Loadable(
+  lazy(() => import("../api-settings/service-category/ServiceCategoryListing"))
+)
 
 const ServiceList = Loadable(
   lazy(() => import("../api-settings/services-listing/ServiceList"))
@@ -66,6 +69,10 @@ const PaymentGatewayListings = Loadable(
 )
 
 const materialRoutes = [
+  {
+    path: "/service-category",
+    element: <ServiceCategoryListing />,
+  },
   {
     path: "/bank/list",
     element: <BankListing />,

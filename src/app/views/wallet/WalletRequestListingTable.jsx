@@ -82,7 +82,7 @@ const WalletRequestListingTable = () => {
     if (data.reason) {
       payload.reason = data.reason
     }
-    if (data.data.amount && data.type === "approve") {
+    if (data.data.amount && data.type === "approved") {
       payload.amount = data.data.amount
     }
 
@@ -107,7 +107,7 @@ const WalletRequestListingTable = () => {
     endDate: "",
     provider: "",
     services: "",
-    status: reportType ? "approve" : "",
+    status: reportType ? "approved" : "",
   })
 
   useEffect(() => {
@@ -275,7 +275,7 @@ const WalletRequestListingTable = () => {
           <div className="d-flex">
             <div>
               <Button
-                id="approve"
+                id="approved"
                 type="button"
                 size="sm"
                 className={`btn btn-sm ml-2 ts-buttom m-1 btn-${
@@ -391,7 +391,7 @@ const WalletRequestListingTable = () => {
         getWalletReport(payload, (status) => {
           if (status) {
             const exportData = status?.data
-              ?.filter((item) => item.statusOfWalletRequest === "approve")
+              ?.filter((item) => item.statusOfWalletRequest === "approved")
               ?.map((item, index) => ({
                 No: index + 1,
                 Date:
@@ -405,7 +405,10 @@ const WalletRequestListingTable = () => {
                 "Debit Amount": item?.debitAmount || 0,
                 Remarks: item?.remark || "-",
                 "Payment Mode": item?.paymentMode?.modeName || "-",
-                "Approve Date": item?.statusChangeDate || "-",
+                "Approve Date":
+                  moment(item?.statusChangeDate).format(
+                    "DD/MM/YYYY, HH:mm:ss"
+                  ) || "-",
                 "Approve By": item?.approveBy || "-",
               }))
             setExportLoading(false)

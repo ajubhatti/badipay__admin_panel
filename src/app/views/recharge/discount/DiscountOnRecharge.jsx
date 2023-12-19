@@ -196,9 +196,9 @@ const DiscountOnRecharge = () => {
   useEffect(() => {
     let api = []
     api = apisList
-      .filter((api) => {
-        return api.isActive
-      })
+      // .filter((api) => {
+      //   return api.isActive
+      // })
       .map(function (api) {
         return { value: api._id, label: api.apiName }
       })
@@ -208,9 +208,9 @@ const DiscountOnRecharge = () => {
   useEffect(() => {
     let service = []
     service = serviceList
-      .filter((service) => {
-        return service.isActive
-      })
+      // .filter((service) => {
+      //   return service.isActive
+      // })
       .map(function (service) {
         return { value: service._id, label: service.serviceName }
       })

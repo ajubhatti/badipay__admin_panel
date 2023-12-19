@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { createService, editService } from "./store/action"
+import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 // import { updateApis, createApi } from "./store/action"
 
 const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
   const dispatch = useDispatch()
+
+  const { serviceCategoryList, loading } = useSelector(
+    (state) => state.servicesList
+  )
 
   const [modalData, setModalData] = useState({
     serviceName: "",
@@ -14,9 +19,29 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
     image: "",
     isActive: false,
     icon: "",
+    serviceCategoryId: "",
   })
 
   const [error, setError] = useState({})
+  const [servicesData, setServicesData] = useState([])
+
+  useEffect(() => {
+    console.log({ serviceCategoryList })
+
+    if (serviceCategoryList && serviceCategoryList.length > 0) {
+      let newService = serviceCategoryList.map((service) => ({
+        value: service._id,
+        label: service.categoryName,
+      }))
+      //  if (!data._id) {
+      //    setCompanyData({
+      //      ...companyData,
+      //      providerType: newService[0].value,
+      //    })
+      //  }
+      setServicesData(newService)
+    }
+  }, [serviceCategoryList, data])
 
   useEffect(() => {
     if (data && Object.keys(data).length !== 0) setModalData(data)
@@ -113,6 +138,21 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
                     title: e.target.value,
                   })
                 }
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formGridProviderType" className="m-2">
+              <Form.Label>Category Type</Form.Label>
+              <ReactSelect
+                title={"Category Type"}
+                handleChange={(e) => {
+                  setModalData({
+                    ...modalData,
+                    serviceCategoryId: e,
+                  })
+                }}
+                selectedValue={modalData?.serviceCategoryId}
+                options={servicesData}
               />
             </Form.Group>
 

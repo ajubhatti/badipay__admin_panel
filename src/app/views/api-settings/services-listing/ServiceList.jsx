@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { deleteService, editService, getServices } from "./store/action"
+import {
+  deleteService,
+  editService,
+  getServiceCategories,
+  getServices,
+} from "./store/action"
 import {
   AiOutlineEdit,
   AiFillDelete,
@@ -21,6 +26,10 @@ const ServiceList = () => {
   const [type, setType] = useState("Add")
   const [modalShow, setModalShow] = useState(false)
   const [serviceListData, setServiceListData] = useState([])
+
+  useEffect(() => {
+    dispatch(getServiceCategories())
+  }, [dispatch])
 
   const GetActionFormat = (cell, row) => (
     <>
@@ -87,6 +96,13 @@ const ServiceList = () => {
       dataField: "title",
       formatter: (cell, row, rowIndex, formatExtraData) => (
         <div>{row?.title || "-"}</div>
+      ),
+    },
+    {
+      text: "Category Name",
+      dataField: "categoryName",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.categoryData?.categoryName || "-"}</div>
       ),
     },
     {

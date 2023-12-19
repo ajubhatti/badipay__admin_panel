@@ -54,8 +54,30 @@ const ApiResponses = () => {
       ),
     },
     {
+      text: "TransactionId",
+      dataField: "transactionId",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>{row?.response?.transactionId || "-"}</div>
+      ),
+    },
+    {
       text: "status",
-      dataField: "STATUSMSG",
+      dataField: "responseStatus",
+      formatter: (cell, row, rowIndex, formatExtraData) => (
+        <div>
+          {console.log(
+            "row?.response?.apiData?.operatorConfig?.responseStatus",
+            row?.response?.operatorConfig?.apiData?.responseStatus
+          )}
+          {row?.response?.[
+            row?.response?.operatorConfig?.apiData?.responseStatus
+          ] || "-"}
+        </div>
+      ),
+    },
+    {
+      text: "Message",
+      dataField: "responseMessage",
       formatter: (cell, row, rowIndex, formatExtraData) => (
         <div>
           {console.log(

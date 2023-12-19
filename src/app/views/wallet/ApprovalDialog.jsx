@@ -115,7 +115,7 @@ const ApprovalDialog = ({ show, onHide, handleSave, isLoading }) => {
         <Button
           disabled={loading}
           variant="primary"
-          onClick={() => submitSave("approve", modalData)}
+          onClick={() => submitSave("approved", modalData)}
         >
           Approve
         </Button>

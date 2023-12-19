@@ -16,7 +16,6 @@ const AddUpdateOperatorModal = ({
 
   const { apisList } = useSelector((state) => state.apis)
   const { serviceList } = useSelector((state) => state.servicesList)
-  const [apiArray, setApiArray] = useState([])
   const [servicesData, setServicesData] = useState([])
   const [companyData, setCompanyData] = useState({
     operatorName: "",
@@ -27,48 +26,10 @@ const AddUpdateOperatorModal = ({
     providerType: "",
     minAmount: "",
     maxAmount: "",
-    referenceApis: [],
     requiredFields: [{ fieldName: "customer no", fieldValue: "customerNo" }],
   })
 
-  useEffect(() => {
-    if (data._id) {
-      if (data && Object.keys(data).length !== 0) setCompanyData(data)
-
-      const arrWithColor = data?.referenceApis?.map((object) => {
-        return {
-          ...object,
-          failureLimit: object.failureLimit || 1,
-          isActive: object.isActive || false,
-          pendingLimit: object.pendingLimit || 0,
-          priority: object.priority || 0,
-          totalPending: object.totalPending || 0,
-        }
-      })
-
-      setApiArray(arrWithColor)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (!data?.referenceApis) {
-      const arrWithColor = apisList.map((object) => {
-        return {
-          ...object,
-          failureLimit: 1,
-          isActive: false,
-          pendingLimit: 0,
-          priority: 0,
-          totalPending: 0,
-        }
-      })
-
-      setApiArray(arrWithColor)
-    }
-  }, [apisList, data?.referenceApis])
-
   const handleSaveOrUpdate = async () => {
-    companyData.referenceApis = apiArray
     if (companyData?._id) {
       dispatch(
         editOperator(companyData?._id, companyData, () => {
@@ -101,7 +62,6 @@ const AddUpdateOperatorModal = ({
       providerType: "",
       minAmount: "",
       maxAmount: "",
-      referenceApis: [],
     })
   }
 
