@@ -20,7 +20,6 @@ import {
 } from "react-icons/ai"
 import { BsChatSquareQuote } from "react-icons/bs"
 import { getStateList } from "../utilities/store/action"
-import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
@@ -33,6 +32,7 @@ import { CONSTANT_STATUS, statusList } from "app/constants/constant"
 import { useParams } from "react-router-dom"
 import ComplaintEditModal from "./ComplaintEditModal"
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
+import { getServiceCategories } from "../api-settings/services-listing/store/action"
 
 const options = {
   fieldSeparator: ",",
@@ -55,12 +55,19 @@ const RechargeList = () => {
   const { loading, page, sizePerPage, totalSize, rechargeList } = useSelector(
     (state) => state.recharge
   )
+  const { serviceCategoryList } = useSelector((state) => state.servicesList)
+
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
 
   const [isShowComplainModal, setIsShowComplainModal] = useState(false)
   const [discountInfo, setDiscountInfo] = useState({})
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
-  const [filter, setFilter] = useState({ api: "", services: "", status: "" })
+  const [filter, setFilter] = useState({
+    api: "",
+    services: "",
+    status: "",
+    category: "",
+  })
   const [searchString, setSearchString] = useState("")
   const [dateRangeValue, setDateRangeValue] = useState({
     // start: new Date("07-08-2023"),
@@ -71,11 +78,13 @@ const RechargeList = () => {
   const [exportLoading, setExportLoading] = useState(false)
   const [providers, setApis] = useState([])
   const [services, setServices] = useState([])
+  const [categories, setCategories] = useState([])
   const [payloadData, setPayloadData] = useState({
     startDate: moment(dateRangeValue?.start).format("MM-DD-yyyy"), //"10-15-2022",
     endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
     services: "",
+    category: "",
     status: reportType ? "success" : "",
   })
 
@@ -105,6 +114,22 @@ const RechargeList = () => {
     }
     getAllProviders()
   }, [])
+
+  useEffect(() => {
+    console.log({ serviceCategoryList })
+    let categoty = serviceCategoryList
+      .filter((ctgry) => {
+        return ctgry.isActive
+      })
+      .map(function (ctgry) {
+        return { value: ctgry._id, label: ctgry.categoryName }
+      })
+    setCategories(categoty)
+  }, [serviceCategoryList])
+
+  useEffect(() => {
+    dispatch(getServiceCategories())
+  }, [dispatch])
 
   const handleDelete = (row) => {}
 
@@ -153,8 +178,6 @@ const RechargeList = () => {
 
   useEffect(() => {
     dispatch(getStateList())
-    dispatch(getCompanies())
-
     return () => {
       dispatch(setResetData())
     }
@@ -216,6 +239,7 @@ const RechargeList = () => {
       api: filter?.api || "",
       services: filter?.services || "",
       status: filter?.status || "",
+      category: filter?.category || "",
       search: searchString,
       startDate: dateRangeValue?.start
         ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
@@ -297,7 +321,7 @@ const RechargeList = () => {
   }
 
   const resetValue = () => {
-    setFilter({ api: "", services: "", status: "" })
+    setFilter({ api: "", services: "", status: "", category: "" })
     setDateRangeValue({
       start: new Date(),
       end: new Date(),
@@ -353,12 +377,12 @@ const RechargeList = () => {
       },
       {
         text: "service type",
-        dataField: "serviceTypeName",
+        dataField: "serviceName",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div>
-            {row?.transactionData?.serviceTypeName
-              ? row?.transactionData?.serviceTypeName
+            {row?.serviceData?.serviceName
+              ? row?.serviceData?.serviceName
               : "-"}
           </div>
         ),
@@ -370,8 +394,8 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeByOperator?.operatorName
-              ? row?.rechargeByOperator?.operatorName
+            {row?.operatorData?.operatorName
+              ? row?.operatorData?.operatorName
               : "-"}
           </div>
         ),
@@ -382,7 +406,7 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeByApi?.apiName ? row?.rechargeByApi?.apiName : "-"}
+            {row?.apiData?.apiName ? row?.apiData?.apiName : "-"}
           </div>
         ),
       },
@@ -586,7 +610,7 @@ const RechargeList = () => {
                       isClearable={true}
                       title={"Apis"}
                       name="api"
-                      placeHolder={"Select Api"}
+                      placeHolder={"Api"}
                       handleChange={(e) => {
                         setFilter((prev) => ({
                           ...prev,
@@ -602,7 +626,7 @@ const RechargeList = () => {
                       isClearable={true}
                       title={"Services"}
                       name="services"
-                      placeHolder={"Select Service"}
+                      placeHolder={"Service"}
                       handleChange={(e) => {
                         setFilter((prev) => ({
                           ...prev,
@@ -614,12 +638,28 @@ const RechargeList = () => {
                       className="filter-select"
                     />
 
+                    <ReactSelect
+                      isClearable={true}
+                      title={"category"}
+                      name="category"
+                      placeHolder={"Category"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          category: e,
+                        }))
+                      }}
+                      options={categories}
+                      selectedValue={filter.category || ""}
+                      className="filter-select"
+                    />
+
                     {!reportType && (
                       <ReactSelect
                         isClearable={true}
                         title={"Status"}
                         name="status"
-                        placeHolder={"Select Status"}
+                        placeHolder={"Status"}
                         handleChange={(e) => {
                           setFilter((prev) => ({
                             ...prev,

@@ -9,7 +9,6 @@ import {
   setSortOrderOfCashBack,
 } from "./store/action"
 import { getStateList } from "../utilities/store/action"
-import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
@@ -510,7 +509,6 @@ const CashBackList = () => {
 
   useEffect(() => {
     dispatch(getStateList())
-    dispatch(getCompanies())
   }, [dispatch])
 
   useEffect(() => {

@@ -3,11 +3,13 @@ import {
   FETCH_API_BY_ID,
   SET_APIS_LOADING,
   FETCH_API_RESPONSES,
+  FETCH_API_CONFIG,
 } from "./actionTypes"
 
 const initialState = {
   loading: false,
   apisList: [],
+  apiConfigList: [],
   singleApi: {},
   apiResponseList: [],
 }
@@ -20,6 +22,12 @@ const apisReducer = (state = initialState, action) => {
       return {
         ...state,
         apisList: payload,
+      }
+
+    case FETCH_API_CONFIG:
+      return {
+        ...state,
+        apiConfigList: payload,
       }
 
     case SET_APIS_LOADING:

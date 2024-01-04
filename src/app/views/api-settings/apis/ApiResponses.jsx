@@ -65,13 +65,11 @@ const ApiResponses = () => {
       dataField: "responseStatus",
       formatter: (cell, row, rowIndex, formatExtraData) => (
         <div>
-          {console.log(
-            "row?.response?.apiData?.operatorConfig?.responseStatus",
-            row?.response?.operatorConfig?.apiData?.responseStatus
-          )}
-          {row?.response?.[
-            row?.response?.operatorConfig?.apiData?.responseStatus
-          ] || "-"}
+          {row?.response?.operatorConfig?.apiData?.responseStatus
+            ? row?.response?.[
+                row?.response?.operatorConfig?.apiData?.responseStatus
+              ]
+            : row?.response?.[row?.apiData?.responseStatus] || "-"}
         </div>
       ),
     },
@@ -80,13 +78,11 @@ const ApiResponses = () => {
       dataField: "responseMessage",
       formatter: (cell, row, rowIndex, formatExtraData) => (
         <div>
-          {console.log(
-            "row?.response?.apiData?.operatorConfig?.responseMessage",
-            row?.response?.operatorConfig?.apiData?.responseMessage
-          )}
-          {row?.response?.[
-            row?.response?.operatorConfig?.apiData?.responseMessage
-          ] || "-"}
+          {row?.response?.operatorConfig?.apiData?.responseMessage
+            ? row?.response?.[
+                row?.response?.operatorConfig?.apiData?.responseMessage
+              ]
+            : row?.response?.[row?.apiData?.responseMessage] || "-"}
         </div>
       ),
     },

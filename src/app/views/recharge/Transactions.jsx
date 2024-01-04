@@ -15,7 +15,6 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
-import { getCompanies } from "../api-settings/company-listing/store/action"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
 import { sizePerPageList } from "../../constants/table"
@@ -27,6 +26,7 @@ import { toast } from "react-toastify"
 import { ExportToCsv } from "export-to-csv"
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
 import { statusList } from "app/constants/constant"
+import { getServiceCategories } from "../api-settings/services-listing/store/action"
 
 const options = {
   fieldSeparator: ",",
@@ -47,18 +47,24 @@ const Transactions = () => {
 
   const { loading, page, sizePerPage, totalSize, transactionList } =
     useSelector((state) => state.recharge)
+  const { serviceCategoryList } = useSelector((state) => state.servicesList)
 
   const [dateRangeValue, setDateRangeValue] = useState({
     start: new Date(),
     end: new Date(),
   })
-
+  const [categories, setCategories] = useState([])
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState([])
   const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
   const [discountInfo, setdDiscountInfo] = useState([])
   const [isDiscountEdit, setIsDiscountEdit] = useState(false)
-  const [filter, setFilter] = useState({ api: "", services: "" })
+  const [filter, setFilter] = useState({
+    api: "",
+    services: "",
+    category: "",
+    status: "",
+  })
   const [exportLoading, setExportLoading] = useState(false)
   const [searchString, setSearchString] = useState("")
   const [payloadData, setPayloadData] = useState({
@@ -68,6 +74,7 @@ const Transactions = () => {
     orderBy: "DESC",
     skip: 0,
     search: "",
+    category: "",
     startDate: moment(dateRangeValue?.start).format("MM-DD-yyyy"), //"10-15-2022",
     endDate: moment(dateRangeValue?.end).format("MM-DD-yyyy"),
     api: "",
@@ -85,6 +92,21 @@ const Transactions = () => {
     }),
     [sizePerPage, totalSize, page]
   )
+
+  useEffect(() => {
+    let categoty = serviceCategoryList
+      .filter((ctgry) => {
+        return ctgry.isActive
+      })
+      .map(function (ctgry) {
+        return { value: ctgry._id, label: ctgry.categoryName }
+      })
+    setCategories(categoty)
+  }, [serviceCategoryList])
+
+  useEffect(() => {
+    dispatch(getServiceCategories())
+  }, [dispatch])
 
   useEffect(() => {
     const getAllProviders = async () => {
@@ -191,6 +213,14 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
+            {console.log(
+              "responseOperatorId",
+              row?.apiData?.responseOperatorId,
+              "----",
+              row?.rechargeData?.OPRID,
+              row?.rechargeData?.opid,
+              row?.rechargeData[row?.apiData?.responseOperatorId]
+            )}
             {row?.rechargeData?.OPRID
               ? row?.rechargeData?.OPRID
               : row?.rechargeData?.opid
@@ -205,8 +235,8 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.operatorConfig?.operatorData?.operatorName
-              ? row?.rechargeData?.operatorConfig?.operatorData?.operatorName
+            {row?.operatorData?.operatorName
+              ? row?.operatorData?.operatorName
               : "-"}
           </div>
         ),
@@ -217,9 +247,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.rechargeData?.operatorConfig?.apiData?.apiName
-              ? row?.rechargeData?.operatorConfig?.apiData?.apiName
-              : "-"}
+            {row?.apiData?.apiName ? row?.apiData?.apiName : "-"}
           </div>
         ),
       },
@@ -378,7 +406,6 @@ const Transactions = () => {
 
   useEffect(() => {
     dispatch(getStateList())
-    dispatch(getCompanies())
     return () => {
       dispatch(setResetData())
     }
@@ -418,6 +445,7 @@ const Transactions = () => {
       api: filter?.api || "",
       services: filter?.services || "",
       status: filter?.status || "",
+      category: filter?.category || "",
       search: searchString,
       startDate: dateRangeValue?.start
         ? moment(dateRangeValue?.start).format("MM-DD-yyyy")
@@ -550,6 +578,22 @@ const Transactions = () => {
                       }}
                       options={services}
                       selectedValue={filter.services || ""}
+                      className="filter-select"
+                    />
+
+                    <ReactSelect
+                      isClearable={true}
+                      title={"category"}
+                      name="category"
+                      placeHolder={"Category"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          category: e,
+                        }))
+                      }}
+                      options={categories}
+                      selectedValue={filter.category || ""}
                       className="filter-select"
                     />
 

@@ -12,14 +12,12 @@ import { useDispatch, useSelector } from "react-redux"
 
 const TickerList = () => {
   const dispatch = useDispatch()
+  const { tickerListData, loading } = useSelector((state) => state.utilities)
+
   const [tickerList, setTickerList] = useState([])
-  const [isShowLoader, setIsShowLoader] = useState(false)
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
   const [isShowTickerModal, setIsShowTickerModal] = useState(false)
-
   const [tickerInfo, setTickerInfo] = useState({})
-  const { tickerListData } = useSelector((state) => state.utilities)
-
   const [type, setType] = useState("Add")
 
   useEffect(() => {
@@ -143,7 +141,7 @@ const TickerList = () => {
   return (
     <>
       <div className="container-fluid w-100 mt-3">
-        {isShowLoader && <CustomLoader />}
+        {loading && <CustomLoader />}
 
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
@@ -171,7 +169,7 @@ const TickerList = () => {
                       columns={columns}
                       showSearch={false}
                       withPagination={false}
-                      loading={isShowLoader}
+                      loading={loading}
                       withCard={false}
                     ></CustomTable>
                   </div>

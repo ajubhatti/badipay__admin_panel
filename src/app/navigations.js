@@ -126,7 +126,9 @@ export const navigations = [
         path: "/api-list",
         iconText: "APIL",
       },
+      { name: "API Config", path: "/api-config", iconText: "APICNFG" },
       { name: "API Call time", path: "/api-time", iconText: "TM" },
+      { name: "Service Category", path: "/service-category", iconText: "SC" },
       {
         name: "Services",
         path: "/service-list",
@@ -158,7 +160,6 @@ export const navigations = [
         path: "/api-response-list",
         iconText: "APRIL",
       },
-      { name: "Service Category", path: "/service-category", iconText: "SC" },
     ],
   },
   {

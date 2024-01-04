@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { deleteApis, getApiList } from "./store/action"
+import { createApiConfig, deleteApis, getApiConfigList } from "./store/action"
 import {
   AiOutlineEdit,
   AiFillDelete,
@@ -8,15 +8,14 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai"
 import CustomTable from "app/components/Tables/CustomTable"
-import AddUpdateApiModal from "./AddUpdateApiModal"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 import moment from "moment"
+import ApiConfigAddUpdateModal from "./ApiConfigAddUpdateModal"
 
-const ApiListings = () => {
+const ApiConfigList = () => {
   const dispatch = useDispatch()
-  const { apisList, loading } = useSelector((state) => state.apis)
+  const { apiConfigList, loading } = useSelector((state) => state.apis)
   const [apiListData, setApiListData] = useState([])
-
   const [modalShow, setModalShow] = useState(false)
   const [apiData, setApiData] = useState({})
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
@@ -35,6 +34,15 @@ const ApiListings = () => {
       </button>
       <button
         type="button"
+        className="btn text-danger btn-sm"
+        title="Delete"
+        size="sm"
+        onClick={() => handleRemove(row)}
+      >
+        <AiFillDelete />
+      </button>
+      <button
+        type="button"
         className="btn text-primary btn-sm"
         title="Preview"
         size="sm"
@@ -50,21 +58,14 @@ const ApiListings = () => {
       text: "Api Name",
       dataField: "apiName",
       formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{row?.apiName || "-"}</div>
+        <div>{row?.apiData?.apiName || "-"}</div>
       ),
     },
     {
-      text: "Api Detail",
-      dataField: "apiDetail",
+      text: "Category Name",
+      dataField: "categoryName",
       formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{row?.apiDetail || "-"}</div>
-      ),
-    },
-    {
-      text: "Is Active",
-      dataField: "isActive",
-      formatter: (cell, row, rowIndex, formatExtraData) => (
-        <div>{row?.isActive ? "Active" : "false"}</div>
+        <div>{row?.categoryData?.categoryName || "-"}</div>
       ),
     },
     {
@@ -107,17 +108,15 @@ const ApiListings = () => {
   }
 
   useEffect(() => {
-    dispatch(getApiList())
+    dispatch(getApiConfigList())
   }, [dispatch])
 
   useEffect(() => {
-    setApiListData(apisList)
-  }, [apisList])
+    setApiListData(apiConfigList)
+  }, [apiConfigList])
 
   const addNewApi = () => {
-    setApiData({})
-    setModalShow(true)
-    setType("Add")
+    dispatch(createApiConfig({}))
   }
 
   const handleOk = async () => {
@@ -136,7 +135,7 @@ const ApiListings = () => {
     <div className="container-fluid w-100 mt-3">
       <div className="row">
         <div className="col-lg-12 justify-content-between d-flex">
-          <h6 className="main-heading">API List</h6>
+          <h6 className="main-heading">API Config List</h6>
           <button
             className={`ms-2 btn btn-secondary btn-sm`}
             type="button"
@@ -171,7 +170,7 @@ const ApiListings = () => {
       </div>
 
       {modalShow && (
-        <AddUpdateApiModal
+        <ApiConfigAddUpdateModal
           show={modalShow}
           onHide={() => setModalShow(false)}
           data={apiData}
@@ -192,4 +191,4 @@ const ApiListings = () => {
   )
 }
 
-export default ApiListings
+export default ApiConfigList

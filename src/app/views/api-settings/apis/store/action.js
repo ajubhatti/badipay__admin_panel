@@ -3,11 +3,13 @@ import {
   FETCH_API_BY_ID,
   SET_APIS_LOADING,
   FETCH_API_RESPONSES,
+  FETCH_API_CONFIG,
 } from "./actionTypes"
 import { toast } from "react-toastify"
 import { axiosAdmin } from "app/services/api"
-import { GET_APIS, GET_API_RESPONSE } from "app/constants/urls"
+import { GET_APIS, GET_API_CONFIG, GET_API_RESPONSE } from "app/constants/urls"
 import { apisService } from "app/services/apis.service"
+import { apiConfigService } from "app/services/apiConfig.service"
 
 export const getApiById = (data) => async (dispatch) => {
   try {
@@ -83,6 +85,47 @@ export const getApiResponseList = () => async (dispatch) => {
     dispatch(setLoading(false))
   }
 }
+
+export const getApiConfigList = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    const res = await axiosAdmin.get(GET_API_CONFIG)
+    if (res.data?.data) {
+      dispatch(fetchApiConfigList(res?.data?.data))
+      dispatch(setLoading(false))
+    }
+  } catch (err) {
+    toast.error(err?.response?.data?.message || err?.message)
+    dispatch(setLoading(false))
+  }
+}
+
+export const createApiConfig = (data) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    await apiConfigService.addApiConfig(data).then((res) => {
+      dispatch(getApiConfigList())
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const updateApiConfig = (id, data) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true))
+    await apiConfigService.updateApiConfig(id, data).then((res) => {
+      dispatch(getApiConfigList())
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
+export const fetchApiConfigList = (data) => ({
+  type: FETCH_API_CONFIG,
+  payload: data,
+})
 
 export const fetchApiList = (data) => ({
   type: FETCH_APIS,

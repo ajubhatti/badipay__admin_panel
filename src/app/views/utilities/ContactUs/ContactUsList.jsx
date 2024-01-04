@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import moment from "moment"
 import CustomTable from "app/components/Tables/CustomTable"
-import { AiFillDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai"
+import { AiFillDelete, AiOutlinePlus } from "react-icons/ai"
 import CustomLoader from "app/components/CustomLoader/CustomLoader"
 import ConfirmModal from "app/components/ConfirmModal/ConfirmModal"
 import { Form } from "react-bootstrap"
@@ -21,16 +21,13 @@ import {
 const ContactUsList = () => {
   const dispatch = useDispatch()
   const [contactUsList, setContactUsList] = useState([])
-  const [isShowLoader, setIsShowLoader] = useState(false)
-  const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
-  const [isShowContactUsModal, setIsShowContactUsModal] = useState(false)
-
-  const [contactUsInfo, setContactUsInfo] = useState({})
   const { contactUsListData, loading, page, sizePerPage, totalSize } =
     useSelector((state) => state.contactUs)
 
+  const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
+  const [isShowContactUsModal, setIsShowContactUsModal] = useState(false)
+  const [contactUsInfo, setContactUsInfo] = useState({})
   const [type, setType] = useState("Add")
-
   const [payloadData, setPayloadData] = useState({
     page: 1,
     limits: 25,
@@ -213,7 +210,7 @@ const ContactUsList = () => {
   return (
     <>
       <div className="container-fluid w-100 mt-3">
-        {isShowLoader && <CustomLoader />}
+        {loading && <CustomLoader />}
 
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
@@ -242,7 +239,7 @@ const ContactUsList = () => {
                       columns={columns}
                       showSearch={false}
                       withPagination={true}
-                      loading={isShowLoader}
+                      loading={loading}
                       withCard={false}
                       onTableChange={onTableChange}
                     ></CustomTable>

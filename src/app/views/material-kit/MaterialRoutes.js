@@ -2,6 +2,9 @@ import React, { lazy } from "react"
 import Loadable from "app/components/Loadable/Loadable"
 import CallBackList from "../recharge/CallBackList"
 
+const ApiConfigList = Loadable(
+  lazy(() => import("../api-settings/apis/ApiConfigList"))
+)
 const OperatorConfigs = Loadable(
   lazy(() => import("../api-settings/operator-config/OperatorConfigs"))
 )
@@ -105,7 +108,6 @@ const materialRoutes = [
     path: "/user-list",
     element: <UserListings />,
   },
-
   {
     path: "/payment-gateway-list",
     element: <PaymentGatewayListings />,
@@ -121,6 +123,10 @@ const materialRoutes = [
   {
     path: "/api-time",
     element: <ApiTimeFrame />,
+  },
+  {
+    path: "/api-config",
+    element: <ApiConfigList />,
   },
   {
     path: "/operator-list",

@@ -11,13 +11,13 @@ import { getStateList, removeState, updateStates } from "../store/action"
 
 const StateList = () => {
   const dispatch = useDispatch()
+  const { stateList, loading } = useSelector((state) => state.utilities)
+
   const [tickerList, setTickerList] = useState([])
-  const [isShowLoader, setIsShowLoader] = useState(false)
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(false)
   const [isShowTickerModal, setIsShowTickerModal] = useState(false)
 
   const [tickerInfo, setTickerInfo] = useState({})
-  const { stateList } = useSelector((state) => state.utilities)
 
   const [type, setType] = useState("Add")
 
@@ -149,7 +149,7 @@ const StateList = () => {
   return (
     <>
       <div className="container-fluid w-100 mt-3">
-        {isShowLoader && <CustomLoader />}
+        {loading && <CustomLoader />}
 
         <div className="row">
           <div className="col-lg-12 justify-content-between d-flex">
@@ -177,7 +177,7 @@ const StateList = () => {
                       columns={columns}
                       showSearch={false}
                       withPagination={false}
-                      loading={isShowLoader}
+                      loading={loading}
                       withCard={false}
                     ></CustomTable>
                   </div>
