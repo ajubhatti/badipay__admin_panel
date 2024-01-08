@@ -61,12 +61,18 @@ const UserListings = () => {
     setUsersList(userList)
   }, [userList])
 
+  const getUserById = async (id) => {
+    await accountService.getUserById(id).then((res) => {
+      setUserData(res?.data)
+    })
+  }
+
   const editUser = (data) => {
     setUserModelOpen({
       is_open: true,
       is_form_view_profile: false,
-      data: data,
     })
+    getUserById(data?._id)
     setViewType("edit")
     setUserModelTitle("Update user")
   }
@@ -75,14 +81,13 @@ const UserListings = () => {
     setUserModelOpen({
       is_open: true,
       is_form_view_profile: true,
-      data: data,
     })
+    getUserById(data?._id)
     setViewType("view")
     setUserModelTitle("User Profile")
   }
 
   const addBalance = (data) => {
-    setUserData(data)
     setModelTitle("Add balance")
     setAddRemoveModelOpen(true)
     setAddRemoveModelType("add")
@@ -350,6 +355,14 @@ const UserListings = () => {
     [statusLoading]
   )
 
+  const addNewUser = () => {
+    setUserModelOpen({
+      is_open: true,
+      is_form_view_profile: false,
+    })
+    setUserData({})
+  }
+
   return (
     <>
       <div className="container-fluid w-100 mt-2">
@@ -411,13 +424,7 @@ const UserListings = () => {
 
                         <button
                           className={`btn btn-primary ms-2`}
-                          onClick={() => {
-                            setUserModelOpen({
-                              is_open: true,
-                              is_form_view_profile: false,
-                            })
-                            setUserData({})
-                          }}
+                          onClick={() => addNewUser()}
                         >
                           <AiOutlinePlus />
                         </button>
@@ -438,29 +445,30 @@ const UserListings = () => {
                       loading={loading}
                       withCard={false}
                     />
-
-                    <AddUpdateUserDialog
-                      setOpen={setUserModelOpen}
-                      open={userModelOpen}
-                      userData={userData}
-                      title={userModelTitle}
-                      setUserData={setUserData}
-                      getAllusers={() => {
-                        // getAllUsers()
-                      }}
-                      type={viewType}
-                    />
-
-                    <AddRemoveBalance
-                      setOpen={setAddRemoveModelOpen}
-                      open={addRemoveModelOpen}
-                      userData={userData}
-                      title={modelTitle}
-                      type={addRemoveModelType}
-                      getAllusers={() => {
-                        // getAllUsers()
-                      }}
-                    />
+                    {userModelOpen && Object.values(userData).length && (
+                      <AddUpdateUserDialog
+                        setOpen={setUserModelOpen}
+                        open={userModelOpen}
+                        userData={userData}
+                        title={userModelTitle}
+                        getAllusers={() => {
+                          // getAllUsers()
+                        }}
+                        type={viewType}
+                      />
+                    )}
+                    {addRemoveModelOpen && Object.values(userData).length && (
+                      <AddRemoveBalance
+                        setOpen={setAddRemoveModelOpen}
+                        open={addRemoveModelOpen}
+                        userData={userData}
+                        title={modelTitle}
+                        type={addRemoveModelType}
+                        getAllusers={() => {
+                          // getAllUsers()
+                        }}
+                      />
+                    )}
 
                     {/* {isShowDiscountModal && (
                     <RechargeViewModal

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import FormHelperText from "@mui/material/FormHelperText"
@@ -38,11 +38,12 @@ const validationSchema = yup.object({
 })
 
 const AddUpdateUserDialog = (props) => {
+  const { open, type, title, userId, userData } = props
   const [state, setState] = useState(null)
 
   const onSubmit = async (values) => {
-    if (!!props?.open?.data) {
-      let id = props?.open?.data?._id
+    if (!!open?.data) {
+      let id = open?.data?._id
       delete values.password
       delete values.walletBalance
 
@@ -65,7 +66,13 @@ const AddUpdateUserDialog = (props) => {
       setState(res?.data)
     }
     fetchState()
-  }, [])
+  }, [userId])
+
+  // const getUserById = async (id) => {
+  //   accountService.getUserById(id).then((res) => {
+  //     setUserData(res?.data)
+  //   })
+  // }
 
   const {
     values,
@@ -90,20 +97,20 @@ const AddUpdateUserDialog = (props) => {
   }
 
   useEffect(() => {
-    if (!!props?.open?.data) {
-      const { data } = props.open
+    console.log({ userData })
+    if (!!userData) {
       resetForm({
         values: {
-          userName: data?.userName,
-          phoneNumber: data?.phoneNumber,
-          email: data?.email,
-          stateId: data?.stateId,
-          city: data?.city,
-          pincode: data?.pincode,
-          walletBalance: data?.walletBalance,
-          password: data?.pswdString,
-          transactionPin: data?.transPin,
-          referalName: data?.referedUser?.userName,
+          userName: userData?.userName,
+          phoneNumber: userData?.phoneNumber,
+          email: userData?.email,
+          stateId: userData?.stateId,
+          city: userData?.city,
+          pincode: userData?.pincode,
+          walletBalance: userData?.walletBalance,
+          password: userData?.pswdString,
+          transactionPin: userData?.transPin,
+          referalName: userData?.referedUser,
         },
       })
     } else {
@@ -121,30 +128,30 @@ const AddUpdateUserDialog = (props) => {
         },
       })
     }
-  }, [props.open, props?.userData, resetForm])
+  }, [userData, resetForm])
 
   return (
     <div>
       <Dialog
-        open={props?.open?.is_open || false}
+        open={open?.is_open || false}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
         <form onSubmit={handleSubmit}>
-          <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
+          <DialogTitle id="form-dialog-title">{title}</DialogTitle>
 
           <DialogContent>
-            {props.type !== "edit" && (
+            {type !== "edit" && (
               <TextField
                 margin="dense"
                 id="referralId"
                 name="referralId"
                 label="Referral"
                 type="text"
-                disabled={!!props?.open?.is_form_view_profile}
+                disabled={!!open?.is_form_view_profile}
                 error={errors?.referralId && touched?.referralId}
                 fullWidth
-                defaultValue={props.open?.data?.referedUser?.userName}
+                defaultValue={values?.referalName}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -155,7 +162,7 @@ const AddUpdateUserDialog = (props) => {
               name="userName"
               label="User name"
               type="text"
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.userName && touched?.userName}
               fullWidth
               defaultValue={values?.userName}
@@ -171,7 +178,7 @@ const AddUpdateUserDialog = (props) => {
               label="Phone no."
               name="phoneNumber"
               type="number"
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.phoneNumber && touched?.phoneNumber}
               fullWidth
               defaultValue={values?.phoneNumber}
@@ -188,7 +195,7 @@ const AddUpdateUserDialog = (props) => {
               label="Email Address"
               name="email"
               type="email"
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.email && touched?.email}
               fullWidth
               defaultValue={values?.email}
@@ -207,7 +214,7 @@ const AddUpdateUserDialog = (props) => {
               fullWidth
               name="stateId"
               value={values?.stateId}
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.stateId && touched?.stateId}
               onChange={handleChange}
             >
@@ -226,7 +233,7 @@ const AddUpdateUserDialog = (props) => {
               id="city"
               label="city"
               name="city"
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.city && touched?.city}
               type="text"
               fullWidth
@@ -243,7 +250,7 @@ const AddUpdateUserDialog = (props) => {
               id="pincode"
               name="pincode"
               label="pin code"
-              disabled={!!props?.open?.is_form_view_profile}
+              disabled={!!open?.is_form_view_profile}
               error={errors?.pincode && touched?.pincode}
               type="text"
               fullWidth
@@ -254,16 +261,16 @@ const AddUpdateUserDialog = (props) => {
             {errors?.pincode && touched?.pincode && (
               <FormHelperText error>{errors?.pincode}</FormHelperText>
             )}
-            {props.type !== "edit" && (
+            {type !== "edit" && (
               <>
-                {props?.open?.data?._id && (
+                {open?.data?._id && (
                   <TextField
                     margin="dense"
                     id="walletBalance"
                     name="walletBalance"
                     label="Wallet Balance"
                     type="text"
-                    // disabled={!!props?.open?.is_form_view_profile}
+                    // disabled={!!open?.is_form_view_profile}
                     error={errors?.walletBalance && touched?.walletBalance}
                     fullWidth
                     disabled
@@ -280,7 +287,7 @@ const AddUpdateUserDialog = (props) => {
                   margin="dense"
                   id="password"
                   label="password"
-                  disabled={!!props?.open?.is_form_view_profile}
+                  disabled={!!open?.is_form_view_profile}
                   error={errors?.password && touched?.password}
                   name="password"
                   type="text"
@@ -298,7 +305,7 @@ const AddUpdateUserDialog = (props) => {
                   margin="dense"
                   id="transactionPin"
                   label="transactionPin"
-                  disabled={!!props?.open?.is_form_view_profile}
+                  disabled={!!open?.is_form_view_profile}
                   error={errors?.transactionPin && touched?.transactionPin}
                   name="transactionPin"
                   type="text"
@@ -309,7 +316,7 @@ const AddUpdateUserDialog = (props) => {
                 />
                 <span>
                   Created At :{" "}
-                  {moment(props.open?.data?.referedUser?.createdAt).format(
+                  {moment(open?.data?.referedUser?.createdAt).format(
                     "DD/MM/YYYY, HH:mm:ss"
                   )}
                 </span>
@@ -320,14 +327,14 @@ const AddUpdateUserDialog = (props) => {
             <Button variant="outlined" color="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            {!!!props?.open?.is_form_view_profile && (
+            {!!!open?.is_form_view_profile && (
               <Button
                 variant="outlined"
                 type="submit"
                 // onClick={() => handleSubmit()}
                 color="primary"
               >
-                {!!props?.open?.data ? "Edit" : "Save"}
+                {!!open?.data ? "Edit" : "Save"}
               </Button>
             )}
           </DialogActions>

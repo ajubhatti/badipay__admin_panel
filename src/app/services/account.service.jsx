@@ -18,6 +18,7 @@ export const accountService = {
   resetPassword,
   getAll,
   getById,
+  getUserById,
   createUser,
   fetchState,
   updateUserById,
@@ -87,6 +88,10 @@ async function getAll(payload) {
 
 function getById(id) {
   return fetchWrapper.get(`${baseUrl}/${id}`)
+}
+
+function getUserById(id) {
+  return fetchWrapper.post(`${baseUrl}/getUserById`, { id })
 }
 
 function createUser(params) {
