@@ -213,14 +213,14 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {console.log(
+            {/* {console.log(
               "responseOperatorId",
               row?.apiData?.responseOperatorId,
               "----",
               row?.rechargeData?.OPRID,
               row?.rechargeData?.opid,
               row?.rechargeData[row?.apiData?.responseOperatorId]
-            )}
+            )} */}
             {row?.rechargeData?.OPRID
               ? row?.rechargeData?.OPRID
               : row?.rechargeData?.opid
@@ -553,7 +553,7 @@ const Transactions = () => {
                       isClearable={true}
                       title={"Apis"}
                       name="api"
-                      placeHolder={"Select Api"}
+                      placeHolder={"Api"}
                       handleChange={(e) => {
                         setFilter((prev) => ({
                           ...prev,
@@ -569,7 +569,7 @@ const Transactions = () => {
                       isClearable={true}
                       title={"Services"}
                       name="services"
-                      placeHolder={"Select Service"}
+                      placeHolder={"Service"}
                       handleChange={(e) => {
                         setFilter((prev) => ({
                           ...prev,
@@ -601,7 +601,7 @@ const Transactions = () => {
                       isClearable={true}
                       title={"Status"}
                       name="status"
-                      placeHolder={"Select Status"}
+                      placeHolder={"Status"}
                       handleChange={(e) => {
                         setFilter((prev) => ({
                           ...prev,
@@ -612,9 +612,7 @@ const Transactions = () => {
                       selectedValue={filter.status || ""}
                       className="filter-select"
                     />
-                  </div>
-                  <div className="d-flex filter-flex-wrap">
-                    <div className="me-2 mt-2">
+                    <div className="me-2">
                       <input
                         type="text"
                         className="form-control search-text-box"
@@ -622,6 +620,8 @@ const Transactions = () => {
                         onChange={handleSearch}
                       />
                     </div>
+                  </div>
+                  <div className="d-flex filter-flex-wrap">
                     <CustomDateRangePicker
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}

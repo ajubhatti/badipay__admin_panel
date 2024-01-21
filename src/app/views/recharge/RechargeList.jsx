@@ -671,9 +671,7 @@ const RechargeList = () => {
                         className="filter-select"
                       />
                     )}
-                  </div>
-                  <div className="d-flex filter-flex-wrap">
-                    <div className="me-2 mt-2">
+                    <div className="me-2">
                       <input
                         type="text"
                         className="form-control search-text-box"
@@ -681,6 +679,8 @@ const RechargeList = () => {
                         onChange={handleSearch}
                       />
                     </div>
+                  </div>
+                  <div className="d-flex filter-flex-wrap">
                     <CustomDateRangePicker
                       rangeDate={dateRangeValue}
                       setRangeDate={setDateRangeValue}
