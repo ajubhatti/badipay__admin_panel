@@ -1,6 +1,7 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
 
-const bannerUrl = `${process.env.REACT_APP_BASE_URL}/banner`
+const bannerUrl = `${BASE_URL}/banner`
 
 export const bannerService = {
   getAllBanner,

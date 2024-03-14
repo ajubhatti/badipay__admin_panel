@@ -1,6 +1,7 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const bankAccountUrl = `${process.env.REACT_APP_BASE_URL}/bankAccount`
-const bankUrl = `${process.env.REACT_APP_BASE_URL}/bank`
+const bankAccountUrl = `${BASE_URL}/bankAccount`
+const bankUrl = `${BASE_URL}/bank`
 
 export const bankService = {
   getAllBank,

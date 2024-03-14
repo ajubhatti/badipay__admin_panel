@@ -35,8 +35,6 @@ const ComplaintEditModal = (props) => {
       id: discountInfo?.id,
     }
 
-    console.log({ payload })
-
     dispatch(
       updateComplaints(payload, (result) => {
         props.onCloseDiscountModal(true)

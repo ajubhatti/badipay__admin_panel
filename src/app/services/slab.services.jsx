@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const slabUrl = `${process.env.REACT_APP_BASE_URL}/spslabs`
+const slabUrl = `${BASE_URL}/spslabs`
 
 const getAllSlab = (data) => {
   return fetchWrapper.post(`${slabUrl}/getAll`, data)

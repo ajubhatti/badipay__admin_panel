@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
+  getTransactionListForPrint,
   getTransactionsList,
   setPageTransactions,
   setResetData,
@@ -13,6 +14,7 @@ import {
   AiFillEye,
   AiOutlineReload,
   AiOutlineSearch,
+  AiOutlineDownload,
 } from "react-icons/ai"
 import { getStateList } from "../utilities/store/action"
 import moment from "moment"
@@ -25,7 +27,7 @@ import { discountServices } from "app/services/discount.service"
 import { toast } from "react-toastify"
 import { ExportToCsv } from "export-to-csv"
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
-import { statusList } from "app/constants/constant"
+import { statusListOfAPI } from "app/constants/constant"
 import { getServiceCategories } from "../api-settings/services-listing/store/action"
 
 const options = {
@@ -34,7 +36,7 @@ const options = {
   decimalSeparator: ".",
   showLabels: true,
   showTitle: true,
-  title: "Activities",
+  title: "Transaction List",
   useTextFile: false,
   useBom: true,
   useKeysAsHeaders: true,
@@ -176,7 +178,7 @@ const Transactions = () => {
 
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userDetail?.userName ? row?.userDetail?.userName : "-"}
+            {row?.userDetail?.userName || "-"}
           </div>
         ),
       },
@@ -186,7 +188,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userDetail?.phoneNumber ? row?.userDetail?.phoneNumber : "-"}
+            {row?.userDetail?.phoneNumber || "-"}
           </div>
         ),
       },
@@ -196,15 +198,15 @@ const Transactions = () => {
         dataField: "transactionId",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{row?.transactionId ? row?.transactionId : "-"}</div>
+          <div>{row?.transactionId || "-"}</div>
         ),
       },
       {
         text: "service type",
-        dataField: "serviceTypeName",
+        dataField: "serviceName",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>{row?.serviceTypeName ? row?.serviceTypeName : "-"}</div>
+          <div>{row?.serviceData?.serviceName || "-"}</div>
         ),
       },
       {
@@ -235,9 +237,7 @@ const Transactions = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.operatorData?.operatorName
-              ? row?.operatorData?.operatorName
-              : "-"}
+            {row?.operatorData?.operatorName || "-"}
           </div>
         ),
       },
@@ -257,9 +257,7 @@ const Transactions = () => {
         dataField: "customerNo",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.customerNo ? row?.customerNo : "-"}
-          </div>
+          <div className="align-middle ">{row?.customerNo || "-"}</div>
         ),
       },
       {
@@ -267,9 +265,15 @@ const Transactions = () => {
         dataField: "userBalance",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.userBalance ? row?.userBalance : 0}
-          </div>
+          <div className="align-middle ">{row?.userBalance || 0}</div>
+        ),
+      },
+      {
+        text: "Type",
+        dataField: "type",
+        sort: true,
+        formatter: (cell, row, rowIndex, formatExtraData) => (
+          <div className="align-middle ">{row?.type || 0}</div>
         ),
       },
       {
@@ -277,9 +281,7 @@ const Transactions = () => {
         dataField: "requestAmount",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.requestAmount ? row?.requestAmount : 0}
-          </div>
+          <div className="align-middle ">{row?.requestAmount || 0}</div>
         ),
       },
       {
@@ -287,9 +289,7 @@ const Transactions = () => {
         dataField: "cashBackAmount",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.cashBackAmount ? row?.cashBackAmount : 0}
-          </div>
+          <div className="align-middle ">{row?.cashBackAmount || 0}</div>
         ),
       },
       {
@@ -297,9 +297,7 @@ const Transactions = () => {
         dataField: "rechargeAmount",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.rechargeAmount ? row?.rechargeAmount : 0}
-          </div>
+          <div className="align-middle ">{row?.rechargeAmount || 0}</div>
         ),
       },
       {
@@ -307,9 +305,7 @@ const Transactions = () => {
         dataField: "userFinalBalance",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.userFinalBalance ? row?.userFinalBalance : 0}
-          </div>
+          <div className="align-middle ">{row?.userFinalBalance || 0}</div>
         ),
       },
       {
@@ -317,7 +313,7 @@ const Transactions = () => {
         dataField: "remark",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
-            <span>{!!row?.remark ? row?.remark : "-"}</span>
+            <span>{row?.remark || "-"}</span>
           </div>
         ),
       },
@@ -459,68 +455,46 @@ const Transactions = () => {
   const handleCSV = () => {
     try {
       setExportLoading(true)
+
       const payload = {
         ...payloadData,
         limits: totalSize,
       }
-      // dispatch(
-      //   getCashBackList(payload, (status) => {
-      //     if (status) {
-      //       const exportData = status?.data?.map((item) => {
-      //         return {
-      //           date:
-      //             moment(item?.created).format("DD/MM/YYYY, h:mm:ss a") || "-",
-      //           name: item?.userDetail?.userName || "-",
-      //           phoneNumber: item?.userDetail?.phoneNumber || "-",
-      //           transactionNumber: item?.transactionData?.transactionId || "",
-      //           operatorId:
-      //             item?.transactionData?.rechargeData?.OPRID ||
-      //             item?.transactionData?.rechargeData?.opid ||
-      //             "-",
-      //           operatorName: item?.transactionData?.rechargeData
-      //             ?.rechargeOperator?.companyName
-      //             ? item?.transactionData?.rechargeData?.rechargeOperator
-      //                 ?.companyName
-      //             : "-",
-      //           apiName: item?.transactionData?.rechargeData?.rechargeApi
-      //             ?.apiName
-      //             ? item?.transactionData?.rechargeData?.rechargeApi?.apiName
-      //             : "-",
-      //           customerNumber: item?.transactionData?.customerNo
-      //             ? item?.transactionData?.customerNo
-      //             : "-",
-      //           userBalance: item?.transactionData?.userBalance
-      //             ? item?.transactionData?.userBalance
-      //             : "-",
-      //           requestAmount: item?.transactionData?.requestAmount
-      //             ? item?.transactionData?.requestAmount
-      //             : "-",
-      //           cashBackAmount: item?.transactionData?.cashBackAmount
-      //             ? item?.transactionData?.cashBackAmount
-      //             : "-",
-      //           rechargeAmount: item?.transactionData?.rechargeAmount
-      //             ? item?.transactionData?.rechargeAmount
-      //             : "-",
-      //           userFinalBalance: item?.transactionData?.userFinalBalance
-      //             ? item?.transactionData?.userFinalBalance
-      //             : "-",
-      //           cashBackReceive: item?.cashBackReceive
-      //             ? item?.cashBackReceive
-      //             : "-",
-      //           userCashBack: item?.userCashBack ? item?.userCashBack : "-",
-      //           referralCashBack: item?.referralCashBack,
-      //           netCashBack: item?.netCashBack ? item?.netCashBack : "-",
-      //           remark: !!item?.transactionData?.remark
-      //             ? item?.transactionData?.remark
-      //             : "-",
-      //           status: item?.transactionData?.status,
-      //         }
-      //       })
-      //       setExportLoading(false)
-      //       csvExporter.generateCsv(exportData)
-      //     }
-      //   })
-      // )
+
+      dispatch(
+        getTransactionListForPrint(payload, (listData) => {
+          if (listData) {
+            const exportData = listData?.data?.map((item) => {
+              return {
+                "Created Date":
+                  moment(item?.createdAt).format("DD/MM/YYYY, h:mm:ss a") ||
+                  "-",
+                "Updated Date":
+                  moment(item?.updatedAt).format("DD/MM/YYYY, h:mm:ss a") ||
+                  "-",
+                "User Name": item?.userDetail?.userName || "-",
+                "phone No": item?.userDetail?.phoneNumber || "-",
+                "Transaction No": item?.transactionId || "",
+                "Operator Id":
+                  item?.rechargeData?.OPRID || item?.rechargeData?.opid || "-",
+                "Operator Name": item?.operatorData?.operatorName || "-",
+                "Api Name": item?.apiData?.apiName || "-",
+                "Customer No": item?.customerNo || "-",
+                "User Balance": item?.userBalance ? item?.userBalance : "-",
+                "Request Amount": item?.requestAmount || "-",
+                "CashBack Amount": item?.cashBackAmount || "-",
+                "Recharge Amount": item?.rechargeAmount || "-",
+                "User Final Balance": item?.userFinalBalance || "-",
+                type: item?.type || "-",
+                Remark: item?.remark || "-",
+                Status: item?.status,
+              }
+            })
+            setExportLoading(false)
+            csvExporter.generateCsv(exportData)
+          }
+        })
+      )
     } catch (err) {
       setExportLoading(false)
       toast.err("something want's wrong!!")
@@ -608,7 +582,7 @@ const Transactions = () => {
                           status: e,
                         }))
                       }}
-                      options={statusList}
+                      options={statusListOfAPI}
                       selectedValue={filter.status || ""}
                       className="filter-select"
                     />
@@ -634,21 +608,21 @@ const Transactions = () => {
                         <AiOutlineSearch />
                       </button>
 
-                      {/* <button
-                    className={`ms-2 btn btn-secondary ${
-                      exportLoading ? "disabled" : ""
-                    }`}
-                    onClick={handleCSV}
-                  >
-                    {exportLoading ? (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      ></div>
-                    ) : (
-                      <AiOutlineDownload />
-                    )}
-                  </button> */}
+                      <button
+                        className={`ms-2 btn btn-secondary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        onClick={handleCSV}
+                      >
+                        {exportLoading ? (
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></div>
+                        ) : (
+                          <AiOutlineDownload />
+                        )}
+                      </button>
                       <button
                         className={`btn btn-primary ms-2`}
                         onClick={resetValue}

@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const contactUsUrl = `${process.env.REACT_APP_BASE_URL}/contactUs`
+const contactUsUrl = `${BASE_URL}/contactUs`
 
 const getAllContactUs = () => {
   return fetchWrapper.get(contactUsUrl)

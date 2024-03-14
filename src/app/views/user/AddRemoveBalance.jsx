@@ -33,7 +33,7 @@ const AddRemoveBalance = (props) => {
 
   const handleSubmit = async (type) => {
     let payload = {
-      userId: props.userData._id,
+      userId: props.userData.id,
       type: type,
       amount: amount,
       remarks: remarks,

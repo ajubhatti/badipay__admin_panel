@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const url = `${process.env.REACT_APP_BASE_URL}/cashback`
+const url = `${BASE_URL}/cashback`
 
 const getAllCashBacks = (data) => {
   return fetchWrapper.post(`${url}/getAll`, data)
@@ -26,7 +27,7 @@ const deleteCashBack = (id) => {
 }
 
 const adminloyalty = () => {
-  return fetchWrapper.get(`${process.env.REACT_APP_BASE_URL}/adminloyalty`)
+  return fetchWrapper.get(`${BASE_URL}/adminloyalty`)
 }
 
 const getCashBackReports = (data) => {

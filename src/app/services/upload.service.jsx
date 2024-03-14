@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const url = `${process.env.REACT_APP_BASE_URL}/file`
+const url = `${BASE_URL}/file`
 
 const uploadFile = (data) => {
   return fetchWrapper.postImage(`${url}/upload`, data)

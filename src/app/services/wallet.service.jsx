@@ -1,9 +1,10 @@
+import { BASE_URL } from "app/constants/urls"
 import { BehaviorSubject } from "rxjs"
 import { fetchWrapper } from "../helpers/fetch-wrapper"
 
 const userSubject = new BehaviorSubject(null)
 
-const baseUrl = `${process.env.REACT_APP_BASE_URL}/walletTransaction`
+const baseUrl = `${BASE_URL}/walletTransaction`
 
 export const walletServices = {
   getAll,

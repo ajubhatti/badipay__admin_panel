@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux"
 import { updateApiConfig } from "./store/action"
 
 const ApiConfigAddUpdateModal = ({ show, onHide, type, data }) => {
-  console.log({ data })
   const dispatch = useDispatch()
 
   const [modalData, setModalData] = useState({

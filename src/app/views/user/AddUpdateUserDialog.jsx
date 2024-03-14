@@ -97,7 +97,6 @@ const AddUpdateUserDialog = (props) => {
   }
 
   useEffect(() => {
-    console.log({ userData })
     if (!!userData) {
       resetForm({
         values: {

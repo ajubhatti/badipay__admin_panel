@@ -82,7 +82,10 @@ const WalletRequestListingTable = () => {
     if (data.reason) {
       payload.reason = data.reason
     }
-    if (data.data.amount && data.type === "approved") {
+    if (
+      (data.data.amount && data.type === "approved") ||
+      data.type === "approve"
+    ) {
       payload.amount = data.data.amount
     }
 
@@ -107,7 +110,7 @@ const WalletRequestListingTable = () => {
     endDate: "",
     provider: "",
     services: "",
-    status: reportType ? "approved" : "",
+    status: "",
   })
 
   useEffect(() => {
@@ -202,11 +205,7 @@ const WalletRequestListingTable = () => {
         text: "Deposit Bank",
         dataField: "bankData.bankdetails.bankName",
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>
-            {row?.bankData?.bankdetails?.bankName
-              ? row?.bankData?.bankdetails?.bankName
-              : "-"}
-          </div>
+          <div>{row?.bankData?.bankName ? row?.bankData?.bankName : "-"}</div>
         ),
       },
       {
@@ -391,7 +390,11 @@ const WalletRequestListingTable = () => {
         getWalletReport(payload, (status) => {
           if (status) {
             const exportData = status?.data
-              ?.filter((item) => item.statusOfWalletRequest === "approved")
+              ?.filter(
+                (item) =>
+                  item.statusOfWalletRequest === "approved" ||
+                  item.statusOfWalletRequest === "approve"
+              )
               ?.map((item, index) => ({
                 No: index + 1,
                 Date:
@@ -399,7 +402,7 @@ const WalletRequestListingTable = () => {
                 "User Name": item?.userDetail?.userName || "-",
                 "Phone Number": item?.userDetail?.phoneNumber || "-",
                 "Slip No": item?.slipNo || "-",
-                "Deposit Bank": item?.bankData?.bankdetails?.bankName || "-",
+                "Deposit Bank": item?.bankData?.bankName || "-",
                 "Request Amount": item?.requestAmount || 0,
                 "Approve Amount": item?.approveAmount || 0,
                 "Debit Amount": item?.debitAmount || 0,
@@ -485,24 +488,23 @@ const WalletRequestListingTable = () => {
                       >
                         <AiOutlineSearch />
                       </button>
-                      {reportType && (
-                        <button
-                          className={`ms-2 btn btn-secondary ${
-                            exportLoading ? "disabled" : ""
-                          }`}
-                          type="button"
-                          onClick={handleCSV}
-                        >
-                          {exportLoading ? (
-                            <div
-                              className="spinner-border spinner-border-sm"
-                              role="status"
-                            ></div>
-                          ) : (
-                            <AiOutlineDownload />
-                          )}
-                        </button>
-                      )}
+
+                      <button
+                        className={`ms-2 btn btn-secondary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        type="button"
+                        onClick={handleCSV}
+                      >
+                        {exportLoading ? (
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></div>
+                        ) : (
+                          <AiOutlineDownload />
+                        )}
+                      </button>
 
                       <button
                         className={`btn btn-primary ms-2`}

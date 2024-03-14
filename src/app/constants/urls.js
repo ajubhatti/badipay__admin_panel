@@ -1,3 +1,6 @@
+export const BASE_URL = process.env.REACT_APP_LOCAL_URL
+// export const BASE_URL = process.env.REACT_APP_BASE_URL
+
 // Auth
 export const LOGIN = "/login"
 export const SIGNUP = "/register"
@@ -91,4 +94,3 @@ export const GET_APIS = "/apis"
 export const GET_API_RESPONSE = "/apiResponse"
 export const GET_API_CONFIG = "/apiConfig"
 export const GET_OPERATOR_BY_ID = "/operator"
-

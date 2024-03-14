@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 
 const DiscountModalNew = (props) => {
-  console.log({ props })
   const [discountInfo, setDiscountInfo] = useState({})
 
   useEffect(() => {

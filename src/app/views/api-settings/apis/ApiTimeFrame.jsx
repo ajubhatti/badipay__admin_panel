@@ -47,12 +47,10 @@ const ApiTimeFrame = () => {
     }
 
     await utilityService.getAllUtility().then(async (res) => {
-      console.log({ res }, res.data.utility[0]._id)
       if (res?.data && res.data.utility.length) {
         await utilityService
           .updateUtility(res.data.utility[0]._id, payload)
           .then((res) => {
-            console.log({ res })
             if (res) {
               toast.success(res.message)
             } else {
@@ -62,7 +60,6 @@ const ApiTimeFrame = () => {
           })
       } else {
         await utilityService.addUtility(payload).then((res) => {
-          console.log({ res })
           if (res) {
             toast.success(res.message)
           } else {

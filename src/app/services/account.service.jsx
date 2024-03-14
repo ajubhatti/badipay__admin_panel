@@ -1,3 +1,4 @@
+import { BASE_URL } from "app/constants/urls"
 import { BehaviorSubject } from "rxjs"
 import { fetchWrapper } from "../helpers/fetch-wrapper"
 import { history } from "../helpers/history"
@@ -5,7 +6,7 @@ import { history } from "../helpers/history"
 const userSubject = new BehaviorSubject(null)
 // const baseUrl = `${config.apiUrl}/accounts`;
 
-const baseUrl = `${process.env.REACT_APP_BASE_URL}/auth`
+const baseUrl = `${BASE_URL}/auth`
 
 export const accountService = {
   login,
@@ -24,6 +25,7 @@ export const accountService = {
   updateUserById,
   delete: _delete,
   changeStatusOfUser,
+  changeStatusOfAllUser,
   user: userSubject.asObservable(),
   get userValue() {
     return userSubject.value
@@ -99,7 +101,7 @@ function createUser(params) {
 }
 
 function fetchState() {
-  return fetchWrapper.get(`${process.env.REACT_APP_BASE_URL}/state`)
+  return fetchWrapper.get(`${BASE_URL}/state`)
 }
 
 async function updateUserById(id, params) {
@@ -117,6 +119,14 @@ async function updateUserById(id, params) {
 async function changeStatusOfUser(id, params) {
   return await fetchWrapper
     .post(`${baseUrl}/changeStatus/${id}`, params)
+    .then((user) => {
+      return user
+    })
+}
+
+async function changeStatusOfAllUser(params) {
+  return await fetchWrapper
+    .post(`${baseUrl}/updateAllUserStatus`, params)
     .then((user) => {
       return user
     })

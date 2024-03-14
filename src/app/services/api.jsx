@@ -4,9 +4,9 @@ import store from "store"
 // import { setToken, logout, resetReduxState } from 'store/actions'
 
 import Cookies from "app/helpers/cookies"
-import { LOGOUT } from "app/constants/urls"
+import { BASE_URL, LOGOUT } from "app/constants/urls"
 
-const API_URL = `${process.env.REACT_APP_BASE_URL}`
+const API_URL = `${BASE_URL}`
 
 const axiosAdmin = axios.create({
   baseURL: API_URL,

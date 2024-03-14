@@ -33,10 +33,8 @@ const RechargeViewModal = (props) => {
     setSaveLoading(true)
     if (props.isDiscountEdit) {
       let payload = {
-        status: discountInfo?.status
+        status: discountInfo?.status,
       }
-
-      console.log({ payload })
 
       dispatch(
         updateRecharge(discountInfo?.id, payload, (result) => {

@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const tickerUrl = `${process.env.REACT_APP_BASE_URL}/ticker`
+const tickerUrl = `${BASE_URL}/ticker`
 
 const getAllTicker = () => {
   return fetchWrapper.get(tickerUrl)

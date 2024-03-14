@@ -124,6 +124,18 @@ export const createRecharge = (data) => async (dispatch) => {
   }
 }
 
+export const getTransactionListForPrint = (data, cb) => async (dispatch) => {
+  try {
+    await transactionsService.getAllTransactions(data).then((res) => {
+      if (res?.data) {
+        cb(res?.data)
+      }
+    })
+  } catch (err) {
+    dispatch(setLoading(false))
+  }
+}
+
 export const getTransactionsList = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true))

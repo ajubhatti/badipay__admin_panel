@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const url = `${process.env.REACT_APP_BASE_URL}/transaction`
+const url = `${BASE_URL}/transaction`
 
 const getAllTransactions = (data) => {
   return fetchWrapper.post(`${url}/getAll`, data)

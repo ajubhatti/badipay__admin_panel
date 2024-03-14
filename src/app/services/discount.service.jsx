@@ -1,8 +1,9 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const discountUrl = `${process.env.REACT_APP_BASE_URL}/discount`
+const discountUrl = `${BASE_URL}/discount`
 
 var axios = require("axios")
-const api_url = `${process.env.REACT_APP_BASE_URL}`
+const api_url = `${BASE_URL}`
 
 const getAllApisAndServices = () => {
   return axios

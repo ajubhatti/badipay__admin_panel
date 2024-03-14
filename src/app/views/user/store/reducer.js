@@ -20,6 +20,7 @@ const initialState = {
   search: "",
   sortField: "createdAt",
   sortOrder: "DESC",
+  userCount: {},
 }
 
 const accountReducer = (state = initialState, action) => {
@@ -39,6 +40,7 @@ const accountReducer = (state = initialState, action) => {
         loading: false,
         totalSize: payload?.total || 0,
         totalBalance: payload?.totalBalance || 0,
+        userCount: payload?.checkUserCount[0] || {},
       }
 
     case FETCH_USERS_BY_ID:

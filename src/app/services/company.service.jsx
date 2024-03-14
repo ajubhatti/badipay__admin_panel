@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const Url = `${process.env.REACT_APP_BASE_URL}/company`
+const Url = `${BASE_URL}/company`
 
 export const companyService = {
   getAllCompanies,

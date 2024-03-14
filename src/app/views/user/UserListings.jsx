@@ -26,11 +26,35 @@ import {
   setSortFieldOfUsers,
   setSortOrderOfUsers,
 } from "./store/action"
+import { ExportToCsv } from "export-to-csv"
+import { toast } from "react-toastify"
+
+const options = {
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  showTitle: true,
+  title: "User List",
+  useTextFile: false,
+  useBom: true,
+  useKeysAsHeaders: true,
+  filename: "recharge",
+}
+
+const csvExporter = new ExportToCsv(options)
 
 const UserListings = () => {
   const dispatch = useDispatch()
-  const { loading, page, sizePerPage, totalSize, userList, totalBalance } =
-    useSelector((state) => state.account)
+  const {
+    loading,
+    page,
+    sizePerPage,
+    totalSize,
+    userList,
+    totalBalance,
+    userCount,
+  } = useSelector((state) => state.account)
   const [usersList, setUsersList] = useState([])
   const [userModelOpen, setUserModelOpen] = useState(false)
   const [userData, setUserData] = useState({})
@@ -42,6 +66,7 @@ const UserListings = () => {
   const [searchString, setSearchString] = useState("")
   const [exportLoading, setExportLoading] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
+  const [allUserStatus, setAllUserStatus] = useState(false)
   const [dateRangeValue, setDateRangeValue] = useState({
     start: null,
     end: null,
@@ -59,7 +84,8 @@ const UserListings = () => {
 
   useEffect(() => {
     setUsersList(userList)
-  }, [userList])
+    setAllUserStatus(userCount?.inactive_count ? false : true)
+  }, [userList, userCount])
 
   const getUserById = async (id) => {
     await accountService.getUserById(id).then((res) => {
@@ -102,6 +128,13 @@ const UserListings = () => {
         setStatusLoading(false)
         dispatch(getUserList(payloadData))
       })
+  }
+
+  const changeAllUserStatus = async (value) => {
+    setAllUserStatus(value)
+    await accountService.changeStatusOfAllUser({ value }).then(() => {
+      dispatch(getUserList(payloadData))
+    })
   }
 
   const changeVerifiactionStatus = async (data, isChecked) => {
@@ -190,7 +223,47 @@ const UserListings = () => {
     })
   }
 
-  const handleCSV = () => {}
+  const handleCSV = () => {
+    try {
+      setExportLoading(true)
+      const payload = {
+        ...payloadData,
+        limits: totalSize,
+        page: 1,
+      }
+      dispatch(
+        getUserList(payload, (status) => {
+          if (status) {
+            const exportData = status?.data?.map((item) => {
+              return {
+                Date:
+                  moment(item?.createdAt).format("DD/MM/YYYY, HH:mm:ss") || "-",
+                "User Name": item?.userName || "-",
+                "Phone Number": item?.phoneNumber || "-",
+                Password: item?.pswdString || "",
+                state: item?.stateDetail?.stateName || "-",
+                Balance: item?.walletBalance,
+                "Pending Balance": item?.pendingBalance,
+                City: item?.city || "-",
+                Pincode: item?.pincode || "-",
+                OTP: item?.otp || "-",
+                "Referral Code": item?.referralDetails?.referralCode || "-",
+                Active: item?.isActive || "-",
+                Verify: item?.isVerify || "-",
+              }
+            })
+
+            setExportLoading(false)
+            csvExporter.generateCsv(exportData)
+          }
+        })
+      )
+      setExportLoading(false)
+    } catch (err) {
+      setExportLoading(false)
+      toast.err("something want's wrong!!")
+    }
+  }
 
   const handleDelete = (row) => {}
 
@@ -374,10 +447,23 @@ const UserListings = () => {
             <div className="card mb-4">
               <div className="card-body">
                 <div className="row">
-                  <div className=" d-flex flex-wrap justify-content-between mb-2">
-                    <div className="mt-2">
+                  <div className="d-flex flex-wrap justify-content-between mb-2">
+                    <div>
                       <h4>Total Balance : {totalBalance}</h4>
+                      <div className="d-flex flex-wrap">
+                        <h6 className="me-2">Change status </h6>
+                        <Form.Check
+                          type="switch"
+                          id="isActiveSwitch"
+                          className="cursor-pointer"
+                          checked={allUserStatus}
+                          onChange={(e) => {
+                            changeAllUserStatus(e.target.checked)
+                          }}
+                        />
+                      </div>
                     </div>
+
                     <div className="d-flex flex-wrap">
                       <div className="me-2 mt-2">
                         <input
@@ -391,7 +477,7 @@ const UserListings = () => {
                         rangeDate={dateRangeValue}
                         setRangeDate={setDateRangeValue}
                       />
-                      <div className="d-flex mt-2">
+                      <div className="d-flex mt-2 mb-2">
                         <button
                           className={`btn btn-primary ms-2`}
                           onClick={() => handleFilterData()}
@@ -400,7 +486,7 @@ const UserListings = () => {
                         </button>
 
                         <button
-                          className={`ms-2 btn btn-secondary ${
+                          className={`ms-2 mb-2 btn btn-secondary ${
                             exportLoading ? "disabled" : ""
                           }`}
                           onClick={handleCSV}
@@ -416,14 +502,14 @@ const UserListings = () => {
                         </button>
 
                         <button
-                          className={`btn btn-primary ms-2`}
+                          className={`btn btn-primary ms-2 mb-2`}
                           onClick={resetValue}
                         >
                           <AiOutlineReload />
                         </button>
 
                         <button
-                          className={`btn btn-primary ms-2`}
+                          className={`btn btn-primary ms-2 mb-2`}
                           onClick={() => addNewUser()}
                         >
                           <AiOutlinePlus />

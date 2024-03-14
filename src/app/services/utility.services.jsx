@@ -1,6 +1,7 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const stateUrl = `${process.env.REACT_APP_BASE_URL}/state`
-const utilityUrl = `${process.env.REACT_APP_BASE_URL}/utility`
+const stateUrl = `${BASE_URL}/state`
+const utilityUrl = `${BASE_URL}/utility`
 
 const getAllState = () => {
   return fetchWrapper.get(stateUrl)

@@ -33,7 +33,14 @@ export const methodType = [
 ]
 
 export const statusList = [
-  { value: "approved", label: "approved" },
+  { value: "approve", label: "approve" },
   { value: "pending", label: "pending" },
-  { value: "rejected", label: "rejected" },
+  { value: "reject", label: "reject" },
+]
+
+export const statusListOfAPI = [
+  { value: "success", label: "success" },
+  { value: "pending", label: "pending" },
+  { value: "failed", label: "failed" },
+  { value: "refund", label: "refund" },
 ]

@@ -26,8 +26,6 @@ const AddUpdateServiceModal = ({ show, onHide, type, data }) => {
   const [servicesData, setServicesData] = useState([])
 
   useEffect(() => {
-    console.log({ serviceCategoryList })
-
     if (serviceCategoryList && serviceCategoryList.length > 0) {
       let newService = serviceCategoryList.map((service) => ({
         value: service._id,

@@ -1,5 +1,6 @@
+import { BASE_URL } from "app/constants/urls"
 import { fetchWrapper } from "app/helpers/fetch-wrapper"
-const url = `${process.env.REACT_APP_BASE_URL}/paymentGateway`
+const url = `${BASE_URL}/paymentGateway`
 
 const getAllPaymentGateways = () => {
   return fetchWrapper.get(url)

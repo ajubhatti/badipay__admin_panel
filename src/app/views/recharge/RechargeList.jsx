@@ -28,7 +28,11 @@ import { toast } from "react-toastify"
 import { discountServices } from "app/services/discount.service"
 import RechargeViewModal from "./RechargeViewModal"
 import { ExportToCsv } from "export-to-csv"
-import { CONSTANT_STATUS, statusList } from "app/constants/constant"
+import {
+  CONSTANT_STATUS,
+  statusList,
+  statusListOfAPI,
+} from "app/constants/constant"
 import { useParams } from "react-router-dom"
 import ComplaintEditModal from "./ComplaintEditModal"
 import ReactSelect from "app/components/ReactDropDown/ReactSelect"
@@ -92,23 +96,15 @@ const RechargeList = () => {
     const getAllProviders = async () => {
       await discountServices.getAllApisAndServices().then((res) => {
         let apis = []
-        apis = res?.apisResponse?.data?.data
-          .filter((apis) => {
-            return apis.isActive
-          })
-          .map(function (apis) {
-            return { value: apis._id, label: apis.apiName }
-          })
+        apis = res?.apisResponse?.data?.data.map(function (apis) {
+          return { value: apis._id, label: apis.apiName }
+        })
         setApis(apis)
 
         let service = []
-        service = res?.serviceResponse?.data?.data
-          .filter((service) => {
-            return service.isActive
-          })
-          .map(function (service) {
-            return { value: service._id, label: service.serviceName }
-          })
+        service = res?.serviceResponse?.data?.data.map(function (service) {
+          return { value: service._id, label: service.serviceName }
+        })
         setServices(service)
       })
     }
@@ -116,14 +112,9 @@ const RechargeList = () => {
   }, [])
 
   useEffect(() => {
-    console.log({ serviceCategoryList })
-    let categoty = serviceCategoryList
-      .filter((ctgry) => {
-        return ctgry.isActive
-      })
-      .map(function (ctgry) {
-        return { value: ctgry._id, label: ctgry.categoryName }
-      })
+    let categoty = serviceCategoryList.map(function (ctgry) {
+      return { value: ctgry._id, label: ctgry.categoryName }
+    })
     setCategories(categoty)
   }, [serviceCategoryList])
 
@@ -139,7 +130,6 @@ const RechargeList = () => {
     if (!row.complaintStatus) {
       dispatch(
         rechargeComplaints(row, (cb) => {
-          console.log({ cb })
           if (cb?.status === 200) {
             if (cb?.data?.STATUSCODE !== "0" || cb?.data?.status !== "2")
               toast.error(cb.data.STATUSMSG || cb.data.msg)
@@ -166,7 +156,6 @@ const RechargeList = () => {
   }
 
   const handleComplaintEdit = (info) => {
-    console.log({ info })
     setDiscountInfo(info)
     setIsShowComplainModal(true)
   }
@@ -259,54 +248,33 @@ const RechargeList = () => {
         page: 1,
       }
       dispatch(
-        getRechargeListForPrint(payload, (status) => {
-          if (status) {
-            const exportData = status?.data
-              ?.filter((item) => {
-                console.log({ item })
-                return item.status === CONSTANT_STATUS.SUCCESS
-              })
-              ?.map((item) => {
-                return {
-                  Date:
-                    moment(item?.created).format("DD/MM/YYYY, HH:mm:ss") || "-",
-                  "User Name": item?.userDetail?.userName || "-",
-                  "Phone Number": item?.userDetail?.phoneNumber || "-",
-                  "Transaction No": item?.transactionData?.transactionId || "",
-                  // "service type": item?.transactionData?.serviceTypeName || "-",
-                  "Operator Id":
-                    item?.transactionData?.rechargeData?.OPRID ||
-                    item?.transactionData?.rechargeData?.opid ||
-                    "-",
-                  "Operator Name": item?.transactionData?.rechargeData
-                    ?.operatorConfig?.operatorData?.operatorName
-                    ? item?.transactionData?.rechargeData?.operatorConfig
-                        ?.operatorData?.operatorName
-                    : "-",
-                  "Api Name": item?.transactionData?.rechargeData
-                    ?.operatorConfig?.apiData?.apiName
-                    ? item?.transactionData?.rechargeData?.operatorConfig
-                        ?.apiData?.apiName
-                    : "-",
-                  "Customer Number": item?.transactionData?.customerNo
-                    ? item?.transactionData?.customerNo
-                    : "-",
-                  "User Balance": item?.transactionData?.userBalance
-                    ? item?.transactionData?.userBalance
-                    : 0,
-                  "Request Amount": item?.transactionData?.requestAmount
-                    ? item?.transactionData?.requestAmount
-                    : 0,
-                  "User CashBack": item?.transactionData?.cashBackAmount || 0,
-                  "Net CashBack": item?.transactionData?.netCashBack || 0,
-                  "Recharge Amount": item?.transactionData?.rechargeAmount || 0,
-                  "Final Balance": item?.transactionData?.userFinalBalance || 0,
-                  Remark: item?.transactionData?.remark || "-",
-                  Status: item?.transactionData?.status
-                    ? item?.transactionData?.status
-                    : item?.status,
-                }
-              })
+        getRechargeListForPrint(payload, (listData) => {
+          if (listData) {
+            const exportData = listData?.data?.map((item) => {
+              return {
+                Date:
+                  moment(item?.createdAt).format("DD/MM/YYYY, HH:mm:ss") || "-",
+                "User Name": item?.userDetail?.userName || "-",
+                "Phone Number": item?.userDetail?.phoneNumber || "-",
+                "Transaction No": item?.transactionData?.transactionId || "",
+                // "service type": item?.transactionData?.serviceTypeName || "-",
+                "Operator Id":
+                  item?.transactionData?.rechargeData?.OPRID ||
+                  item?.transactionData?.rechargeData?.opid ||
+                  "-",
+                "Operator Name": item?.operatorData?.operatorName || "-",
+                "Api Name": item?.apiData?.apiName || "-",
+                "Customer Number": item?.transactionData?.customerNo || "-",
+                "User Balance": item?.transactionData?.userBalance || 0,
+                "Request Amount": item?.transactionData?.requestAmount || 0,
+                "User CashBack": item?.transactionData?.cashBackAmount || 0,
+                "Net CashBack": item?.transactionData?.netCashBack || 0,
+                "Recharge Amount": item?.transactionData?.rechargeAmount || 0,
+                "Final Balance": item?.transactionData?.userFinalBalance || 0,
+                Remark: item?.transactionData?.remark || "-",
+                Status: item?.transactionData?.status || item?.status,
+              }
+            })
 
             setExportLoading(false)
             csvExporter.generateCsv(exportData)
@@ -358,7 +326,7 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.userDetail?.phoneNumber ? row?.userDetail?.phoneNumber : "-"}
+            {row?.userDetail?.phoneNumber || "-"}
           </div>
         ),
       },
@@ -368,11 +336,7 @@ const RechargeList = () => {
         dataField: "transactionId",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>
-            {row?.transactionData?.transactionId
-              ? row?.transactionData?.transactionId
-              : "-"}
-          </div>
+          <div>{row?.transactionData?.transactionId || "-"}</div>
         ),
       },
       {
@@ -380,23 +344,16 @@ const RechargeList = () => {
         dataField: "serviceName",
         sort: false,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div>
-            {row?.serviceData?.serviceName
-              ? row?.serviceData?.serviceName
-              : "-"}
-          </div>
+          <div>{row?.serviceData?.serviceName || "-"}</div>
         ),
       },
-
       {
         text: "Operator Name",
         dataField: "operatorName",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.operatorData?.operatorName
-              ? row?.operatorData?.operatorName
-              : "-"}
+            {row?.operatorData?.operatorName || "-"}
           </div>
         ),
       },
@@ -405,9 +362,7 @@ const RechargeList = () => {
         dataField: "apiName",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.apiData?.apiName ? row?.apiData?.apiName : "-"}
-          </div>
+          <div className="align-middle ">{row?.apiData?.apiName || "-"}</div>
         ),
       },
 
@@ -416,34 +371,26 @@ const RechargeList = () => {
         dataField: "customerNo",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
-          <div className="align-middle ">
-            {row?.customerNo ? row?.customerNo : "-"}
-          </div>
+          <div className="align-middle ">{row?.customerNo || "-"}</div>
         ),
       },
-
       {
         text: "Balance",
         dataField: "userBalance",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.userBalance
-              ? row?.transactionData?.userBalance
-              : 0}
+            {row?.transactionData?.userBalance || 0}
           </div>
         ),
       },
-
       {
         text: "Request Amount",
         dataField: "requestAmount",
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.requestAmount
-              ? row?.transactionData?.requestAmount
-              : 0}
+            {row?.transactionData?.requestAmount || 0}
           </div>
         ),
       },
@@ -453,9 +400,7 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.cashBackAmount
-              ? row?.transactionData?.cashBackAmount
-              : 0}
+            {row?.transactionData?.cashBackAmount || 0}
           </div>
         ),
       },
@@ -466,9 +411,7 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.rechargeAmount
-              ? row?.transactionData?.rechargeAmount
-              : 0}
+            {row?.transactionData?.rechargeAmount || 0}
           </div>
         ),
       },
@@ -479,23 +422,16 @@ const RechargeList = () => {
         sort: true,
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle ">
-            {row?.transactionData?.userFinalBalance
-              ? row?.transactionData?.userFinalBalance
-              : 0}
+            {row?.transactionData?.userFinalBalance || 0}
           </div>
         ),
       },
-
       {
         text: "remark",
         dataField: "remark",
         formatter: (cell, row, rowIndex, formatExtraData) => (
           <div className="align-middle">
-            <span>
-              {!!row?.transactionData?.remark
-                ? row?.transactionData?.remark
-                : "-"}
-            </span>
+            <span>{row?.transactionData?.remark || "-"}</span>
           </div>
         ),
       },
@@ -621,7 +557,6 @@ const RechargeList = () => {
                       selectedValue={filter.api || ""}
                       className="filter-select"
                     />
-
                     <ReactSelect
                       isClearable={true}
                       title={"Services"}
@@ -637,7 +572,6 @@ const RechargeList = () => {
                       selectedValue={filter.services || ""}
                       className="filter-select"
                     />
-
                     <ReactSelect
                       isClearable={true}
                       title={"category"}
@@ -653,24 +587,23 @@ const RechargeList = () => {
                       selectedValue={filter.category || ""}
                       className="filter-select"
                     />
-
-                    {!reportType && (
-                      <ReactSelect
-                        isClearable={true}
-                        title={"Status"}
-                        name="status"
-                        placeHolder={"Status"}
-                        handleChange={(e) => {
-                          setFilter((prev) => ({
-                            ...prev,
-                            status: e,
-                          }))
-                        }}
-                        options={statusList}
-                        selectedValue={filter.status || ""}
-                        className="filter-select"
-                      />
-                    )}
+                    {/* {!reportType && ( */}
+                    <ReactSelect
+                      isClearable={true}
+                      title={"Status"}
+                      name="status"
+                      placeHolder={"Status"}
+                      handleChange={(e) => {
+                        setFilter((prev) => ({
+                          ...prev,
+                          status: e,
+                        }))
+                      }}
+                      options={statusListOfAPI}
+                      selectedValue={filter.status || ""}
+                      className="filter-select"
+                    />
+                    {/* )} */}
                     <div className="me-2">
                       <input
                         type="text"
@@ -693,24 +626,24 @@ const RechargeList = () => {
                       >
                         <AiOutlineSearch />
                       </button>
-                      {reportType && (
-                        <button
-                          className={`ms-2 btn btn-secondary ${
-                            exportLoading ? "disabled" : ""
-                          }`}
-                          type="button"
-                          onClick={handleCSV}
-                        >
-                          {exportLoading ? (
-                            <div
-                              className="spinner-border spinner-border-sm"
-                              role="status"
-                            ></div>
-                          ) : (
-                            <AiOutlineDownload />
-                          )}
-                        </button>
-                      )}
+                      {/* {reportType && ( */}
+                      <button
+                        className={`ms-2 btn btn-secondary ${
+                          exportLoading ? "disabled" : ""
+                        }`}
+                        type="button"
+                        onClick={handleCSV}
+                      >
+                        {exportLoading ? (
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></div>
+                        ) : (
+                          <AiOutlineDownload />
+                        )}
+                      </button>
+                      {/* )} */}
 
                       <button
                         className={`btn btn-primary ms-2`}
